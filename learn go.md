@@ -21,7 +21,7 @@
 ```
 
 ### [go 配置vscode](https://learnku.com/articles/32146)
-* 第一步：点击 vscode 提示的 “Install All”
+* 第一步：点击 vscode 提示的 “Install All” 
 
 当把 vscode 下下来，打开一个 go 文件，编辑器会自动告诉你安装 go 插件，如果 go 的插件不齐全，编辑器会提示你 “Analysis Tools Missing”，点击 “Install All”
 
