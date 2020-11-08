@@ -45,18 +45,21 @@ Figure 3. 分布式版本控制.
 ## git 框架
 
 
-## git命令的区别
-1.[git clone/git pull/git fetch/git merge/get init 的区别](https://www.cnblogs.com/lalalagq/p/9968949.html)
 
 ## 常用指令
 
 [git 讲解](https://www.jianshu.com/p/e57a4a2cf077)
 
+### 配置（conf）
+
+#### 代理（proxy）
 ```bash
 # 指令
 git config --global http.proxy socks5://127.0.0.1:1086 #设置代理
 git config --global --unset http.proxy	#取消代理
-
+```
+#### 初始化（initial）
+```bash
 #windows选择sublime为默认编辑器
 git config --global core.editor "C:/Program Files/Sublime Text 2/sublime_text.exe' -n -w"
 
@@ -66,7 +69,33 @@ git config --global user.email "wallphysics@gmail.com"
 git config --system --list  #看git系统信息
 git config --global  --list #看当前用户信息
 git config --local  --list  #看当前仓库信息
+```
 
+#### 免密登录
+```bash
+
+
+```
+
+
+### 提交（commit）
+
+
+
+
+
+### 分支（branch）
+
+
+
+### 抓取（fetch）
+
+
+
+
+
+#### zsh 常用alias
+```bash
 # Zsh Alias	Command
 g	    git
 ga	    git add
@@ -120,3 +149,7 @@ gignore	git update-index --assume-unchanged
 git-svn-dcommit-push	git svn dcommit && git push github master:svntrunk
 gk	\gitk --all --branches
 ```
+
+
+#### git命令的区别
+1.[git clone/git pull/git fetch/git merge/get init 的区别](https://www.cnblogs.com/lalalagq/p/9968949.html)
