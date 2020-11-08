@@ -71,10 +71,11 @@ git config --global  --list #看当前用户信息
 git config --local  --list  #看当前仓库信息
 ```
 
-#### 免密登录
+#### [免密登录](https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git)
 ```bash
+git config --global credential.helper osxkeychain #Mac
 
-
+git config --global credential.helper cache #Linux
 ```
 
 
