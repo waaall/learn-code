@@ -344,7 +344,7 @@ msys就像是“app store”，用来在windows系统 下载安装配置 一系�
 
 #### 什么是 CMake
 
-> All problems in computer science can be solved by another level of indirection.
+> All problems in computer science can be solved by another level of indirection. 
 >
 > **David Wheeler**
 
