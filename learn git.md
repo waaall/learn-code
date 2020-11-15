@@ -52,7 +52,29 @@ Figure 3. 分布式版本控制.
 
 ### 配置（conf）
 
+git 忽略mac中的`.DS_Store`文件方法见下：
+
+```shell
+touch ~/.gitignore_global
+```
+
+然后对这个文件进行修改。
+
+```
+# Mac OS
+**/.DS_Store
+```
+
+然后对git进行全局设置，让git忽略.gitignore_global中的所有文件：
+
+```shell
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+这样就不用每个git目录都设置忽略.DS_Store文件了！
+
 #### 代理（proxy）
+
 ```bash
 # 指令
 git config --global http.proxy socks5://127.0.0.1:1086 #设置代理
@@ -72,12 +94,12 @@ git config --local  --list  #看当前仓库信息
 ```
 
 #### [免密登录](https://docs.github.com/en/free-pro-team@latest/github/using-git/caching-your-github-credentials-in-git)
+
 ```bash
 git config --global credential.helper osxkeychain #Mac
 
 git config --global credential.helper cache #Linux
 ```
-
 
 ### 提交（commit）
 
