@@ -149,6 +149,7 @@ git branch -d branchname #删除分支
 
 
 #### zsh 常用alias
+
 ```bash
 # Zsh Alias	Command
 g	    git
