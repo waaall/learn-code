@@ -52,27 +52,6 @@ Figure 3. 分布式版本控制.
 
 ### 配置（conf）
 
-git 忽略mac中的`.DS_Store`文件方法见下：
-
-```shell
-touch ~/.gitignore_global
-```
-
-然后对这个文件进行修改。
-
-```
-# Mac OS
-**/.DS_Store
-```
-
-然后对git进行全局设置，让git忽略.gitignore_global中的所有文件：
-
-```shell
-git config --global core.excludesfile ~/.gitignore_global
-```
-
-这样就不用每个git目录都设置忽略.DS_Store文件了！
-
 #### 代理（proxy）
 
 ```bash
@@ -101,6 +80,47 @@ git config --global credential.helper osxkeychain #Mac
 git config --global credential.helper cache #Linux
 ```
 
+#### git忽略文件
+
+1. 全局忽略
+
+忽略mac中的`.DS_Store`文件方法见下：
+
+```shell
+touch ~/.gitignore_global
+```
+
+然后对这个文件进行修改。
+
+```
+# Mac OS
+**/.DS_Store
+```
+
+然后对git进行全局设置，让git忽略.gitignore_global中的所有文件：
+
+```shell
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+这样就不用每个git目录都设置忽略.DS_Store文件了！
+
+2. 局部忽略
+
+```shell
+git rm --cached yourfile	#实际文件没有删，只是不再使用git管理
+vim .gitignore
+```
+
+然后对这个文件进行修改。
+
+```shell
+youfile
+```
+
+
+
+
 ### 提交（commit）
 
 
@@ -108,6 +128,17 @@ git config --global credential.helper cache #Linux
 
 
 ### 分支（branch）
+
+```shell
+git branch	#查看当前本地分支
+git branch branchname #创建一个新的分支名为branchname
+git checkout branchname #切换到**分支
+
+git branch -d branchname #删除分支
+
+```
+
+
 
 
 

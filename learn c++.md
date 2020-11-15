@@ -106,13 +106,17 @@ gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7/ -l
 
 ##选项
 -E 			#只运行 C 预编译器。
+-S			#预处理+编译，生成汇编
+-c			#汇编，生成二进制文件，但不链接
+-o			#指定生成二进制文件名
+
 -g 			#生成调试信息。GNU 调试器可利用该信息。
 -I(DIRECTORY) #指定额外的头文件搜索路径DIRECTORY。
 -L(DIRECTORY) #指定额外的函数库搜索路径DIRECTORY。
 -l(LIBRARY) #连接时搜索指定的函数库LIBRARY。
 -m486 		#针对 486 进行代码优化。
 -o 			#FILE 生成指定的输出文件。用在生成可执行文件时。
--O0 		#不进行优化处理。
+-O0 		#不进行优化处理。同-Og？
 -O 			#或 -O1 优化生成代码。
 -O2 		#进一步优化。
 -O3 		#比 -O2 更进一步优化，包括 inline 函数。
