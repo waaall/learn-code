@@ -114,6 +114,8 @@ gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7/ -l
 -I(DIRECTORY) #指定额外的头文件搜索路径DIRECTORY。
 -L(DIRECTORY) #指定额外的函数库搜索路径DIRECTORY。
 -l(LIBRARY) #连接时搜索指定的函数库LIBRARY。
+-lm			#链接数学库，由于种种历史原因，include数学库时还需要手动链接
+
 -m486 		#针对 486 进行代码优化。
 -o 			#FILE 生成指定的输出文件。用在生成可执行文件时。
 -O0 		#不进行优化处理。同-Og？
