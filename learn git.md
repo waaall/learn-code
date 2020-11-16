@@ -460,7 +460,11 @@ $ tree
 | `reset [commit] <paths>`    | NO   | YES   | NO      | YES      |
 | `checkout [commit] <paths>` | NO   | YES   | YES     | **NO**   |
 
+
+
 ## 常用指令
+
+![git](http://www.ruanyifeng.com/blogimg/asset/2014/bg2014061202.jpg)
 
 [git 讲解](https://www.jianshu.com/p/e57a4a2cf077)
 
@@ -546,11 +550,12 @@ git init  #将所在文件夹初始化为一个git repository，也就是创建�
 
 #将该git远程仓库克隆到本地
 git clone https://github.com/waaall/computer-tips.git
+git clone -o mygit https://github.com/waaall/computer-tips.git #指定远程主机名叫mygit，默认为origin
 ```
 
 
 
-### 提交（commit）/ 推送（push）
+### 提交（commit）/ 推送（[push](http://www.ruanyifeng.com/blog/2014/06/git_remote.html)）
 
 ```shell
 git add FILENAME
@@ -561,9 +566,13 @@ git commit -m "some info"
 git commit -a	#-a或--amend 提交修改，也就是修改过的文件不需要add，但是新创建的文件，还是要add再commit
 git commit -a -m "some info"
 
-git push	#（这其实 = git push origin master）也就是push到远程主机->默认分支中，并合并
+git push <远程主机名> <本地分支名>:<远程分支名>
+#如果省略远程分支名，则表示将本地分支推送与之存在"追踪关系"的远程分支（通常两者同名），如果该远程分支不存在，则会被新建。
+git push	#（这其实 = git push origin master）也就是push到远程主机->默认分支中，并合并，省略了远程分支名
 
-git push origin --delete serverfix	#删除远程仓库：基本上这个命令做的只是从服务器上移除这个指针。 Git 服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的
+#删除远程仓库：基本上这个命令做的只是从服务器上移除这个指针。 Git 服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的
+git push origin --delete master
+git push origin :master		#与上面指令一个意思
 ```
 
 
@@ -583,11 +592,14 @@ git log -p -1	#-p或--patch：会显示每次提交所引入的差异（按补�
 
 ```shell
 git branch	#查看当前本地分支
+
 git branch branchname #创建一个新的分支名为branchname
 git checkout branchname #切换到**分支
+git checkout -b branchname	#（这其实 = 上两条指令）
 
+git branch -r
+git branch -a
 git branch -d branchname #删除分支
-
 git branch -vv	#将所有的本地分支列出来，并且显示每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有
 
 git merge branchname #将branchname分支与当前所在分支合并
@@ -607,12 +619,24 @@ git reset --hard file.txt 	# 这把Working Directory改变了，很难重置，�
 
 
 
-
-
-### 抓取（fetch）/ 拉取（pull）
+### 远程（remote）
 
 ```shell
-git fetch 
+git remote		#列出所有远程主机
+git remote -v	#列出远程主机的网址
+git remote add <主机名> <网址>	#添加远程主机
+git remote rm <主机名>			 #删除远程主机
+git remote rename <原主机名> <新主机名>	#重命名
+```
+
+
+
+### 抓取（fetch）/ 拉取（[pull](http://www.ruanyifeng.com/blog/2014/06/git_remote.html)）
+
+```shell
+git fetch <远程主机名> <分支名>
+git fetch <远程主机名>	#取回此远程主机所有branch的更新
+git fetch #（这其实 = git fetch origin master）一般情况下
 
 git pull  #（这其实 = git fetch + git merge）查找当前分支所跟踪的服务器与分支， 从服务器上抓取数据然后尝试合并入那个远程分支
 ```
