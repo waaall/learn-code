@@ -67,6 +67,10 @@ git config --global core.editor "C:/Program Files/Sublime Text 3/sublime_text.ex
 #配置账号
 git config --global user.name "waaall"
 git config --global user.email "wallphysics@gmail.com"
+
+#设置git status显示中文
+git config --global core.quotepath false
+
 git config --system --list  #看git系统信息
 git config --global  --list #看当前用户信息
 git config --local  --list  #看当前仓库信息
