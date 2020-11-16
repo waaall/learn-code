@@ -466,6 +466,10 @@ $ tree
 
 ![git](http://www.ruanyifeng.com/blogimg/asset/2014/bg2014061202.jpg)
 
+git往往被误解为"github"，但其实这是有问题的，其实git repository就是在本地，甚至可以把github上的远程仓库就理解为你的另一台电脑上的"本地"仓库，这时就会理解为什么本地做了commit，可是github的远程仓库没有更新，而git push之后，github却显示有一个commit，因为push这个动作就是commit你的"另一台电脑"的repository，这台电脑就是GitHub服务器。
+
+所有git的强大不仅是它可以同步远程仓库，更是因为仅仅在本地，它的repository、staging area、working directory组成了强大的文件版本管理系统。这一切的奥秘，都在.git文件夹中。
+
 [git 讲解](https://www.jianshu.com/p/e57a4a2cf077)
 
 ### 配置（conf）
