@@ -42,15 +42,431 @@ Figure 3. 分布式版本控制.
 
 更进一步，许多这类系统都可以指定和若干不同的远端代码仓库进行交互。籍此，你就可以在同一个项目中，分别和不同工作小组的人相互协作。 你可以根据需要设定不同的协作流程，比如层次模型式的工作流，而这在以前的集中式系统中是无法实现的。
 
-## git 框架
 
 
+## git 框架---远程分支
+
+远程引用是对远程仓库的引用（指针），包括分支、标签等等。 你可以通过 `git ls-remote <remote>` 来显式地获得远程引用的完整列表， 或者通过 `git remote show <remote>` 获得远程分支的更多信息。 然而，一个更常见的做法是利用远程跟踪分支。
+
+远程跟踪分支是远程分支状态的引用。它们是你无法移动的本地引用。一旦你进行了网络通信， Git 就会为你移动它们以精确反映远程仓库的状态。请将它们看做书签， 这样可以提醒你该分支在远程仓库中的位置就是你最后一次连接到它们的位置。
+
+它们以 `<remote>/<branch>` 的形式命名。 例如，如果你想要看你最后一次与远程仓库 `origin` 通信时 `master` 分支的状态，你可以查看 `origin/master` 分支。 你与同事合作解决一个问题并且他们推送了一个 `iss53` 分支，你可能有自己的本地 `iss53` 分支， 然而在服务器上的分支会以 `origin/iss53` 来表示。
+
+这可能有一点儿难以理解，让我们来看一个例子。 假设你的网络里有一个在 `git.ourcompany.com` 的 Git 服务器。 如果你从这里克隆，Git 的 `clone` 命令会为你自动将其命名为 `origin`，拉取它的所有数据， 创建一个指向它的 `master` 分支的指针，并且在本地将其命名为 `origin/master`。 Git 也会给你一个与 origin 的 `master` 分支在指向同一个地方的本地 `master` 分支，这样你就有工作的基础。
+
+| Note | “origin” 并无特殊含义远程仓库名字 “origin” 与分支名字 “master” 一样，在 Git 中并没有任何特别的含义一样。 同时 “master” 是当你运行 `git init` 时默认的起始分支名字，原因仅仅是它的广泛使用， “origin” 是当你运行 `git clone` 时默认的远程仓库名字。 如果你运行 `git clone -o booyah`，那么你默认的远程分支名字将会是 `booyah/master`。 |
+| ---- | ------------------------------------------------------------ |
+|      |                                                              |
+
+![克隆之后的服务器与本地仓库。](https://git-scm.com/book/en/v2/images/remote-branches-1.png)
+
+Figure 30. 克隆之后的服务器与本地仓库
+
+如果你在本地的 `master` 分支做了一些工作，在同一段时间内有其他人推送提交到`git.ourcompany.com` 并且更新了它的 `master` 分支，这就是说你们的提交历史已走向不同的方向。 即便这样，只要你保持不与 `origin` 服务器连接（并拉取数据），你的 `origin/master` 指针就不会移动。
+
+![本地与远程的工作可以分叉。](https://git-scm.com/book/en/v2/images/remote-branches-2.png)
+
+Figure 31. 本地与远程的工作可以分叉
+
+如果要与给定的远程仓库同步数据，运行 `git fetch <remote>` 命令（在本例中为 `git fetch origin`）。 这个命令查找 “origin” 是哪一个服务器（在本例中，它是 `git.ourcompany.com`）， 从中抓取本地没有的数据，并且更新本地数据库，移动 `origin/master` 指针到更新之后的位置。
+
+![`git fetch` 更新你的远程仓库引用。](https://git-scm.com/book/en/v2/images/remote-branches-3.png)
+
+Figure 32. `git fetch` 更新你的远程跟踪分支
+
+为了演示有多个远程仓库与远程分支的情况，我们假定你有另一个内部 Git 服务器，仅服务于你的某个敏捷开发团队。 这个服务器位于 `git.team1.ourcompany.com`。 你可以运行 `git remote add` 命令添加一个新的远程仓库引用到当前的项目，这个命令我们会在 [Git 基础](https://git-scm.com/book/zh/v2/ch00/ch02-git-basics-chapter) 中详细说明。 将这个远程仓库命名为 `teamone`，将其作为完整 URL 的缩写。
+
+![添加另一个远程仓库。](https://git-scm.com/book/en/v2/images/remote-branches-4.png)
+
+Figure 33. 添加另一个远程仓库
+
+现在，可以运行 `git fetch teamone` 来抓取远程仓库 `teamone` 有而本地没有的数据。 因为那台服务器上现有的数据是 `origin` 服务器上的一个子集， 所以 Git 并不会抓取数据而是会设置远程跟踪分支 `teamone/master` 指向 `teamone` 的 `master` 分支。
+
+![远程跟踪分支 `teamone/master`。](https://git-scm.com/book/en/v2/images/remote-branches-5.png)
+
+Figure 34. 远程跟踪分支 `teamone/master`
+
+### 推送
+
+当你想要公开分享一个分支时，需要将其推送到有写入权限的远程仓库上。 本地的分支并不会自动与远程仓库同步——你必须显式地推送想要分享的分支。 这样，你就可以把不愿意分享的内容放到私人分支上，而将需要和别人协作的内容推送到公开分支。
+
+如果希望和别人一起在名为 `serverfix` 的分支上工作，你可以像推送第一个分支那样推送它。 运行 `git push <remote> <branch>`:
+
+```console
+$ git push origin serverfix
+Counting objects: 24, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (15/15), done.
+Writing objects: 100% (24/24), 1.91 KiB | 0 bytes/s, done.
+Total 24 (delta 2), reused 0 (delta 0)
+To https://github.com/schacon/simplegit
+ * [new branch]      serverfix -> serverfix
+```
+
+这里有些工作被简化了。 Git 自动将 `serverfix` 分支名字展开为 `refs/heads/serverfix:refs/heads/serverfix`， 那意味着，“推送本地的 `serverfix` 分支来更新远程仓库上的 `serverfix` 分支。” 我们将会详细学习 [Git 内部原理](https://git-scm.com/book/zh/v2/ch00/ch10-git-internals) 的 `refs/heads/` 部分， 但是现在可以先把它放在儿。你也可以运行 `git push origin serverfix:serverfix`， 它会做同样的事——也就是说“推送本地的 `serverfix` 分支，将其作为远程仓库的 `serverfix` 分支” 可以通过这种格式来推送本地分支到一个命名不相同的远程分支。 如果并不想让远程仓库上的分支叫做 `serverfix`，可以运行 `git push origin serverfix:awesomebranch` 来将本地的 `serverfix` 分支推送到远程仓库上的 `awesomebranch` 分支。
+
+| Note | 如何避免每次输入密码如果你正在使用 HTTPS URL 来推送，Git 服务器会询问用户名与密码。 默认情况下它会在终端中提示服务器是否允许你进行推送。如果不想在每一次推送时都输入用户名与密码，你可以设置一个 “credential cache”。 最简单的方式就是将其保存在内存中几分钟，可以简单地运行 `git config --global credential.helper cache` 来设置它。想要了解更多关于不同验证缓存的可用选项，查看 [凭证存储](https://git-scm.com/book/zh/v2/ch00/_credential_caching)。 |
+| ---- | ------------------------------------------------------------ |
+|      |                                                              |
+
+下一次其他协作者从服务器上抓取数据时，他们会在本地生成一个远程分支 `origin/serverfix`，指向服务器的 `serverfix` 分支的引用：
+
+```console
+$ git fetch origin
+remote: Counting objects: 7, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 3 (delta 0)
+Unpacking objects: 100% (3/3), done.
+From https://github.com/schacon/simplegit
+ * [new branch]      serverfix    -> origin/serverfix
+```
+
+要特别注意的一点是当抓取到新的远程跟踪分支时，本地不会自动生成一份可编辑的副本（拷贝）。 换一句话说，这种情况下，不会有一个新的 `serverfix` 分支——只有一个不可以修改的 `origin/serverfix` 指针。
+
+可以运行 `git merge origin/serverfix` 将这些工作合并到当前所在的分支。 如果想要在自己的 `serverfix` 分支上工作，可以将其建立在远程跟踪分支之上：
+
+```console
+$ git checkout -b serverfix origin/serverfix
+Branch serverfix set up to track remote branch serverfix from origin.
+Switched to a new branch 'serverfix'
+```
+
+这会给你一个用于工作的本地分支，并且起点位于 `origin/serverfix`。
+
+### 跟踪分支
+
+从一个远程跟踪分支检出一个本地分支会自动创建所谓的“跟踪分支”（它跟踪的分支叫做“上游分支”）。 跟踪分支是与远程分支有直接关系的本地分支。 如果在一个跟踪分支上输入 `git pull`，Git 能自动地识别去哪个服务器上抓取、合并到哪个分支。
+
+当克隆一个仓库时，它通常会自动地创建一个跟踪 `origin/master` 的 `master` 分支。 然而，如果你愿意的话可以设置其他的跟踪分支，或是一个在其他远程仓库上的跟踪分支，又或者不跟踪 `master` 分支。 最简单的实例就是像之前看到的那样，运行 `git checkout -b <branch> <remote>/<branch>`。 这是一个十分常用的操作所以 Git 提供了 `--track` 快捷方式：
+
+```console
+$ git checkout --track origin/serverfix
+Branch serverfix set up to track remote branch serverfix from origin.
+Switched to a new branch 'serverfix'
+```
+
+由于这个操作太常用了，该捷径本身还有一个捷径。 如果你尝试检出的分支 (a) 不存在且 (b) 刚好只有一个名字与之匹配的远程分支，那么 Git 就会为你创建一个跟踪分支：
+
+```console
+$ git checkout serverfix
+Branch serverfix set up to track remote branch serverfix from origin.
+Switched to a new branch 'serverfix'
+```
+
+如果想要将本地分支与远程分支设置为不同的名字，你可以轻松地使用上一个命令增加一个不同名字的本地分支：
+
+```console
+$ git checkout -b sf origin/serverfix
+Branch sf set up to track remote branch serverfix from origin.
+Switched to a new branch 'sf'
+```
+
+现在，本地分支 `sf` 会自动从 `origin/serverfix` 拉取。
+
+设置已有的本地分支跟踪一个刚刚拉取下来的远程分支，或者想要修改正在跟踪的上游分支， 你可以在任意时间使用 `-u` 或 `--set-upstream-to` 选项运行 `git branch` 来显式地设置。
+
+```console
+$ git branch -u origin/serverfix
+Branch serverfix set up to track remote branch serverfix from origin.
+```
+
+| Note | 上游快捷方式当设置好跟踪分支后，可以通过简写 `@{upstream}` 或 `@{u}` 来引用它的上游分支。 所以在 `master` 分支时并且它正在跟踪 `origin/master` 时，如果愿意的话可以使用 `git merge @{u}` 来取代 `git merge origin/master`。 |
+| ---- | ------------------------------------------------------------ |
+|      |                                                              |
+
+如果想要查看设置的所有跟踪分支，可以使用 `git branch` 的 `-vv` 选项。 这会将所有的本地分支列出来并且包含更多的信息，如每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有。
+
+```console
+$ git branch -vv
+  iss53     7e424c3 [origin/iss53: ahead 2] forgot the brackets
+  master    1ae2a45 [origin/master] deploying index fix
+* serverfix f8674d9 [teamone/server-fix-good: ahead 3, behind 1] this should do it
+  testing   5ea463a trying something new
+```
+
+这里可以看到 `iss53` 分支正在跟踪 `origin/iss53` 并且 “ahead” 是 2，意味着本地有两个提交还没有推送到服务器上。 也能看到 `master` 分支正在跟踪 `origin/master` 分支并且是最新的。 接下来可以看到 `serverfix` 分支正在跟踪 `teamone` 服务器上的 `server-fix-good` 分支并且领先 3 落后 1， 意味着服务器上有一次提交还没有合并入同时本地有三次提交还没有推送。 最后看到 `testing` 分支并没有跟踪任何远程分支。
+
+需要重点注意的一点是这些数字的值来自于你从每个服务器上最后一次抓取的数据。 这个命令并没有连接服务器，它只会告诉你关于本地缓存的服务器数据。 如果想要统计最新的领先与落后数字，需要在运行此命令前抓取所有的远程仓库。 可以像这样做：
+
+```console
+$ git fetch --all; git branch -vv
+```
+
+### 拉取
+
+当 `git fetch` 命令从服务器上抓取本地没有的数据时，它并不会修改工作目录中的内容。 它只会获取数据然后让你自己合并。 然而，有一个命令叫作 `git pull` 在大多数情况下它的含义是一个 `git fetch`紧接着一个 `git merge` 命令。 如果有一个像之前章节中演示的设置好的跟踪分支，不管它是显式地设置还是通过 `clone` 或 `checkout` 命令为你创建的，`git pull` 都会查找当前分支所跟踪的服务器与分支， 从服务器上抓取数据然后尝试合并入那个远程分支。
+
+由于 `git pull` 的魔法经常令人困惑所以通常单独显式地使用 `fetch` 与 `merge` 命令会更好一些。
+
+### 删除远程分支
+
+假设你已经通过远程分支做完所有的工作了——也就是说你和你的协作者已经完成了一个特性， 并且将其合并到了远程仓库的 `master` 分支（或任何其他稳定代码分支）。 可以运行带有 `--delete` 选项的 `git push` 命令来删除一个远程分支。 如果想要从服务器上删除 `serverfix` 分支，运行下面的命令：
+
+```console
+$ git push origin --delete serverfix
+To https://github.com/schacon/simplegit
+ - [deleted]         serverfix
+```
+
+基本上这个命令做的只是从服务器上移除这个指针。 Git 服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的。
+
+
+
+## git 框架---重置
+
+### 重置揭密
+
+在继续了解更专业的工具前，我们先探讨一下 Git 的 `reset` 和 `checkout` 命令。 在初遇的 Git 命令中，这两个是最让人困惑的。 它们能做很多事情，所以看起来我们很难真正地理解并恰当地运用它们。 针对这一点，我们先来做一个简单的比喻。
+
+#### 三棵树
+
+理解 `reset` 和 `checkout` 的最简方法，就是以 Git 的思维框架（将其作为内容管理器）来管理三棵不同的树。 “树” 在我们这里的实际意思是 “文件的集合”，而不是指特定的数据结构。 （在某些情况下索引看起来并不像一棵树，不过我们现在的目的是用简单的方式思考它。）
+
+Git 作为一个系统，是以它的一般操作来管理并操纵这三棵树的：
+
+| 树                | 用途                                 |
+| :---------------- | :----------------------------------- |
+| HEAD              | 上一次提交的快照，下一次提交的父结点 |
+| Index             | 预期的下一次提交的快照               |
+| Working Directory | 沙盒                                 |
+
+#### HEAD
+
+HEAD 是当前分支引用的指针，它总是指向该分支上的最后一次提交。 这表示 HEAD 将是下一次提交的父结点。 通常，理解 HEAD 的最简方式，就是将它看做 **该分支上的最后一次提交** 的快照。
+
+其实，查看快照的样子很容易。 下例就显示了 HEAD 快照实际的目录列表，以及其中每个文件的 SHA-1 校验和：
+
+```shell
+$ git cat-file -p HEAD
+tree cfda3bf379e4f8dba8717dee55aab78aef7f4daf
+author Scott Chacon  1301511835 -0700
+committer Scott Chacon  1301511835 -0700
+
+initial commit
+
+$ git ls-tree -r HEAD
+100644 blob a906cb2a4a904a152...   README
+100644 blob 8f94139338f9404f2...   Rakefile
+040000 tree 99f1a6d12cb4b6f19...   lib
+```
+
+Git 的 `cat-file` 和 `ls-tree` 是底层命令，它们一般用于底层工作，在日常工作中并不使用。 不过它们能帮助我们了解到底发生了什么。
+
+#### 索引
+
+索引是你的 **预期的下一次提交**。 我们也会将这个概念引用为 Git 的“暂存区”，这就是当你运行 `git commit` 时 Git 看起来的样子。
+
+Git 将上一次检出到工作目录中的所有文件填充到索引区，它们看起来就像最初被检出时的样子。 之后你会将其中一些文件替换为新版本，接着通过 `git commit` 将它们转换为树来用作新的提交。
+
+```shell
+$ git ls-files -s
+100644 a906cb2a4a904a152e80877d4088654daad0c859 0	README
+100644 8f94139338f9404f26296befa88755fc2598c289 0	Rakefile
+100644 47c6340d6459e05787f644c2447d2595f5d3a54b 0	lib/simplegit.rb
+```
+
+再说一次，我们在这里又用到了 `git ls-files` 这个幕后的命令，它会显示出索引当前的样子。
+
+确切来说，索引在技术上并非树结构，它其实是以扁平的清单实现的。不过对我们而言，把它当做树就够了。
+
+#### 工作目录
+
+最后，你就有了自己的 **工作目录**（通常也叫 **工作区**）。 另外两棵树以一种高效但并不直观的方式，将它们的内容存储在 `.git` 文件夹中。 工作目录会将它们解包为实际的文件以便编辑。 你可以把工作目录当做 **沙盒**。在你将修改提交到暂存区并记录到历史之前，可以随意更改。
+
+```shell
+$ tree
+.
+├── README
+├── Rakefile
+└── lib
+    └── simplegit.rb
+
+1 directory, 3 files
+```
+
+#### 工作流程
+
+经典的 Git 工作流程是通过操纵这三个区域来以更加连续的状态记录项目快照的。
+
+![reset workflow](https://git-scm.com/book/en/v2/images/reset-workflow.png)
+
+让我们来可视化这个过程：假设我们进入到一个新目录，其中有一个文件。 我们称其为该文件的 **v1** 版本，将它标记为蓝色。 现在运行 `git init`，这会创建一个 Git 仓库，其中的 HEAD 引用指向未创建的 `master` 分支。
+
+![reset ex1](https://git-scm.com/book/en/v2/images/reset-ex1.png)
+
+此时，只有工作目录有内容。
+
+现在我们想要提交这个文件，所以用 `git add` 来获取工作目录中的内容，并将其复制到索引中。
+
+![reset ex2](https://git-scm.com/book/en/v2/images/reset-ex2.png)
+
+接着运行 `git commit`，它会取得索引中的内容并将它保存为一个永久的快照， 然后创建一个指向该快照的提交对象，最后更新 `master` 来指向本次提交。
+
+![reset ex3](https://git-scm.com/book/en/v2/images/reset-ex3.png)
+
+此时如果我们运行 `git status`，会发现没有任何改动，因为现在三棵树完全相同。
+
+现在我们想要对文件进行修改然后提交它。 我们将会经历同样的过程；首先在工作目录中修改文件。 我们称其为该文件的 **v2** 版本，并将它标记为红色。
+
+![reset ex4](https://git-scm.com/book/en/v2/images/reset-ex4.png)
+
+如果现在运行 `git status`，我们会看到文件显示在 “Changes not staged for commit” 下面并被标记为红色，因为该条目在索引与工作目录之间存在不同。 接着我们运行 `git add` 来将它暂存到索引中。
+
+![reset ex5](https://git-scm.com/book/en/v2/images/reset-ex5.png)
+
+此时，由于索引和 HEAD 不同，若运行 `git status` 的话就会看到 “Changes to be committed” 下的该文件变为绿色 ——也就是说，现在预期的下一次提交与上一次提交不同。 最后，我们运行 `git commit` 来完成提交。
+
+![reset ex6](https://git-scm.com/book/en/v2/images/reset-ex6.png)
+
+现在运行 `git status` 会没有输出，因为三棵树又变得相同了。
+
+切换分支或克隆的过程也类似。 当检出一个分支时，它会修改 **HEAD** 指向新的分支引用，将 **索引** 填充为该次提交的快照， 然后将 **索引** 的内容复制到 **工作目录** 中。
+
+### 重置的作用
+
+在以下情景中观察 `reset` 命令会更有意义。
+
+为了演示这些例子，假设我们再次修改了 `file.txt` 文件并第三次提交它。 现在的历史看起来是这样的：
+
+![reset start](https://git-scm.com/book/en/v2/images/reset-start.png)
+
+让我们跟着 `reset` 看看它都做了什么。 它以一种简单可预见的方式直接操纵这三棵树。 它做了三个基本操作。
+
+#### 第 1 步：移动 HEAD
+
+`reset` 做的第一件事是移动 HEAD 的指向。 这与改变 HEAD 自身不同（`checkout` 所做的）；`reset`移动 HEAD 指向的分支。 这意味着如果 HEAD 设置为 `master` 分支（例如，你正在 `master` 分支上）， 运行 `git reset 9e5e6a4` 将会使 `master` 指向 `9e5e6a4`。
+
+![reset soft](https://git-scm.com/book/en/v2/images/reset-soft.png)
+
+无论你调用了何种形式的带有一个提交的 `reset`，它首先都会尝试这样做。 使用 `reset --soft`，它将仅仅停在那儿。
+
+现在看一眼上图，理解一下发生的事情：它本质上是撤销了上一次 `git commit` 命令。 当你在运行 `git commit` 时，Git 会创建一个新的提交，并移动 HEAD 所指向的分支来使其指向该提交。 当你将它 `reset`回 `HEAD~`（HEAD 的父结点）时，其实就是把该分支移动回原来的位置，而不会改变索引和工作目录。 现在你可以更新索引并再次运行 `git commit` 来完成 `git commit --amend` 所要做的事情了（见 [修改最后一次提交](https://git-scm.com/book/zh/v2/ch00/_git_amend)）。
+
+#### 第 2 步：更新索引（--mixed）
+
+注意，如果你现在运行 `git status` 的话，就会看到新的 HEAD 和以绿色标出的它和索引之间的区别。
+
+接下来，`reset` 会用 HEAD 指向的当前快照的内容来更新索引。
+
+![reset mixed](https://git-scm.com/book/en/v2/images/reset-mixed.png)
+
+如果指定 `--mixed` 选项，`reset` 将会在这时停止。 这也是默认行为，所以如果没有指定任何选项（在本例中只是 `git reset HEAD~`），这就是命令将会停止的地方。
+
+现在再看一眼上图，理解一下发生的事情：它依然会撤销一上次 `提交`，但还会 *取消暂存* 所有的东西。 于是，我们回滚到了所有 `git add` 和 `git commit` 的命令执行之前。
+
+#### 第 3 步：更新工作目录（--hard）
+
+`reset` 要做的的第三件事情就是让工作目录看起来像索引。 如果使用 `--hard` 选项，它将会继续这一步。
+
+![reset hard](https://git-scm.com/book/en/v2/images/reset-hard.png)
+
+现在让我们回想一下刚才发生的事情。 你撤销了最后的提交、`git add` 和 `git commit` 命令 **以及** 工作目录中的所有工作。
+
+必须注意，`--hard` 标记是 `reset` 命令唯一的危险用法，它也是 Git 会真正地销毁数据的仅有的几个操作之一。 其他任何形式的 `reset` 调用都可以轻松撤消，但是 `--hard` 选项不能，因为它强制覆盖了工作目录中的文件。 在这种特殊情况下，我们的 Git 数据库中的一个提交内还留有该文件的 **v3** 版本， 我们可以通过 `reflog` 来找回它。但是若该文件还未提交，Git 仍会覆盖它从而导致无法恢复。
+
+#### 回顾
+
+`reset` 命令会以特定的顺序重写这三棵树，在你指定以下选项时停止：
+
+1. 移动 HEAD 分支的指向 *（若指定了 `--soft`，则到此停止）*
+2. 使索引看起来像 HEAD *（若未指定 `--hard`，则到此停止）*
+3. 使工作目录看起来像索引
+
+### 通过路径来重置
+
+前面讲述了 `reset` 基本形式的行为，不过你还可以给它提供一个作用路径。 若指定了一个路径，`reset`将会跳过第 1 步，并且将它的作用范围限定为指定的文件或文件集合。 这样做自然有它的道理，因为 HEAD 只是一个指针，你无法让它同时指向两个提交中各自的一部分。 不过索引和工作目录 *可以部分更新*，所以重置会继续进行第 2、3 步。
+
+现在，假如我们运行 `git reset file.txt` （这其实是 `git reset --mixed HEAD file.txt` 的简写形式，因为你既没有指定一个提交的 SHA-1 或分支，也没有指定 `--soft` 或 `--hard`），它会：
+
+1. 移动 HEAD 分支的指向 *（已跳过）*
+2. 让索引看起来像 HEAD *（到此处停止）*
+
+所以它本质上只是将 `file.txt` 从 HEAD 复制到索引中。
+
+![reset path1](https://git-scm.com/book/en/v2/images/reset-path1.png)
+
+它还有 *取消暂存文件* 的实际效果。 如果我们查看该命令的示意图，然后再想想 `git add` 所做的事，就会发现它们正好相反。
+
+![reset path2](https://git-scm.com/book/en/v2/images/reset-path2.png)
+
+这就是为什么 `git status` 命令的输出会建议运行此命令来取消暂存一个文件。 （查看 [取消暂存的文件](https://git-scm.com/book/zh/v2/ch00/_unstaging)来了解更多。）
+
+我们可以不让 Git 从 HEAD 拉取数据，而是通过具体指定一个提交来拉取该文件的对应版本。 我们只需运行类似于 `git reset eb43bf file.txt` 的命令即可。
+
+![reset path3](https://git-scm.com/book/en/v2/images/reset-path3.png)
+
+它其实做了同样的事情，也就是把工作目录中的文件恢复到 **v1** 版本，运行 `git add` 添加它， 然后再将它恢复到 **v3** 版本（只是不用真的过一遍这些步骤）。 如果我们现在运行 `git commit`，它就会记录一条“将该文件恢复到 **v1** 版本”的更改， 尽管我们并未在工作目录中真正地再次拥有它。
+
+还有一点同 `git add` 一样，就是 `reset` 命令也可以接受一个 `--patch` 选项来一块一块地取消暂存的内容。 这样你就可以根据选择来取消暂存或恢复内容了。
+
+#### 压缩
+
+我们来看看如何利用这种新的功能来做一些有趣的事情——压缩提交。
+
+假设你的一系列提交信息中有 “oops.”“WIP” 和 “forgot this file”， 聪明的你就能使用 `reset` 来轻松快速地将它们压缩成单个提交，也显出你的聪明。 （[压缩提交](https://git-scm.com/book/zh/v2/ch00/_squashing) 展示了另一种方式，不过在本例中用 `reset` 更简单。）
+
+假设你有一个项目，第一次提交中有一个文件，第二次提交增加了一个新的文件并修改了第一个文件，第三次提交再次修改了第一个文件。 由于第二次提交是一个未完成的工作，因此你想要压缩它。
+
+![reset squash r1](https://git-scm.com/book/en/v2/images/reset-squash-r1.png)
+
+那么可以运行 `git reset --soft HEAD~2` 来将 HEAD 分支移动到一个旧一点的提交上（即你想要保留的最近的提交）：
+
+![reset squash r2](https://git-scm.com/book/en/v2/images/reset-squash-r2.png)
+
+然后只需再次运行 `git commit`：
+
+![reset squash r3](https://git-scm.com/book/en/v2/images/reset-squash-r3.png)
+
+现在你可以查看可到达的历史，即将会推送的历史，现在看起来有个 v1 版 `file-a.txt` 的提交， 接着第二个提交将 `file-a.txt` 修改成了 v3 版并增加了 `file-b.txt`。 包含 v2 版本的文件已经不在历史中了。
+
+#### 检出
+
+最后，你大概还想知道 `checkout` 和 `reset` 之间的区别。 和 `reset` 一样，`checkout` 也操纵三棵树，不过它有一点不同，这取决于你是否传给该命令一个文件路径。
+
+##### 不带路径
+
+运行 `git checkout [branch]` 与运行 `git reset --hard [branch]` 非常相似，它会更新所有三棵树使其看起来像 `[branch]`，不过有两点重要的区别。
+
+首先不同于 `reset --hard`，`checkout` 对工作目录是安全的，它会通过检查来确保不会将已更改的文件弄丢。 其实它还更聪明一些。它会在工作目录中先试着简单合并一下，这样所有_还未修改过的_文件都会被更新。 而 `reset --hard` 则会不做检查就全面地替换所有东西。
+
+第二个重要的区别是 `checkout` 如何更新 HEAD。 `reset` 会移动 HEAD 分支的指向，而 `checkout` 只会移动 HEAD 自身来指向另一个分支。
+
+例如，假设我们有 `master` 和 `develop` 分支，它们分别指向不同的提交；我们现在在 `develop` 上（所以 HEAD 指向它）。 如果我们运行 `git reset master`，那么 `develop` 自身现在会和 `master` 指向同一个提交。 而如果我们运行 `git checkout master` 的话，`develop` 不会移动，HEAD 自身会移动。 现在 HEAD 将会指向 `master`。
+
+所以，虽然在这两种情况下我们都移动 HEAD 使其指向了提交 A，但_做法_是非常不同的。 `reset` 会移动 HEAD 分支的指向，而 `checkout` 则移动 HEAD 自身。
+
+![reset checkout](https://git-scm.com/book/en/v2/images/reset-checkout.png)
+
+##### 带路径
+
+运行 `checkout` 的另一种方式就是指定一个文件路径，这会像 `reset` 一样不会移动 HEAD。 它就像 `git reset [branch] file` 那样用该次提交中的那个文件来更新索引，但是它也会覆盖工作目录中对应的文件。 它就像是 `git reset --hard [branch] file`（如果 `reset` 允许你这样运行的话）， 这样对工作目录并不安全，它也不会移动 HEAD。
+
+此外，同 `git reset` 和 `git add` 一样，`checkout` 也接受一个 `--patch` 选项，允许你根据选择一块一块地恢复文件内容。
+
+### 总结
+
+希望你现在熟悉并理解了 `reset` 命令，不过关于它和 `checkout` 之间的区别，你可能还是会有点困惑，毕竟不太可能记住不同调用的所有规则。
+
+下面的速查表列出了命令对树的影响。 “HEAD” 一列中的 “REF” 表示该命令移动了 HEAD 指向的分支引用，而 “HEAD” 则表示只移动了 HEAD 自身。 特别注意 *WD Safe?* 一列——如果它标记为 **NO**，那么运行该命令之前请考虑一下。
+
+|                             | HEAD | Index | Workdir | WD Safe? |
+| :-------------------------- | :--- | :---- | :------ | :------- |
+| **Commit Level**            |      |       |         |          |
+| `reset --soft [commit]`     | REF  | NO    | NO      | YES      |
+| `reset [commit]`            | REF  | YES   | NO      | YES      |
+| `reset --hard [commit]`     | REF  | YES   | YES     | **NO**   |
+| `checkout <commit>`         | HEAD | YES   | YES     | YES      |
+| **File Level**              |      |       |         |          |
+| `reset [commit] <paths>`    | NO   | YES   | NO      | YES      |
+| `checkout [commit] <paths>` | NO   | YES   | YES     | **NO**   |
 
 ## 常用指令
 
 [git 讲解](https://www.jianshu.com/p/e57a4a2cf077)
 
 ### 配置（conf）
+
+global配置文件一般在$HOME/.gitconfig文件中保存，我们甚至可以不需要使用指令，仅创建并修改这个文件，就可以达成同样的效果，因为一切皆文件。
 
 #### 代理（proxy）
 
@@ -59,14 +475,15 @@ Figure 3. 分布式版本控制.
 git config --global http.proxy socks5://127.0.0.1:1086 #设置代理
 git config --global --unset http.proxy	#取消代理
 ```
-#### 初始化（initial）
+#### 配置（config）
+
 ```bash
 #windows选择sublime为默认编辑器
 git config --global core.editor "C:/Program Files/Sublime Text 3/sublime_text.exe' -n -w"
 
 #配置账号
 git config --global user.name "waaall"
-git config --global user.email "wallphysics@gmail.com"
+git config --global user.email "****@gmail.com"
 
 #设置git status显示中文
 git config --global core.quotepath false
@@ -122,6 +539,15 @@ vim .gitignore
 youfile
 ```
 
+#### 初始化（init）/ 克隆（clone）
+
+```shell
+git init  #将所在文件夹初始化为一个git repository，也就是创建了.git文件夹
+
+#将该git远程仓库克隆到本地
+git clone https://github.com/waaall/computer-tips.git
+```
+
 
 
 
@@ -129,11 +555,11 @@ youfile
 
 ```shell
 git add FILENAME
-git add .
+git add .	#添加所有更改
 
 git commit
 git commit -m "some info"
-git commit -a
+git commit -a	#-a或--amend 提交修改，也就是修改过的文件不需要add，但是新创建的文件，还是要add再commit
 git commit -a -m "some info"
 ```
 
@@ -146,16 +572,11 @@ git status 	#查看当前git仓库状态
 
 git log -p -1	#-p或--patch：会显示每次提交所引入的差异（按补丁的格式输出），使用 -1 选项来只显示最近的一次提交
 
-
 ```
 
 
 
-
-
-
-
-### 分支（branch）
+### 分支（branch）/ 合并（merge）
 
 ```shell
 git branch	#查看当前本地分支
@@ -164,13 +585,34 @@ git checkout branchname #切换到**分支
 
 git branch -d branchname #删除分支
 
+git branch -vv	#将所有的本地分支列出来，并且显示每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有
+
+git merge branchname #将branchname分支与当前所在分支合并
+```
+
+
+
+### 撤销（reset）/ 检出（checkout）
+
+```shell
+git reset --soft file.txt	#（这其实 = git reset --soft HEAD file.txt)仅改变了HEAD指针，也就是本地repository
+git reset file.txt  		#（这其实 = git reset --mixed HEAD file.txt)同时改变了Index，也就是stage
+
+git reset --hard file.txt 	# 这把Working Directory改变了，很难重置，慎用！！！
+
 ```
 
 
 
 
 
-### 抓取（fetch）
+### 抓取（fetch）/ 拉取（pull）
+
+```shell
+git 
+```
+
+
 
 
 
