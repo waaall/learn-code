@@ -550,8 +550,7 @@ git clone https://github.com/waaall/computer-tips.git
 
 
 
-
-### 提交（commit）
+### 提交（commit）/ 推送（push）
 
 ```shell
 git add FILENAME
@@ -561,6 +560,10 @@ git commit
 git commit -m "some info"
 git commit -a	#-a或--amend 提交修改，也就是修改过的文件不需要add，但是新创建的文件，还是要add再commit
 git commit -a -m "some info"
+
+git push	#（这其实 = git push origin master）也就是push到远程主机->默认分支中，并合并
+
+git push origin --delete serverfix	#删除远程仓库：基本上这个命令做的只是从服务器上移除这个指针。 Git 服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的
 ```
 
 
@@ -609,7 +612,9 @@ git reset --hard file.txt 	# 这把Working Directory改变了，很难重置，�
 ### 抓取（fetch）/ 拉取（pull）
 
 ```shell
-git 
+git fetch 
+
+git pull  #（这其实 = git fetch + git merge）查找当前分支所跟踪的服务器与分支， 从服务器上抓取数据然后尝试合并入那个远程分支
 ```
 
 
