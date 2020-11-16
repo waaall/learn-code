@@ -127,6 +127,30 @@ youfile
 
 ### 提交（commit）
 
+```shell
+git add FILENAME
+git add .
+
+git commit
+git commit -m "some info"
+git commit -a
+git commit -a -m "some info"
+```
+
+
+
+### 状态（status）/历史（log）
+
+```shell
+git status 	#查看当前git仓库状态
+
+git log -p -1	#-p或--patch：会显示每次提交所引入的差异（按补丁的格式输出），使用 -1 选项来只显示最近的一次提交
+
+
+```
+
+
+
 
 
 
