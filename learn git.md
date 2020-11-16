@@ -62,7 +62,7 @@ git config --global --unset http.proxy	#取消代理
 #### 初始化（initial）
 ```bash
 #windows选择sublime为默认编辑器
-git config --global core.editor "C:/Program Files/Sublime Text 2/sublime_text.exe' -n -w"
+git config --global core.editor "C:/Program Files/Sublime Text 3/sublime_text.exe' -n -w"
 
 #配置账号
 git config --global user.name "waaall"

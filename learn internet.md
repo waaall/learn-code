@@ -91,18 +91,32 @@ A：虽然MAC只能点对点，在局域网内，也就是每个设备只存自�
 
 #### 路由协议
 
-路由协议也是建立在IP层，有诸多协议包括[RIP](https://baike.baidu.com/item/RIP)，[IGRP](https://baike.baidu.com/item/IGRP)（[Cisco](https://baike.baidu.com/item/Cisco)私有协议），[EIGRP](https://baike.baidu.com/item/EIGRP)（Cisco私有协议），[OSPF](https://baike.baidu.com/item/OSPF)，[IS-IS](https://baike.baidu.com/item/IS-IS)，[BGP](https://baike.baidu.com/item/BGP)。是用来“找路”的。使用traceroute就可以查看跳转的路由表(routing table)。
+路由协议也是建立在IP层，有诸多协议包括[ICMP](https://baike.baidu.com/item/ICMP)、[RIP](https://baike.baidu.com/item/RIP)，[IGRP](https://baike.baidu.com/item/IGRP)（[Cisco](https://baike.baidu.com/item/Cisco)私有协议），[EIGRP](https://baike.baidu.com/item/EIGRP)（Cisco私有协议），[OSPF](https://baike.baidu.com/item/OSPF)，[IS-IS](https://baike.baidu.com/item/IS-IS)，[BGP](https://baike.baidu.com/item/BGP)。是用来“找路”的。使用traceroute就可以查看跳转的路由表(routing table)。
 
 > 路由协议通过在[路由器](https://baike.baidu.com/item/路由器)之间共享路由信息来支持[可路由协议](https://baike.baidu.com/item/可路由协议)。路由信息在相邻[路由器](https://baike.baidu.com/item/路由器)之间传递，确保所有路由器知道到其它路由器的路径。总之，路由协议创建了[路由表](https://baike.baidu.com/item/路由表)，描述了[网络拓扑结构](https://baike.baidu.com/item/网络拓扑结构)；路由协议与[路由器](https://baike.baidu.com/item/路由器)[协同工作](https://baike.baidu.com/item/协同工作)，执行[路由选择](https://baike.baidu.com/item/路由选择)和数据包转发功能。
 
 ---
+##### [ICMP](https://baike.baidu.com/item/ICMP)
+
+路由协议中ICMP协议非常重要，我们经常使用的`ping`、`tractert`都是基于ICMP协议的。
+
+ICMP 协议应用在许多网络管理命令中，下面以 ping 和 tracert 命令为例详细介绍 ICMP 协议的应用。
+
+（1） ping 命令使用 ICMP 回送请求和应答报文
+
+在网络可达性测试中使用的分组网间探测命令 ping 能产生 ICMP 回送请求和应答报文。目的主机收到 ICMP 回送请求报文后立刻回送应答报文，若源主机能收到 ICMP 回送应答报文，则说明到达该主机的网络正常。
+
+（2）路由分析诊断程序 tracert 使用了 ICMP时间超过报文
+
+tracert 命令主要用来显示数据包到达目的主机所经过的路径。通过执行一个 tracert 到对方主机的命令，返回数据包到达目的主机所经历的路径详细信息，并显示每个路径所消耗的时间。
+
+
+
+
+
 ## Transport layer
 
 ### UDP
-
-
-
-
 
 
 
