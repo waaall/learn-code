@@ -581,12 +581,16 @@ git push origin :master		#与上面指令一个意思
 
 
 
-### 状态（status）/历史（log）
+### 状态（status）/历史（log）/差异（diff）
 
 ```shell
 git status 	#查看当前git仓库状态
 
 git log -p -1	#-p或--patch：会显示每次提交所引入的差异（按补丁的格式输出），使用 -1 选项来只显示最近的一次提交
+
+git diff <filename>             #查看working Direct 和 staging area的区别
+git diff --cached <filename>    #查看staging area 和 repository的区别
+git diff <commit> <filename>    #查看working Direct 和 repository的区别
 
 ```
 
