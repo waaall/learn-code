@@ -92,7 +92,7 @@ Figure 34. 远程跟踪分支 `teamone/master`
 
 如果希望和别人一起在名为 `serverfix` 的分支上工作，你可以像推送第一个分支那样推送它。 运行 `git push <remote> <branch>`:
 
-```console
+```shell
 $ git push origin serverfix
 Counting objects: 24, done.
 Delta compression using up to 8 threads.
@@ -111,7 +111,7 @@ To https://github.com/schacon/simplegit
 
 下一次其他协作者从服务器上抓取数据时，他们会在本地生成一个远程分支 `origin/serverfix`，指向服务器的 `serverfix` 分支的引用：
 
-```console
+```shell
 $ git fetch origin
 remote: Counting objects: 7, done.
 remote: Compressing objects: 100% (2/2), done.
@@ -125,7 +125,7 @@ From https://github.com/schacon/simplegit
 
 可以运行 `git merge origin/serverfix` 将这些工作合并到当前所在的分支。 如果想要在自己的 `serverfix` 分支上工作，可以将其建立在远程跟踪分支之上：
 
-```console
+```shell
 $ git checkout -b serverfix origin/serverfix
 Branch serverfix set up to track remote branch serverfix from origin.
 Switched to a new branch 'serverfix'
@@ -139,7 +139,7 @@ Switched to a new branch 'serverfix'
 
 当克隆一个仓库时，它通常会自动地创建一个跟踪 `origin/master` 的 `master` 分支。 然而，如果你愿意的话可以设置其他的跟踪分支，或是一个在其他远程仓库上的跟踪分支，又或者不跟踪 `master` 分支。 最简单的实例就是像之前看到的那样，运行 `git checkout -b <branch> <remote>/<branch>`。 这是一个十分常用的操作所以 Git 提供了 `--track` 快捷方式：
 
-```console
+```shell
 $ git checkout --track origin/serverfix
 Branch serverfix set up to track remote branch serverfix from origin.
 Switched to a new branch 'serverfix'
@@ -147,7 +147,7 @@ Switched to a new branch 'serverfix'
 
 由于这个操作太常用了，该捷径本身还有一个捷径。 如果你尝试检出的分支 (a) 不存在且 (b) 刚好只有一个名字与之匹配的远程分支，那么 Git 就会为你创建一个跟踪分支：
 
-```console
+```shell
 $ git checkout serverfix
 Branch serverfix set up to track remote branch serverfix from origin.
 Switched to a new branch 'serverfix'
@@ -155,7 +155,7 @@ Switched to a new branch 'serverfix'
 
 如果想要将本地分支与远程分支设置为不同的名字，你可以轻松地使用上一个命令增加一个不同名字的本地分支：
 
-```console
+```shell
 $ git checkout -b sf origin/serverfix
 Branch sf set up to track remote branch serverfix from origin.
 Switched to a new branch 'sf'
@@ -165,7 +165,7 @@ Switched to a new branch 'sf'
 
 设置已有的本地分支跟踪一个刚刚拉取下来的远程分支，或者想要修改正在跟踪的上游分支， 你可以在任意时间使用 `-u` 或 `--set-upstream-to` 选项运行 `git branch` 来显式地设置。
 
-```console
+```shell
 $ git branch -u origin/serverfix
 Branch serverfix set up to track remote branch serverfix from origin.
 ```
@@ -176,7 +176,7 @@ Branch serverfix set up to track remote branch serverfix from origin.
 
 如果想要查看设置的所有跟踪分支，可以使用 `git branch` 的 `-vv` 选项。 这会将所有的本地分支列出来并且包含更多的信息，如每一个分支正在跟踪哪个远程分支与本地分支是否是领先、落后或是都有。
 
-```console
+```shell
 $ git branch -vv
   iss53     7e424c3 [origin/iss53: ahead 2] forgot the brackets
   master    1ae2a45 [origin/master] deploying index fix
@@ -188,7 +188,7 @@ $ git branch -vv
 
 需要重点注意的一点是这些数字的值来自于你从每个服务器上最后一次抓取的数据。 这个命令并没有连接服务器，它只会告诉你关于本地缓存的服务器数据。 如果想要统计最新的领先与落后数字，需要在运行此命令前抓取所有的远程仓库。 可以像这样做：
 
-```console
+```shell
 $ git fetch --all; git branch -vv
 ```
 
@@ -202,7 +202,7 @@ $ git fetch --all; git branch -vv
 
 假设你已经通过远程分支做完所有的工作了——也就是说你和你的协作者已经完成了一个特性， 并且将其合并到了远程仓库的 `master` 分支（或任何其他稳定代码分支）。 可以运行带有 `--delete` 选项的 `git push` 命令来删除一个远程分支。 如果想要从服务器上删除 `serverfix` 分支，运行下面的命令：
 
-```console
+```shell
 $ git push origin --delete serverfix
 To https://github.com/schacon/simplegit
  - [deleted]         serverfix
