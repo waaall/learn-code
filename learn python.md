@@ -34,7 +34,12 @@ python文件有中文的话最好以这个开头，避免编码错误
 # -*- coding: utf-8 -*-
 ```
 
+### windows 安装与升级python
 
+Windows下不要安装在`C:\Program Files`下，也尽量不要安装在`Users\AppData`文件夹下，原因如下：
+
+1. 在`C:\Program Files`时，Windows默认不给软件再在这个文件夹内写入数据的“机会”，这本是好意，但这是我们用pip安装python包时，就会发现它提示没有权限，而给写入了`Users\AppData\Roaming\Python\python39` 文件夹，库的可执行文件放在此文件夹下的`Scripts`， 库源码在此文件夹下的`site-packages`，但是该文件夹并没有加入环境变量，又会造成很多麻烦，比如`ipython`没法用之类的。**这还不是唯一的问题：** 当你卸载python时，它并没有给你删除`Users\AppData\Roaming\Python`这个文件夹，而这些库文件非常大，且没有利用价值。
+2. 直接安装在用户文件夹下避免了上述问题，但是这不好管理，所以建议在系统盘下可以单独建一个开发环境文件夹，python同样安装在此。
 
 ## Framework
 
