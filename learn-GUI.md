@@ -48,7 +48,7 @@ python可是可以做GUI的。
 > [可以参考这篇文章](https://machinekoder.com/pyqt-vs-qt-for-python-pyside2-pyside/)、
 >
 >
-> ![图标](learn GUI.assets/v2-fe38d42154a585c2e9067a7ca38f8ecb_ipico-20200803160247240.jpg)
+> ![图标](learn-GUI.assets/v2-fe38d42154a585c2e9067a7ca38f8ecb_ipico-20200803160247240.jpg)
 >
 > 目前PyQt是由一家小公司[Riverbank Computing](https://link.zhihu.com/?target=https%3A//riverbankcomputing.com)维护的，PyQt历史更长一些，比较稳定，开发社区也比较大，有相关的deploy工具；而PySide（又名Qt for Python）现由Qt公司维护，比PyQt更年轻一些。截至2019年，最新版本是PyQt5和PySide2。
 >
@@ -436,7 +436,7 @@ ObjectName主要是用于外界来访问内部的控件成员的，如果外界�
 
 [信号与槽](https://www.cnblogs.com/lsgxeva/p/12636756.html)、[自定义信号](https://www.cnblogs.com/zach0812/p/11406892.html)、
 
-![自定义信号](learn GUI.assets/自定义信号.png)
+![自定义信号](learn-GUI.assets/自定义信号.png)
 
 
 
@@ -444,7 +444,7 @@ ObjectName主要是用于外界来访问内部的控件成员的，如果外界�
 
 ### 文件管理（[QFileDialog](https://doc.qt.io/qtforpython/PySide2/QtWidgets/QFileDialog.html?highlight=qfiledialog#PySide2.QtWidgets.PySide2.QtWidgets.QFileDialog.setFileMode)）
 
-![Inheritance diagram of PySide2.QtWidgets.QFileDialog](learn GUI.assets/inheritance-3a3198aa2a543952963b7965bd4d71a35f510788.png)
+![Inheritance diagram of PySide2.QtWidgets.QFileDialog](learn-GUI.assets/inheritance-3a3198aa2a543952963b7965bd4d71a35f510788.png)
 
 [文件树](https://blog.csdn.net/qq_27061049/article/details/89641210)、
 
@@ -481,7 +481,25 @@ Python 代码同界面交互的核心是通过 Qt 的 [**信号与槽**](http://
 
 ```python
 
-    def show_hide_menu(self,checked):        print("显示和隐藏",checked)        animation_group = QSequentialAnimationGroup(self)        for idx,target in enumerate(self.animation_targets):            animation = QPropertyAnimation(target,b"pos")            animation.setStartValue(self.main_menu_btn.pos())            animation.setEndValue(self.animation_targets_pos[idx])            animation.setDuration(200)            animation.setEasingCurve(QEasingCurve.InOutBounce)            animation_group.addAnimation(animation)        if checked:            animation_group.setDirection(QAbstractAnimation.Backward)        else:            animation_group.setDirection(QAbstractAnimation.Forward)        animation_group.start(QAbstractAnimation.DeleteWhenStopped) #动画停止之后，给它删除
+    def show_hide_menu(self,checked):
+        print("显示和隐藏",checked)
+        animation_group = QSequentialAnimationGroup(self)
+        for idx,target in enumerate(self.animation_targets):
+            animation = QPropertyAnimation(target,b"pos")
+
+            animation.setStartValue(self.main_menu_btn.pos())
+            animation.setEndValue(self.animation_targets_pos[idx])
+
+            animation.setDuration(200)
+            animation.setEasingCurve(QEasingCurve.InOutBounce)
+            animation_group.addAnimation(animation)
+
+        if checked:
+            animation_group.setDirection(QAbstractAnimation.Backward)
+        else:
+            animation_group.setDirection(QAbstractAnimation.Forward)
+
+        animation_group.start(QAbstractAnimation.DeleteWhenStopped) #动画停止之后，给它删除
 
 ```
 

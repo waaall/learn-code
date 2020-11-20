@@ -55,7 +55,7 @@ PS：还有一个问题，就是文件怎么“放”，只有理解了这个问
 
 操作系统会在空闲时移动（也就是给一个文件分配相邻块，重新读写）文件来处理碎片化：
 
-![Screen Shot 2020-07-08 at 17.48.32](learn c++.assets/Screen Shot 2020-07-08 at 17.48.32.png)
+![Screen Shot 2020-07-08 at 17.48.32](learn-c++.assets\Screen Shot 2020-07-08 at 17.48.32.png)
 
 需要注意的是：尤其是对于固态硬盘，在硬件层次还是有很多问题需要处理（机械硬盘也是，但固态在分配块来均衡块寿命等），这部分不属于文件系统的工作，而是由驱动程序负责，且有专门的硬件来负责———主控芯片
 
@@ -85,7 +85,7 @@ Q：new 是一个运算符，而malloc( )是一个库函数，这两者有什么
 
 [编译全过程](https://www.processon.com/view/link/5c70f497e4b0feef9f352ea2#map)。
 
-![Image00035](learn c++.assets/Image00035.jpg)
+![Image00035](learn-c++.assets\Image00035.jpg)
 
 ### c++编译指令
 
@@ -332,9 +332,9 @@ msys就像是“app store”，用来在windows系统 下载安装配置 一系�
 [一个msys2详细的安装博客](https://hustlei.github.io/2018/11/msys2-for-win.html)、
 
 ### mingw、msys、cygwin？
-> 下图转载自知乎](https://www.zhihu.com/question/22137175)
+> [一个知乎回答](https://www.zhihu.com/question/22137175)
 
-![IMG_1710](C:\Users\zxll\iCloudDrive\Desktop\write\markdown\learn code\learn c++.assets\IMG_1710.JPG)
+
 
 ## [Makefile](https://seisman.github.io/how-to-write-makefile/introduction.html):
 
@@ -1432,7 +1432,7 @@ int main()
 
 make程序，使用makefile来声明源代码之间的关系等，然后把它们链接起来。
 
-<img src="learn c++.assets/1151.png" alt="1151" style="zoom:35%;" />
+<img src="learn-c++.assets\1151.png" alt="1151" style="zoom:35%;" />
 
 
 
@@ -1464,7 +1464,7 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 >
 > Excerpt From: [美] Stephen Prata. “C++ Primer Plus（第6版）中文版.” Apple Books. 
 
-<img src="learn c++.assets/Screen Shot 2020-05-15 at 19.49.27.png" alt="Screen Shot 2020-05-15 at 19.49.27" style="zoom:50%;" />
+<img src="learn-c++.assets\Screen Shot 2020-05-15 at 19.49.27.png" alt="Screen Shot 2020-05-15 at 19.49.27" style="zoom:50%;" />
 
 
 

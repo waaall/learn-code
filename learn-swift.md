@@ -12,7 +12,7 @@ swift是一门语言，语言本身和操作系统，硬件，API等都是没有
 
 所以我们从一开始就不应该拿过语言来学习（比如怎么声明量，函数或者类，然后有哪些“新”特性），而是先了解Mac系统的框架：
 
-![87A314AE-F227-4EC8-8D77-99E3AA5ADA44_4_5005_c](learn swift.assets/87A314AE-F227-4EC8-8D77-99E3AA5ADA44_4_5005_c.jpeg)
+![87A314AE-F227-4EC8-8D77-99E3AA5ADA44_4_5005_c](learn-swift.assets/87A314AE-F227-4EC8-8D77-99E3AA5ADA44_4_5005_c.jpeg)
 
 **由Apple的[Documentation Archive](https://developer.apple.com/library/archive/navigation/)网站的目录，我们也能看到清晰的架构图：**
 

@@ -472,7 +472,7 @@ atom2.plot(ax=ax[1]).legend(loc="upper right")
 plt.show()
 ```
 
-![Figure_1](learn python_library.assets/Figure_1.png)
+![Figure_1](learn-python-lib.assets\Figure_1.png)
 
 #### sort
 
@@ -516,11 +516,11 @@ Name.to_csv('code/mdata.txt','sep='/t','index_col=False')
 
 matplotlib 支持 latex
 
-<img src="learn python_library.assets/7931281-45a5018dcaad5bfb.png" alt="img" style="zoom:50%;" />
+<img src="learn-python-lib.assets\7931281-45a5018dcaad5bfb.png" alt="img" style="zoom:50%;" />
 
 #### 图结构
 
-<img src="learn python_library.assets/Screen Shot 2020-07-09 at 10.06.17.png" alt="Screen Shot 2020-07-09 at 10.06.17" style="zoom: 33%;" />
+<img src="learn-python-lib.assets\Screen Shot 2020-07-09 at 10.06.17.png" alt="Screen Shot 2020-07-09 at 10.06.17" style="zoom: 33%;" />
 
 #### 创建Axes：
 
@@ -550,7 +550,7 @@ plt.plot(names, values) plt.suptitle('Categorical Plotting') plt.show()
 ```
 
 上述代码结果如图：
-![Figure_1](learn python_library.assets/Figure_1-7238023.png)
+![Figure_1](learn-python-lib.assets\Figure_1-7238023.png)
 
 #### 颜色
 
@@ -581,11 +581,11 @@ ax.tick_params(labelcolor='tab:orange')
 plt.show()
 ```
 
-![Voltage vs. time chart](learn python_library.assets/sphx_glr_color_demo_001.png)
+![Voltage vs. time chart](learn-python-lib.assets\sphx_glr_color_demo_001.png)
 
 #### Marker
 
-<img src="learn python_library.assets/Screen Shot 2020-07-22 at 10.02.02.png" alt="Screen Shot 2020-07-22 at 10.02.02" style="zoom:40%;" />
+<img src="learn-python-lib.assets\Screen Shot 2020-07-22 at 10.02.02.png" alt="Screen Shot 2020-07-22 at 10.02.02" style="zoom:40%;" />
 
 | marker  | description    |
 | ------- | -------------- |
@@ -679,7 +679,30 @@ pl.show()
 
 上述代码运行结果如下图：
 
-<img src="learn python_library.assets/20191021162649119.jpg" alt="img" style="zoom:50%;" />
+<img src="learn-python-lib.assets\20191021162649119.jpg" alt="img" style="zoom:50%;" />
+
+
+
+### Pytorch
+
+#### 图像处理
+
+
+[opencv学习](http://codec.wang/#/opencv/)、
+
+##### 图像的卷积
+
+为什么图像做卷积运算物理意义和卷积本身有分歧，因为用卷积核矩阵对其运算本身是对一个二元函数做拉普拉斯算子的结果，也就是其表征了二元函数的导数/二阶导数！这当然也就表征了像素值的变化强度，而这自然就是图像边缘了。
+
+![图像卷积](learn-python-lib.assets\图像卷积.gif)
+
+
+
+![卷积本身就是二维函数导数的离散表达](learn-python-lib.assets\卷积本身就是二维函数导数的离散表达.jpg)
+
+<img src="learn-python-lib.assets\equation.svg" alt="equation" style="zoom:150%;" />
+
+但这只是卷积的一种一方面应用，我们可以调整卷积核，这样就可以是其有不同的意义，实现不同的功能，比如可以反其道行之：让图像变模糊，也就是去边缘化（大致就是卷积核数值分布反过来，就可以弱化“梯度”大的位置的像素值，从而达到模糊的效果）
 
 
 

@@ -478,7 +478,7 @@ class TransitionError(Error):
 
 #### 为什么有时候同样的python指令执行后却不一样？
 
-<img src="learn python.assets/Screen Shot 2020-07-27 at 10.09.04.png" alt="Screen Shot 2020-07-27 at 10.09.04" style="zoom:33%;" />
+<img src="learn-python.assets/Screen Shot 2020-07-27 at 10.09.04.png" alt="Screen Shot 2020-07-27 at 10.09.04" style="zoom:33%;" />
 
 [一个很棒的知乎解答](https://www.zhihu.com/question/53536750)：
 
@@ -1001,7 +1001,7 @@ def function(*numbers):  # *代表可变参数
 
 为什么sublime执行、命令行执行、命令写成shell脚本执行却都不一样？见下图：
 
-<img src="learn python.assets/Screen Shot 2020-07-27 at 09.56.11.png" alt="Screen Shot 2020-07-27 at 09.56.11" style="zoom:33%;" />
+<img src="learn-python.assets/Screen Shot 2020-07-27 at 09.56.11.png" alt="Screen Shot 2020-07-27 at 09.56.11" style="zoom:33%;" />
 
 如上图：我直接cd到文件夹python 运行不会报错，但是我把这两行指令写成了一个.sh脚本执行，结果报错了。why？？？
 
@@ -1013,7 +1013,7 @@ def function(*numbers):  # *代表可变参数
 
 #### open文件：
 
-![python—open](learn python.assets/python—open.png)
+![python—open](learn-python.assets/python—open.png)
 
 
 

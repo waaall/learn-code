@@ -7,9 +7,9 @@
 
 [wiki of internet protocol suite](https://en.wikipedia.org/wiki/Internet_protocol_suite)
 
-<img src="learn internet.assets/OSI模型.png" alt="OSI模型" style="zoom:50%;" />
+<img src="learn-internet.assets/OSI模型.png" alt="OSI模型" style="zoom:50%;" />
 
-<img src="learn internet.assets/v2-ec64022ca37ce5b1de17d98a3d3bbf86_1440w.jpg" alt="img" style="zoom:50%;" />
+<img src="learn-internet.assets/v2-ec64022ca37ce5b1de17d98a3d3bbf86_1440w.jpg" alt="img" style="zoom:50%;" />
 
 ---
 ## Link layer
@@ -164,7 +164,7 @@ A：在实体数据层面（光纤或网线的光电信号），一个包是既�
 
 A：HTTP 请求由3部分组成，分别是请求行、请求首部、请求体，首部和请求体是可选的，并不是每个请求都需要的。
 
-![http-request.jpg](learn internet.assets/http-request.jpg)
+![http-request.jpg](learn-internet.assets/http-request.jpg)
 
 **请求行**
 
@@ -356,5 +356,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 [chromium知乎](https://www.zhihu.com/question/290767285/answer/1200063036)
 
-虽然从操作系统底层就有基本网络协议的API，但是现代网络数据解码收发的主要角色还是浏览器内核，我们可以从Webkit说起，当然不可避免要谈Chrome内核，上述的链接文章就总结的不错。![IMG_0411](learn internet.assets/IMG_0411.JPG)
+虽然从操作系统底层就有基本网络协议的API，但是现代网络数据解码收发的主要角色还是浏览器内核，我们可以从Webkit说起，当然不可避免要谈Chrome内核，上述的链接文章就总结的不错。![IMG_0411](learn-internet.assets/IMG_0411.JPG)
 
