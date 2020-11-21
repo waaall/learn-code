@@ -246,8 +246,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 ### 代理
 
-![SSR代理流程](C:\Users\zxll\iCloudDrive\Desktop\write\markdown\learn code\learn internet.assets\SSR代理流程.png)
-
 * pac文件规则：
 ```bash
 === 通配符支持 => *

@@ -40,7 +40,7 @@ Model就是为了实现功能的那部分代码的集合，比如某些无可视
 
   
 
-##### 关于图形的就复杂了一些：AppKit，UIkit，SwiftUI，Metal，它们之间是怎么关系呢？
+##### AppKit，UIkit，SwiftUI，Metal，它们之间是怎么关系呢？
 
 
 Metal是图形API，它构建在GPU硬件及显卡驱动之上，但是即将全线使用自研芯片的Apple，Metal就可以直接是在自研的GPU硬件架构上优化了。

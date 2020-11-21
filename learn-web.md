@@ -2,7 +2,9 @@
 
 [toc]
 
-> 现代浏览器内核利用操作系统实现的socket等几乎全部API，实现了非常复杂的功能，以至于，它就像一个操作系统，但它是建立在操作系统的API之上的另一层非常全面的高层抽象。使用HTML、CSS、JavaScript这“三种语言”(除了Javascript都不算是个语言)，在任意操作系统和平台上，都能实现几乎一个APP的全部功能，这也是Web-App的由来。
+> 现代浏览器内核利用操作系统实现的socket等几乎全部API，实现了非常复杂的功能，以至于，它就像一个操作系统，但它是建立在操作系统的API之上的另一层非常全面的高层抽象。使用`HTML`、`CSS`、`JavaScript`这“三种语言”(除了`Javascript`都不算是个语言)，在任意操作系统和平台上，都能实现几乎一个APP的全部功能，这也是`Web-App`的由来。
+
+
 
 ## 谈Web-App与Native-App
 
@@ -113,6 +115,7 @@ Qt的缺点：
 - [Mathematica](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Mathematica), a mathematical symbolic computation program, sometimes termed a computer algebra system or program, used in many scientific, engineering, mathematical, and computing fields.[[46\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-46)
 - Moonlight Stream, an open-source implementation of Nvidia Shield[[47\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-47)
 - [OBS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Open_Broadcaster_Software), a libre cross-platform screencast software
+- [Opera](https://link.zhihu.com/?target=http%3A//zh.wikipedia.org/wiki/Opera)：著名的网页浏览器。
 - [Orange](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Orange_(software)) data mining suite[[48\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-48)
 - [QGIS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/QGIS) geographic information system[[49\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-49)
 - [QuiteRSS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/QuiteRSS) Feed Reader
@@ -129,7 +132,7 @@ Qt的缺点：
 - [XnView MP](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/XnView_MP)[[59\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-59)
 
 
-#### [**Electron-JS**](https://www.electronjs.org/docs)
+#### [**Electron-Web**](https://www.electronjs.org/docs)
 
 Electron优点：
 
@@ -163,6 +166,12 @@ npm config get prefix	#查看全局包安装位置
 #配置全局包安装位置，也就是修改`$HOME/.npmrc`文件
 npm config set prefix "C:\software\nodejs\my_packages\npm"
 npm config set cache "C:\software\nodejs\my_packages\npm-cache"
+
+#设置镜像：一种方法是直接下载国内源cnpm，然后以后就cnpm安装东西
+#另一种方法是设置npm的下载来源，只是将获取来源改变一下，但是还是用的npm安装东西
+npm install -g cnpm --registry=https://registry.npm.taobao.org	#直接下载国内源cnpm
+npm config set registry http://registry.cnpmjs.org		#设置npm的下载来源
+npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/"
 ```
 
 
@@ -183,29 +192,29 @@ npm install -save-dev moduleName # -save-dev 的意思是将模块安装到项�
 
 #### npm install moduleName 命令
 
-\1. 安装模块到项目node_modules目录下。
-\2. 不会将模块依赖写入devDependencies或dependencies 节点。
-\3. 运行 npm install 初始化项目时不会下载模块。
+> 安装模块到项目node_modules目录下。
+> 不会将模块依赖写入devDependencies或dependencies 节点。
+> 运行 npm install 初始化项目时不会下载模块。
 
 #### npm install -g moduleName 命令
 
-\1. 安装模块到全局，不会在项目node_modules目录中保存模块包。
-\2. 不会将模块依赖写入devDependencies或dependencies 节点。
-\3. 运行 npm install 初始化项目时不会下载模块。
+> 安装模块到全局，不会在项目node_modules目录中保存模块包。
+> 不会将模块依赖写入devDependencies或dependencies 节点。
+> 运行 npm install 初始化项目时不会下载模块。
 
 #### npm install -save moduleName 命令
 
-\1. 安装模块到项目node_modules目录下。
-\2. 会将模块依赖写入dependencies 节点。
-\3. 运行 npm install 初始化项目时，会将模块下载到项目目录下。
-\4. 运行npm install --production或者注明NODE_ENV变量值为production时，**会**自动下载模块到node_modules目录中。
+> 安装模块到项目node_modules目录下。
+> 会将模块依赖写入dependencies 节点。
+> 运行 npm install 初始化项目时，会将模块下载到项目目录下。
+> 运行npm install --production或者注明NODE_ENV变量值为production时，**会**自动下载模块到node_modules目录中。
 
 #### npm install -save-dev moduleName 命令
 
-\1. 安装模块到项目node_modules目录下。
-\2. 会将模块依赖写入devDependencies 节点。
-\3. 运行 npm install 初始化项目时，会将模块下载到项目目录下。
-\4. 运行npm install --production或者注明NODE_ENV变量值为production时，**不会**自动下载模块到node_modules目录中。
+> 安装模块到项目node_modules目录下。
+> 会将模块依赖写入devDependencies 节点。
+> 运行 npm install 初始化项目时，会将模块下载到项目目录下。
+> 运行npm install --production或者注明NODE_ENV变量值为production时，**不会**自动下载模块到node_modules目录中。
 
 #### 总结
 
@@ -215,11 +224,18 @@ devDependencies 节点下的模块是我们在开发时需要用的，比如项�
 
 ## [Web](https://developer.mozilla.org/zh-CN/docs/learn)-API
 
-
-
-
+![img](https://ask.qcloudimg.com/http-save/yehe-5471653/934xbqsrbb.png?imageView2/2/w/1620)
 
 ## [Electron](https://www.electronjs.org/)
 
 
 
+### [应用程序结构](https://www.electronjs.org/docs/tutorial/quick-start#应用程序结构)
+
+Electron由三个主要支柱组成：
+
+- **Chromium** 用于显示网页内容。
+- **Node.js** 用于本地文件系统和操作系统。
+- **自定义 APIs** 用于使用经常需要的 OS 本机函数。
+
+与 Electron 开发应用程序就像构建一个带有网页界面的Node.js 应用程序或构建无缝集成的网页。

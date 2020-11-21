@@ -591,7 +591,6 @@ git log -p -1	#-p或--patch：会显示每次提交所引入的差异（按补�
 git diff <filename>             #查看working Direct 和 staging area的区别
 git diff --cached <filename>    #查看staging area 和 repository的区别
 git diff <commit> <filename>    #查看working Direct 和 repository的区别
-
 ```
 
 
