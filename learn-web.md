@@ -239,3 +239,17 @@ Electron由三个主要支柱组成：
 - **自定义 APIs** 用于使用经常需要的 OS 本机函数。
 
 与 Electron 开发应用程序就像构建一个带有网页界面的Node.js 应用程序或构建无缝集成的网页。
+
+### [性能](https://www.electronjs.org/docs/tutorial/performance#性能)
+
+开发者经常询问优化 Electron 应用程序性能的策略。 软件工程师、用户和框架开发者并不总是就“性能”的含义达成单一定义。 此文档概述了Electron 维护者最喜欢的减少内存使用、 CPU 负载以及磁盘资源使用的方式。以确保您的应用程序能够响应用户输入并尽快完成操作。 此外，我们希望所有的性能策略都能保持您应用的高标准安全。
+
+关于如何使用 JavaScript构建高性能网站的技巧和方法通常也适用于Electron 应用程序。 在某种程度上，讨论如何构建高性能 Node.js 应用的方法同样也适用。但是小心理解“性能”一词的含义对于 Node.js 后端和客户端程序并不相同。如果你尝试这些步骤，你的应用可能会略微简洁、快速，而且一般来说会更少出现资源不足的情况。
+
+1. [谨慎地加载模块](https://www.electronjs.org/docs/tutorial/performance#1-carelessly-including-modules)
+2. [过早的加载和执行代码](https://www.electronjs.org/docs/tutorial/performance#2-loading-and-running-code-too-soon)
+3. [阻塞主进程](https://www.electronjs.org/docs/tutorial/performance#3-blocking-the-main-process)
+4. [阻塞渲染进程](https://www.electronjs.org/docs/tutorial/performance#4-blocking-the-renderer-process)
+5. [不必要的polyfills](https://www.electronjs.org/docs/tutorial/performance#5-unnecessary-polyfills)
+6. [不必要的或者阻塞的网络请求](https://www.electronjs.org/docs/tutorial/performance#6-unnecessary-or-blocking-network-requests)
+7. [打包你的代码](https://www.electronjs.org/docs/tutorial/performance#7-bundle-your-code)
