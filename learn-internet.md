@@ -130,9 +130,18 @@ tracert 命令主要用来显示数据包到达目的主机所经过的路径。
 
 用的就是端口(Port)，这也是这层封装的重要概念，而UDP还有很多缺陷，比如没有确认链接稳定等机制，这在有些重要连贯信息的传输上就很麻烦，所以TCP就是解决了这些问题，但是也正是这些机制处理需要时间，TCP协议要比UDP慢，所以像视频通话这种丢失数据不是很影响整体效果且需要大量带宽的应用，还是使用UDP。
 
-具体来讲：TCP的
+### TCP
 
-[TCP-wiki](https://en.wikipedia.org/wiki/Transmission_Control_Protocol)
+[TCP-wiki](https://en.wikipedia.org/wiki/Transmission_Control_Protocol)、
+
+> [一篇很不错的博客](https://baike.baidu.com/item/DHCP): 
+> <img src="https://cdn.jsdelivr.net/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/6.jpg" alt="TCP 头格式" style="zoom: 33%;" />
+>
+> <img src="https://cdn.jsdelivr.net/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/12.jpg" alt="UDP 头部格式" style="zoom:50%;" />
+>
+> 
+
+
 
 **Q：IP数据就已经分包了，TCP是在此基础上按应用请求分包？还是和IP是融合的？TCP给分包编号，那IP那一层编号吗？**
 
