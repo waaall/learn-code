@@ -50,7 +50,65 @@
 
 ### 任务队列（task list）
 
-Task List 是一个双向循环链表（**Link List**），储存在内存某个位置，其中每一项都是个结构（**Structure**），称为进程描述符。该结构定义在`<Linux/sched.h>`中，该结构描述了该进程打开的文件、所在的内存地址空间、挂起的信号、进程的状态等。
+Task List 是一个双向循环链表（**Link List**），储存在内存某个位置，其中每一项都是个结构（**task_struct**），称为进程描述符。该结构定义在`<Linux/sched.h>`中，该结构描述了该进程打开的文件、所在的内存地址空间、挂起的信号、进程的状态等。
+
+```c
+struct task_struct {
+ volatile long state; /* -1 unrunnable, 0 runnable, >0 stopped */
+ void *stack;
+ atomic_t usage;
+ unsigned int flags; /* per process flags, defined below */
+ unsigned int ptrace;
+ int lock_depth; /* BKL lock depth */ 
+ /* ...... */ 
+};
+```
+Linux使用slab分配`task_struct`，其在该进程内核栈底端创建一个`thread_info`的struct，其存放着`task_struct`的地址偏移量。
+
+
+> 上文 `task_struct` 中有一个 `stack` 成员，而 `stack` 正好用于保存内核栈地址。内核栈在进程创建时绑定在 `stack` 上。可以观察 `fork` 流程：Linux 通过 `clone()` 系统调用实现 `fork()`，然后由 `fork()` 去调用 `do_fork()`。定义在<kernel/fork.c>中的 `do_fork()` 负责完成进程创建的大部分工作，它通过调用 `copy_process()` 函数，然后让进程运行起来。`copy_process()` 完成了许多工作，这里重点看内核栈相关部分。`copy_process()` 调用 `dup_task_struct` 来创建内核栈、`thread_info` 和 `task_struct`：
+
+```c
+static struct task_struct *dup_task_struct(struct task_struct *orig) { 
+ struct task_struct *tsk;
+ struct thread_info *ti;
+ unsigned long *stackend;
+ int err; prepare_to_copy(orig);
+ tsk = alloc_task_struct();
+ if (!tsk) return NULL;
+ ti = alloc_thread_info(tsk); 
+ if (!ti) { 
+  free_task_struct(tsk);
+  return NULL; 
+ } 
+ err = arch_dup_task_struct(tsk, orig);
+ if (err) goto out;
+ tsk->stack = ti;
+ err = prop_local_init_single(&tsk->dirties);
+ if (err) goto out;
+ setup_thread_stack(tsk, orig);
+ stackend = end_of_stack(tsk);
+ *stackend = STACK_END_MAGIC;
+ /* for overflow detection */
+ #ifdef CONFIG_CC_STACKPROTECTOR 
+ tsk->stack_canary = get_random_int();
+ #endif 
+ /* One for us, one for whoever does the "release_task()" 
+ (usually parent) */
+ atomic_set(&tsk->usage,2);
+ atomic_set(&tsk->fs_excl, 0);
+ #ifdef CONFIG_BLK_DEV_IO_TRACE
+ tsk->btrace_seq = 0;
+ #endif 
+ tsk->splice_pipe = NULL;
+ account_kernel_stack(ti, 1);
+ return tsk;
+out:
+ free_thread_info(ti);
+ free_task_struct(tsk);
+ return NULL; 
+}
+```
 
 
 
