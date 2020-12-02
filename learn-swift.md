@@ -390,9 +390,21 @@ A：结构中声明数组和函数，所以同样地，传递结构时，其”�
 
 #### 函数也是类型
 
+
+
+```swift
+//下面这个函数的类型是 (Int, Int) -> Int，可以解读为:“这个函数类型有两个 Int 型的参数并返回一个 Int 型的值”。
+func addTwoInts(_ a: Int, _ b: Int) -> Int {
+    return a + b
+}
+
+//”定义一个叫做 mathFunction 的变量，类型是‘一个有两个 Int 型的参数并返回一个 Int 型的值的函数’，并让这个新变量指向 addTwoInts 函数”。需要先定义这个函数
+var mathFunction: (Int, Int) -> Int = addTwoInts
+```
+
+
+
 这同样有上文中值类型和引用类型的问题。
-
-
 
 **Q：函数里的很多自动变量是存在栈里的，函数本身应该被作为一个整体吧，它是在堆中还是在栈中？**
 
