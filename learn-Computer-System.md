@@ -198,7 +198,7 @@ struct page {
 
 MMU是CPU的一部分，每个处理器core都有一个MMU，包含：
 
-- TLB：是页表的高速缓存，存储着最近转化的一些目录项
+- TLB：是页表的高速缓存（一般在L2缓存或L1缓存中的独立结构，不算其容量），存储着最近转化的一些目录项
 - Table Walk Unit：负责从页表中读取虚拟地址对应的物理地址
 
 
@@ -237,6 +237,10 @@ MMU是CPU的一部分，每个处理器core都有一个MMU，包含：
 
 
 ### 内存延迟
+
+[CPU—cache—Memory—Drive的过程](https://www.cnblogs.com/xkfz007/archive/2012/10/08/2715163.html)写的非常清楚。
+
+
 
 关于内存延迟，有一篇知乎文章写得不错，现节选下来。
 
