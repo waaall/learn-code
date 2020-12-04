@@ -63,8 +63,10 @@
 > 3. Boot Loader——系统内核
 >
 > 它就是加载这个分区的引导扇区，然后就是一系列操作——操作系统内核加载——init进程（所有进程的父进程），其中还包括[CPU从实模式切换到保护模式](https://www.cnblogs.com/cyx-b/p/11809742.html)。
->
-> 
+
+![img](https://images.cnblogs.com/cnblogs_com/xkfz007/201210/201210081409187557.png)
+
+
 
 
 
@@ -238,7 +240,7 @@ MMU是CPU的一部分，每个处理器core都有一个MMU，包含：
 
 ### 内存延迟
 
-[CPU—cache—Memory—Drive的过程](https://www.cnblogs.com/xkfz007/archive/2012/10/08/2715163.html)写的非常清楚。
+[CPU—cache—Memory—Drive的过程](https://www.cnblogs.com/xkfz007/archive/2012/10/08/2715163.html)写的非常清楚。当然这篇有些老，比如架构还有北桥，而现代CPU都把北桥中的内存控制器等部件集成在CPU内部，但是对于理解缓存结构来说，足够了。
 
 
 
@@ -317,6 +319,10 @@ MMU是CPU的一部分，每个处理器core都有一个MMU，包含：
 > ![img](https://pic1.zhimg.com/80/v2-101d253ed6a1f25858136719cb434afc_720w.jpg)左: IO Die 右: CPU Die 手: 苏妈
 >
 > 这种诡异的设计更像是为了 EPYC 让步, CPU Die 就可以以更高的良率生产， EPYC 同样借助 IO Die 就可以实现更灵活的组合，以相对低的成本塞进更多的核心。对于虚拟化平台来说这种方案能够有效降低单机成本。同样运算密集型的 HPC 平台也有更大的吞吐能力。但是如果是数据库这种对于缓存敏感、有着大量并发锁（还记得 Intel TSX 指令集么）的应用，这种引入8（16）个 NUMA 节点的单路平台是难以优化的。
+
+
+
+### 内存映射（Memory mapping）IO
 
 
 
