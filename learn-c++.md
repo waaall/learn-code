@@ -966,7 +966,6 @@ int main()
 }
 ```
 
-
 #### 函数与指针：
 
 函数指针，指针函数，函数指针数组？这些概念的区分就靠上文中讲到的**运算符优先级**。
@@ -1026,6 +1025,46 @@ int main()
 > int (*pfun)(int a, int b) // 函数<指针，所以这是一个函数指针
 > int (*pfun[3])(int a, int b) // 函数<指针<数组，所以这是一个数组，数组元素是指针，指针是指向函数的指针，函数的返回值是int类型，参数也是两个int类型，所以这是一个函数指针数组
 > ```
+
+##### 函数指针的作用？传递函数的使用场景？
+
+1. **函数指针：**函数名本身就是指针，所以没啥用。。。。
+2. **传递函数：**有一些情况，是需要将函数（函数2）作为参数传递给另一个函数（函数1）的。往往是需要不同的函数来实现相似又不同的功能：
+
+```c++
+#include <iostream>
+
+using namespace std;
+
+int add(int x, int y){
+    return x + y;
+}
+
+int minus(int x, int y){
+    return x - y;
+}
+
+int multiply(int x, int y){
+    return x * y;
+}
+
+int bala(int a, int b, int (*some_func)(int, int)){
+    return (*some_func)(a, b);
+}
+
+int main(){
+    int w = 10;
+    int q = 3;
+    cout << bala(w, q, add) << endl;
+    cout << bala(w, q, minus) << endl;
+}
+```
+
+
+
+
+
+
 
 `int *pt = new int;`是利用new运算符来申请一块内存，把地址给指针，当然也要和delete 配合使用，如上述代码。值得注意的是，new申请的是堆，没有用new创建的变量和指针都存在栈中（静态除外）。（见下文章节---内存管理）
 
