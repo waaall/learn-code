@@ -109,7 +109,11 @@ error CS1562: 必须为没有源的输出指定 /out 选项
 
 这个可执行文件`csc.exe`，就类似于`gcc`，将c#编译为机器指令，csc指令具体用法如下：（节选自微软官网文档）
 
-### C# [编译器的示例命令行](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/command-line-building-with-csc-exe#sample-command-lines-for-the-c-compiler):
+### [命令行]():
+
+
+
+#### [c#编译](https://docs.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/command-line-building-with-csc-exe#sample-command-lines-for-the-c-compiler)
 
 - 编译生成 File.exe 的 File.cs：
 
@@ -146,6 +150,18 @@ error CS1562: 必须为没有源的输出指定 /out 选项
   ```shell
   csc -target:library -out:Something.xyz *.cs
   ```
+  
+  
+#### [.NET core CLI](https://docs.microsoft.com/zh-cn/dotnet/core/tools/)
+
+`.NET core CLI`就是命令行来管理.NET项目。`dotnet`指令创建，和单独几个c#文件的区别，就是项目和脚本的区别，两者没有本质区别，就像是cmake工具管理c++项目一样，这可以看成一个c#项目管理器，其调用csc（c#编译器）编译运行这些c#文件。
+
+* 常用dotnet指令：
+
+```shell
+
+```
+
 
 
 
