@@ -23,15 +23,23 @@
 | [通用 Windows 平台 (UWP)](https://docs.microsoft.com/zh-cn/windows/uwp/) | 适合 Windows 10 应用和游戏的领先平台。 可构建仅使用 UWP 控件和 API 的 UWP 应用，也可在桌面应用中使用 UWP 控件和 API，这些应用根据设计可使用其他平台之一。 | [入门](https://docs.microsoft.com/zh-cn/windows/uwp/get-started/) [API 参考](https://docs.microsoft.com/zh-cn/uwp/) [示例](https://github.com/Microsoft/Windows-universal-samples) |
 | [C++/Win32](https://docs.microsoft.com/zh-cn/windows/win32/) | 适合需要直接访问 Windows 和硬件的本机 Windows 应用的首选平台。 | [入门](https://docs.microsoft.com/zh-cn/windows/win32/desktop-programming/) [API 参考](https://docs.microsoft.com/zh-cn/windows/win32/apiindex/windows-api-list/) [示例](https://github.com/Microsoft/Windows-classic-samples) |
 | [WPF](https://docs.microsoft.com/zh-cn/dotnet/framework/wpf/) | 已建立的基于 .NET 的平台，它适合带有 XAML UI 模型的图形丰富的托管 Windows 应用。 这些应用可面向 [.NET Core 3](https://docs.microsoft.com/zh-cn/dotnet/core/whats-new/dotnet-core-3-0) 或完整的 .NET Framework。 | [入门](https://docs.microsoft.com/zh-cn/dotnet/framework/wpf/getting-started/) [API 参考 (.NET)](https://docs.microsoft.com/zh-cn/dotnet/api/index) [示例](https://github.com/Microsoft/WPF-Samples) |
-| [Windows 窗体](https://docs.microsoft.com/zh-cn/dotnet/framework/winforms/) | 基于 .NET 的平台，它专用于具有轻量级 UI 模型的托管业务线应用。 这些应用可面向 [.NET Core 3](https://docs.microsoft.com/zh-cn/dotnet/core/whats-new/dotnet-core-3-0) 或完整的 .NET Framework。 |                                                              |
+| [Windows 窗体（winforms）](https://docs.microsoft.com/zh-cn/dotnet/framework/winforms/) | 基于 .NET 的平台，它专用于具有轻量级 UI 模型的托管业务线应用。 这些应用可面向 [.NET Core 3](https://docs.microsoft.com/zh-cn/dotnet/core/whats-new/dotnet-core-3-0) 或完整的 .NET Framework。 |                                                              |
 
-值得注意的是，在2020年，UWP已经凉了，WPF还算健壮，但是Microsoft又把重心放在了一个新的UI框架——[WinUI](https://docs.microsoft.com/zh-cn/windows/apps/winui/)。但是Microsoft摇摆不定的方向，真不让人放心。anyway，`.NET`框架看来是要统一了——.NET core 取代了 .NET Framework，也就是下面要讲的。
+
+
+> 对于UI框架来讲：
+>
+> 在2020年，UWP已经凉了，winforms比较老，WPF还算健壮，但是Microsoft又把重心放在了一个新的UI框架——[WinUI](https://docs.microsoft.com/zh-cn/windows/apps/winui/)。Microsoft摇摆不定的方向，真不让人放心。
+
+
+
+Anyway，`.NET`框架看来是要统一了——.NET core 取代了 .NET Framework，也就是下面要讲的。
 
 
 
 ## 框架
 
-`.NET`是个框架——也可以理解为类似于GCC编译器——它将`c#`语言解释为机器指令，并提供一些基本函数库、类库。
+`.NET`是个框架——也可以理解为类似于GCC编译器——它将`c#`语言解释为机器指令，并提供一些基本函数库、类库。有点像Apple的cocoa。
 
 * [c#官方文档](https://docs.microsoft.com/zh-cn/dotnet/csharp/)
 * [.NET官方文档](https://docs.microsoft.com/zh-cn/dotnet/core/introduction)
@@ -42,7 +50,8 @@
 
 这里先概述下`.NET core` 和 `.NET framework` 的区别与联系：
 
-* 
+* .NET framework 是Windows针对c#（也有其他语言）的框架（编译器和系统函数、类库），但现在（2020年）凉了，微软停止支持，归并到.NET core 中。
+* .NET core 是一个开源项目，意在将这套开发框架推向各个平台（操作系统），但是以前很多大的框架都不支持，比如WPF（UI库），但现在`.NET5.0`支持的比较好，也有较好的性能。
 
 
 
@@ -165,3 +174,4 @@ error CS1562: 必须为没有源的输出指定 /out 选项
 |          | 接口类型           | 格式为 `interface I {...}` 的用户定义类型         |
 |          | 数组类型           | 一维和多维，例如 `int[]` 和 `int[,]`              |
 |          | 委托类型           | 格式为的用户定义的类型，例如`delegate int D(...)` |
+
