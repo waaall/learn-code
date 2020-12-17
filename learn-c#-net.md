@@ -29,7 +29,7 @@
 
 > 对于UI框架来讲：
 >
-> 在2020年，UWP已经凉了，winforms比较老，WPF还算健壮，但是Microsoft又把重心放在了一个新的UI框架——[WinUI](https://docs.microsoft.com/zh-cn/windows/apps/winui/)。Microsoft摇摆不定的方向，真不让人放心。
+> 在2020年，UWP已经凉了，winforms比较老(但是比较简单，还是有应用价值)，WPF还算健壮，但是Microsoft又把重心放在了一个新的UI框架——[WinUI](https://docs.microsoft.com/zh-cn/windows/apps/winui/)。Microsoft摇摆不定的方向，真不让人放心。
 
 
 
@@ -53,7 +53,7 @@ Anyway，`.NET`框架看来是要统一了——.NET core 取代了 .NET Framewo
 * .NET framework 是Windows针对c#（也有其他语言）的框架（编译器和系统函数、类库），但现在（2020年）凉了，微软停止支持，归并到.NET core 中。
 * .NET core 是一个开源项目，意在将这套开发框架推向各个平台（操作系统），但是以前很多大的框架都不支持，比如WPF（UI库），但现在`.NET5.0`支持的比较好，也有较好的性能。
 
-
+![img](https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/DotNet3.0.svg/300px-DotNet3.0.svg.png)
 
 ### .NET的迁移
 
@@ -158,9 +158,31 @@ error CS1562: 必须为没有源的输出指定 /out 选项
 
 * 常用dotnet指令：
 
+##### 创建
+
 ```shell
 
 ```
+
+
+
+##### 编译
+
+```shell
+
+```
+
+
+
+##### 发布
+
+```shell
+
+```
+
+
+
+
 
 
 
