@@ -183,6 +183,21 @@ error CS1562: 必须为没有源的输出指定 /out 选项
 
 
 
+### [NuGet包管理器](https://docs.microsoft.com/zh-cn/nuget/consume-packages/install-use-packages-powershell)
+
+正如pip和python的关系、npm和nodejs的关系、homebrew和Mac的关系，.NET也有自己的包管理器——Nuget。
+
+NuGet与上述包管理器有一个很大的不同之处，就是它在不同“环境”下的指令是不一样的，这点的确让人困惑。
+
+* [Visual Studio](https://docs.microsoft.com/zh-cn/nuget/consume-packages/install-use-packages-visual-studio)
+* [dotnet](https://docs.microsoft.com/zh-cn/nuget/consume-packages/install-use-packages-dotnet-cli)
+* [Nuget](https://docs.microsoft.com/zh-cn/nuget/consume-packages/install-use-packages-nuget-cli)
+* [powershell](https://docs.microsoft.com/zh-cn/nuget/consume-packages/install-use-packages-powershell)
+
+在dotnet、powershell和使用Nuget.exe本身，指令是“完全不一样”的，当然，VS中就是用GUI操作，肯定不一样可以理解。anyway，这就是.NET的包管理器。
+
+
+
 ### access数据库与Win app
 
 一些小型数据和低访问量的情况，Windows应用使用access数据库也是不错的选择。目前这个功能不支持.NET5.0，仅支持.NET framework。
