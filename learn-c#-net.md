@@ -43,6 +43,7 @@ Anyway，`.NET`框架看来是要统一了——.NET core 取代了 .NET Framewo
 
 * [c#官方文档](https://docs.microsoft.com/zh-cn/dotnet/csharp/)
 * [.NET官方文档](https://docs.microsoft.com/zh-cn/dotnet/core/introduction)
+* [.NET开源项目](https://github.com/jasonhua95/awesome-dotnet-core)
 
 ### .NET混乱的版本
 
