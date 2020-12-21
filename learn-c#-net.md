@@ -196,11 +196,125 @@ NuGet与上述包管理器有一个很大的不同之处，就是它在不同“
 
 在dotnet、powershell和使用Nuget.exe本身，指令是“完全不一样”的，当然，VS中就是用GUI操作，肯定不一样可以理解。anyway，这就是.NET的包管理器。
 
+有一点需要注意：`dotnet add` 和 `VS安装` 的package是在项目中的，而使用powershell和nuget是全局的（这个安装位置也需要配置），而除了nuget都是添加了引用的（也就是配置好了可以使用），具体说明见下面官方文档：
+
+> 控制台中可用的全部操作也可以通过 [NuGet CLI](https://docs.microsoft.com/zh-cn/nuget/reference/nuget-exe-cli-reference) 完成。 但是，控制台命令在 Visual Studio 和已保存的项目/解决方案的上下文中运行，并且通常比其等效的 CLI 命令完成更多操作。 例如，通过控制台安装包会添加对项目的引用，而 CLI 命令则不会执行此操作。 因此，在 Visual Studio 中工作的开发人员通常更愿意使用控制台而不是 CLI。
 
 
-### access数据库与Win app
 
-一些小型数据和低访问量的情况，Windows应用使用access数据库也是不错的选择。目前这个功能不支持.NET5.0，仅支持.NET framework。
+
+
+#### NuGet安装位置
+
+> [来自Microsoft官方文档](https://docs.microsoft.com/zh-cn/nuget/consume-packages/managing-the-global-packages-and-cache-folders)：
+>
+> 每当安装、更新或还原包时，NuGet 将管理项目结构多个文件夹之外的包和包信息：
+>
+> | “属性”                  | 说明和位置（每个用户）                                       |
+> | :---------------------- | :----------------------------------------------------------- |
+> | global‑packages         | global-packages 文件夹是 NuGet 安装任何下载包的位置。 每个包完全展开到匹配包标识符和版本号的子文件夹。 使用 [PackageReference](https://docs.microsoft.com/zh-cn/nuget/consume-packages/package-references-in-project-files) 格式的项目始终直接从该文件夹中使用包。 使用 [packages.config](https://docs.microsoft.com/zh-cn/nuget/reference/packages-config) 时，包将安装到 global-packages 文件夹，然后复制到项目的 `packages` 文件夹。 Windows：`%userprofile%\.nuget\packages`Mac/Linux：`~/.nuget/packages`使用 NUGET_PACKAGES 环境变量、`globalPackagesFolder` 或 `repositoryPath` [配置设置](https://docs.microsoft.com/zh-cn/nuget/reference/nuget-config-file#config-section)（分别在使用 PackageReference 和 `packages.config` 时）或 `RestorePackagesPath` MSBuild 属性（仅限 MSBuild）进行替代。 环境变量优先于配置设置。 |
+> | http‑cache              | Visual Studio 包管理器 (NuGet 3.x+) 和 `dotnet` 工具存储此缓存中下载包的副本（另存为 `.dat` 文件），这些副本被组织到每个包源的子文件夹中。 未展开包，且缓存中有 30 分钟的到期时间。 Windows：`%localappdata%\NuGet\v3-cache`Mac/Linux：`~/.local/share/NuGet/v3-cache`使用 NUGET_HTTP_CACHE_PATH 环境变量替代。 |
+> | temp                    | NuGet 在各操作期间在其中存储临时文件的文件夹。 Windows：`%temp%\NuGetScratch`Mac/Linux：`/tmp/NuGetScratch` |
+> | plugins-cache **4.8 +** | NuGet 存储来自操作声明请求的结果的文件夹。 Windows：`%localappdata%\NuGet\plugins-cache`Mac/Linux：`~/.local/share/NuGet/plugins-cache`使用 NUGET_PLUGINS_CACHE_PATH 环境变量替代。 |
+
+
+
+
+
+
+
+
+
+### 数据库与Win app
+
+数据库和app界面的绑定是多数软件都可以用得到的。而大多数平台都提供了通用或专用的数据库接口（类库）方便的使用，而对于Win app 访问 access数据库，则是Odbc。
+
+
+
+##### access 与 winform——Odbc
+
+一些小型数据和低访问量的情况，Windows应用使用access数据库也是不错的选择。先来看代码：
+
+```c#
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System;
+using System.Data;
+using System.Data.Odbc; //调用了这个Odbc库
+using System.Windows.Forms; //winform可视化库
+
+namespace AWindowsFormsApp
+{
+    //这是一个主界面类，继承于System.Windows.Forms.Form
+    public partial class MainForm : Form 
+    {
+        public MainForm() //构造函数
+        {
+            InitializeComponent();
+        }
+        
+        // 初始化access database
+        static string strCon = @"Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=YourPath\YourDataBaseName.accdb;";
+        OdbcConnection con = new OdbcConnection(strCon); //连接对象
+        
+        //数据库绑定dataGridView控件
+        private DataTable DataBinding(string tablename)
+        {
+            con.Open();
+            string strSql = $"select * from {tablename}"; //sql语句作为字符串传入
+            OdbcDataAdapter dadapter = new OdbcDataAdapter();
+            dadapter.SelectCommand = new OdbcCommand(strSql, con); //
+            DataTable table = new DataTable();
+            dadapter.Fill(table);
+            con.Close();
+            this.dataGridView1.DataSource = table; //dataGridView是一个可视化控件，当然也是个类，所以这里的dataGridView1是一个对象
+        }
+        
+        //执行上述函数，当然这一般会出现在ButtonClick函数中
+        DataBinding("人员信息表");
+    }
+}
+```
+
+
+
+下面节选自[Odbc的微软官方文档](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc?view=dotnet-plat-ext-5.0)：
+
+> ### System.Data.Odbc 命名空间
+>
+> [System.Data.Odbc](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc?view=dotnet-plat-ext-5.0) 命名空间为 ODBC .NET Framework 数据提供程序。
+>
+> #### 类
+>
+> | [OdbcCommand](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbccommand?view=dotnet-plat-ext-5.0) | 表示要对数据源执行的 SQL 语句或存储过程。 此类不能被继承。   |
+> | ------------------------------------------------------------ | ------------------------------------------------------------ |
+> | [OdbcCommandBuilder](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbccommandbuilder?view=dotnet-plat-ext-5.0) | 自动生成用于协调对 [DataSet](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.dataset?view=dotnet-plat-ext-5.0) 的更改与关联的数据源的单表命令。 此类不能被继承。 |
+> | [OdbcConnection](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcconnection?view=dotnet-plat-ext-5.0) | 表示到数据源的连接是打开的。                                 |
+> | [OdbcConnectionStringBuilder](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcconnectionstringbuilder?view=dotnet-plat-ext-5.0) | 为创建和管理由 [OdbcConnection](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcconnection?view=dotnet-plat-ext-5.0) 类使用的连接字符串的内容提供了一种简单方法。 |
+> | [OdbcDataAdapter](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcdataadapter?view=dotnet-plat-ext-5.0) | 表示用于填充 [DataSet](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.dataset?view=dotnet-plat-ext-5.0) 和更新数据源的一组数据命令和一个数据源连接。 此类不能被继承。 |
+> | [OdbcDataReader](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcdatareader?view=dotnet-plat-ext-5.0) | 提供从数据源读取数据行的只进流的方法。 此类不能被继承。      |
+> | [OdbcError](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcerror?view=dotnet-plat-ext-5.0) | 收集与数据源返回的警告或错误有关的信息。                     |
+> | [OdbcErrorCollection](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcerrorcollection?view=dotnet-plat-ext-5.0) | 收集 [OdbcDataAdapter](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcdataadapter?view=dotnet-plat-ext-5.0) 生成的所有错误。 此类不能被继承。 |
+> | [OdbcException](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcexception?view=dotnet-plat-ext-5.0) | ODBC 数据源返回警告或错误时生成的异常。 此类不能被继承。     |
+> | [OdbcFactory](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcfactory?view=dotnet-plat-ext-5.0) | 表示一组方法，这些方法用于创建 ODBC 提供程序实现数据源类的实例。 |
+> | [OdbcInfoMessageEventArgs](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcinfomessageeventargs?view=dotnet-plat-ext-5.0) | 为 [InfoMessage](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcconnection.infomessage?view=dotnet-plat-ext-5.0) 事件提供数据。 |
+> | [OdbcMetaDataCollectionNames](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcmetadatacollectionnames?view=dotnet-plat-ext-5.0) | 提供一个常数列表，该列表与 GetSchema 方法一起使用以检索元数据集合。 |
+> | [OdbcMetaDataColumnNames](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcmetadatacolumnnames?view=dotnet-plat-ext-5.0) | 提供静态值，这些值用于 [OdbcMetaDataCollectionNames](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcmetadatacollectionnames?view=dotnet-plat-ext-5.0) 中包含的 [DataTable](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.datatable?view=dotnet-plat-ext-5.0) 对象的列名称。 [DataTable](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.datatable?view=dotnet-plat-ext-5.0) 由 GetSchema 方法创建。 |
+> | [OdbcParameter](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcparameter?view=dotnet-plat-ext-5.0) | 表示 [OdbcCommand](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbccommand?view=dotnet-plat-ext-5.0) 的参数，还可以表示它到 [DataColumn](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.datacolumn?view=dotnet-plat-ext-5.0) 的映射。 此类不能被继承。 |
+> | [OdbcParameterCollection](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcparametercollection?view=dotnet-plat-ext-5.0) | 表示与 [OdbcCommand](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbccommand?view=dotnet-plat-ext-5.0) 相关的参数的集合以及各个参数到 [DataSet](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.dataset?view=dotnet-plat-ext-5.0) 中列的映射。 此类不能被继承。 |
+> | [OdbcPermission](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcpermission?view=dotnet-plat-ext-5.0) | 启用用于 ODBC 的 .NET Framework 数据提供程序，以帮助确保用户具有足够的安全级别来访问 ODBC 数据源。 此类不能被继承。 |
+> | [OdbcPermissionAttribute](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcpermissionattribute?view=dotnet-plat-ext-5.0) | 将某安全操作与自定义安全特性相关联。                         |
+> | [OdbcRowUpdatedEventArgs](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcrowupdatedeventargs?view=dotnet-plat-ext-5.0) | 为 [RowUpdated](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcdataadapter.rowupdated?view=dotnet-plat-ext-5.0) 事件提供数据。 |
+> | [OdbcRowUpdatingEventArgs](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcrowupdatingeventargs?view=dotnet-plat-ext-5.0) | 为 [RowUpdating](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbcdataadapter.rowupdating?view=dotnet-plat-ext-5.0) 事件提供数据。 |
+> | [OdbcTransaction](https://docs.microsoft.com/zh-cn/dotnet/api/system.data.odbc.odbctransaction?view=dotnet-plat-ext-5.0) | 表示要在数据源进行的 SQL 事务。 此类不能被继承。             |
+
+
+
+上述是利用这个Odbc库来实现Sql语言访问数据库，其实针对.NET framework应用到access数据库，有“更简单”的可视化操作，但需要注意，目前下面**这个可视化操作的功能不支持.NET5.0，仅支持.NET framework**。
 
 > ### [为 .accdb 文件创建数据集](https://docs.microsoft.com/zh-cn/visualstudio/data-tools/connect-to-data-in-an-access-database-windows-forms?view=vs-2019#create-a-dataset-for-an-accdb-file)
 >
@@ -243,6 +357,10 @@ NuGet与上述包管理器有一个很大的不同之处，就是它在不同“
 > 13. 选择要包含在数据集中的表或视图，然后选择 " **完成** "。
 >
 >     数据集将添加到项目中，并且“数据源”窗口中将显示表和视图。
+
+
+
+
 
 
 
