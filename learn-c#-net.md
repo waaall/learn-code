@@ -231,6 +231,36 @@ NuGet与上述包管理器有一个很大的不同之处，就是它在不同“
 
 
 
+#### Form缩放
+
+> 系统默认是： Inherit 。
+>
+> ① None ： 禁用自动缩放。(默认时)
+>
+> ② Font ：根据类使用的字体（通常为系统字体）的维度控制缩放。
+>
+> ​    如果希望控件或窗体根据操作系统中字体的大小进行拉伸或缩小，则按 Font 缩放十分有用，如果控件或窗体的绝对大小无关紧要，则应使用这种方式进行缩放。比如：一个按钮的文字，改变了系统的字体大小，按钮也随着变大到能完整显示文字。
+>
+>  ③ Dpi ： 根据显示分辨率控制缩放。常用分辨率为 96 和 120 DPI。
+>
+> ​    如果要相对于屏幕确定控件或窗体的大小，则按 Dpi 缩放十分有用。例如，对于显示图表或其他图形的控件，可能希望使用每英寸点数 (DPI) 缩放，以便该控件始终占据一定百分比的屏幕
+>
+> ④ Inherit  ： 根据类的父类的缩放模式控制缩放。如果不存在父类，则禁用自动缩放。
+>
+> 
+>
+> AutoScaleMode属性设置好之后，最好还要搭配另外三个属性来控制窗体的大小。如下：
+>
+> Autosize=false，设置窗体不根据内容超出而调整窗体自身大小，以免窗体超出屏幕。
+>
+> AutoScroll=true，设置窗体当内容超出窗体时，自动产生滚动条。这样用户依靠滚动条既可以完全看到超出窗体的内容了。
+>
+> MaximizeBox=true，可设置窗体最大化，当窗体超出屏幕时，用户可设置窗体最大化来让窗体尺寸贴合用户屏幕。
+
+
+
+
+
 ### 数据库与Win app
 
 数据库和app界面的绑定是多数软件都可以用得到的。而大多数平台都提供了通用或专用的数据库接口（类库）方便的使用，而对于Win app 访问 access数据库，则是Odbc。
@@ -285,6 +315,32 @@ namespace AWindowsFormsApp
     }
 }
 ```
+
+上述代码为将数据库的一个表显示在DataGridView中，而接下来的这个函数为：将textbox中的信息添加到
+
+```c#
+private void AddInfoToData()
+{
+    this.conn.Open();
+
+    string columns = "姓名,性别,年龄,身高,体重,职业,学历";
+    string strSql = $"insert into 人员信息表 ({columns}) values (?,?,?,?,?,?,?)"; //?表示表示查询参数，之后再赋值
+
+    OdbcCommand inscmd = new OdbcCommand(strSql, this.conn);
+    inscmd.Parameters.AddWithValue("姓名", this.BoxName.Text);
+    inscmd.Parameters.AddWithValue("性别", this.BoxGender.Text);
+    inscmd.Parameters.AddWithValue("年龄", this.BoxAge.Text);
+    inscmd.Parameters.AddWithValue("身高", this.BoxHight.Text);
+    inscmd.Parameters.AddWithValue("体重", this.BoxWight.Text);
+    inscmd.Parameters.AddWithValue("职业", this.BoxCarrer.Text);
+    inscmd.Parameters.AddWithValue("学历", this.BoxEdu.Text);
+    inscmd.ExecuteNonQuery();
+
+    this.conn.Close();
+}
+```
+
+
 
 
 
