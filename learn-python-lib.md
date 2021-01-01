@@ -713,6 +713,8 @@ pl.show()
 这是3blue1brown做的一个python第三方库，可以用它来制作关于数学等基础科学的视频。
 
 * [github](https://github.com/3b1b/manim)
+* github[社区维护版](https://github.com/ManimCommunity/manim/)
+* [官方教程-英语](https://docs.manim.community/en/v0.1.1/index.html)
 * [知乎教程](https://zhuanlan.zhihu.com/p/104701396)
 * [知乎回答-win安装](https://www.zhihu.com/question/57357012)
 * [英文教程](https://talkingphysics.wordpress.com/2019/01/08/getting-started-animating-with-manim-and-python-3-7/)
