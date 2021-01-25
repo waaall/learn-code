@@ -13,15 +13,22 @@
 
 [一个大致能回答上述一些问题的答案](https://www.zhihu.com/question/306127044/answer/555327651)。
 
----
+
+
+> **关于《计算机组成原理》，推荐[《计算机组成：结构化方法》](https://book.douban.com/subject/1886058/)**
+
+
 
 ## 参考书籍
 
 * [Linux内核设计与实现](https://book.douban.com/subject/6097773/)
 * [现代操作系统](https://book.douban.com/subject/27096665/)
 * [深入理解计算机系统](https://book.douban.com/subject/26912767/)
+* [计算机组成：结构化方法](https://book.douban.com/subject/1886058/)
 
 ---
+
+
 
 
 
@@ -65,6 +72,12 @@
 > 它就是加载这个分区的引导扇区，然后就是一系列操作——操作系统内核加载——init进程（所有进程的父进程），其中还包括[CPU从实模式切换到保护模式](https://www.cnblogs.com/cyx-b/p/11809742.html)。
 
 ![img](https://images.cnblogs.com/cnblogs_com/xkfz007/201210/201210081409187557.png)
+
+
+
+### 控制存储器---机器指令不是最后一步
+
+编译器生成的机器指令，CPU并不能直接执行，而是
 
 
 

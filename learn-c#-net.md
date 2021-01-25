@@ -422,6 +422,12 @@ private void AddInfoToData()
 
 
 
+### Asp.NET
+
+* [微软官方文档](https://docs.microsoft.com/en-us/aspnet/core/getting-started/?view=aspnetcore-5.0&tabs=macos)
+
+
+
 
 
 
