@@ -76,6 +76,39 @@ LinkList list_TailInsert(LinkList &L){
 
 
 
+#### 递归删除无头节点单链表某值
+
+```c++ 
+//删除单链表某值
+void 删除单链表某值(LinkList * & L, ElemType x) {
+    LNode *p = (LNode *)malloc(sizeof(LNode));
+    if (L == NULL) {
+        return;
+    }
+    if (L->data == x) {
+        p = L;
+        L = L->next;  //精髓所在
+        free(p);
+        删除单链表某值(L, x);
+    }
+    else {
+        删除单链表某值(L->next, x);
+    }
+}
+```
+
+![729AC06F-BBDC-4576-8875-472EE868ABDE_1_105_c](learn-Algorithm.assets/danlianbiao.jpeg)
+
+上图中没说出事情的全部，我们应该注意到上述代码中，接受的参数是`LinkList *&L`，这点非常关键！
+
+因为我们传入的这个地址，如果类型为`LinkList * L`，那么传入的则是`L->next`的拷贝，则该链表就会断掉。
+
+`LinkList *` 表示这个参数是一个**地址**，而`&`表示，L是这个**地址**的引用，而传递这个**地址**时，不能直接拷贝这个地址，而是去存放这个**地址**的地址寻址！（**加粗**的“地址”是指的上面x1旁边的2，而本句话最后为加粗的地址是指的上图中的1）。
+
+
+
+
+
 ## 串
 
 
@@ -189,7 +222,22 @@ LNode * 合并两单链表(LNode * LA,LNode * LB){
     return LS;
 }
 
-
+//删除单链表某值
+void 删除单链表某值(LinkList *&L, ElemType x) {
+    LNode *p = (LNode *)malloc(sizeof(LNode));
+    if (L == NULL) {
+        return;
+    }
+    if (L->data == x) {
+        p = L;
+        L = L->next;  //精髓所在
+        free(p);
+        删除单链表某值(L, x);
+    }
+    else {
+        删除单链表某值(L->next, x);
+    }
+}
 
 //两个整数的除法在c++中舍去余数，结果依然是整数
 void 测试除法(){

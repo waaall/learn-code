@@ -1218,9 +1218,28 @@ double refcube(double& ra); //符号&和类型关键字如double在一起时就�
 
 #### 引用和指针的区别
 
-像函数，
+像下面函数中接受的参数，我们来解读下这是什么意义，以及为何要用这个`LinkList *&L`？
 
+```c++ 
+//删除单链表某值
+void 删除单链表某值(LinkList * & L, ElemType x) {
+    LNode *p = (LNode *)malloc(sizeof(LNode));
+    if (L == NULL) {
+        return;
+    }
+    if (L->data == x) {
+        p = L;
+        L = L->next;  //精髓所在
+        free(p);
+        删除单链表某值(L, x);
+    }
+    else {
+        删除单链表某值(L->next, x);
+    }
+}
+```
 
+`LinkList *` 表示这个参数是一个地址，而`&`表示，L是这个地址的引用，而传递这个地址时，不能直接拷贝这个地址，而是去存放这个地址的地址寻址！
 
 
 
