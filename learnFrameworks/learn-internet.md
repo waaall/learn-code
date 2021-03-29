@@ -152,8 +152,8 @@ tracert 命令主要用来显示数据包到达目的主机所经过的路径。
 A：因为要建立双向连接，双方都需要相互确认对方信息：
 
 	  1. A发送A的序号（并将SYN标志位设为1等操作）
-   	  2. B收到后回复（A的序号+1），且同时发送B的序号
-   	  3. A收到后回复（B的序号+1），并同时发送第一波包裹
+	  2. B收到后回复（A的序号+1），且同时发送B的序号
+	  3. A收到后回复（B的序号+1），并同时发送第一波包裹
 
 值得注意的是，**这个序列号和SYN标志位不仅仅是有些比喻为打招呼那么简单，而是避免了与旧报文混淆。**
 
@@ -185,8 +185,9 @@ A：在实体数据层面（光纤或网线的光电信号），一个包是既�
 以上均为连接到目标服务器，但是连接上服务器之后，具体请求某个特定页面，我们还没有标准，这就是[HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)的作用了。
 
 <div align = "center" >
-    <img src="learn internet.assets/HTTP_layers.png" style="zoom:33%;" />
+    <img src="learn-internet.assets/HTTP_layers.png" style="zoom:33%;" />
 </div>
+
 
 
 当我们在浏览器键入www.google.com和www.mail.google.com时，DNS服务器会帮我们返回对应的IP，但是我们可能访问这个服务器的部分内容，比如常见的：www.apple.com/cn 在2019年更新成了www.apple.com.cn这个看似微小的改变实际上是苹果中国官网单独使用了一个服务器。而www.apple.com和www.apple.com/cn是同一个域名（也就是www.apple.com），同样得到同一个IP，也就是在同一个服务器上。这个/cn就是在向这个服务器请求cn页面/文件，所用的协议/标准就是HTTP，而这个‘www.apple.com/cn’被称作**[URL](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL)**。
