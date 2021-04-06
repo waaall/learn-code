@@ -1,3 +1,5 @@
+
+
 # Internet Protocol suite
 
 
@@ -11,10 +13,25 @@
 
 <img src="learn-internet.assets/v2-ec64022ca37ce5b1de17d98a3d3bbf86_1440w.jpg" alt="img" style="zoom:50%;" />
 
----
+## 物理层
+
+巴拉巴拉
+
+![物理层](learn-internet.assets/物理层.png)
+
+
+
+
+
+
+
+
+
 ## Link layer
 
+巴拉巴拉
 
+![链路层](learn-internet.assets/链路层.png)
 
 ### MAC
 
@@ -38,7 +55,7 @@ MAC地址是唯一的设备号，但是只在局域网中生效，也就是link 
 
 ## Internet/Network layer
 
-
+![网络层](learn-internet.assets/网络层-7696862.png)
 
 在网络层，也就是IP的定义和封装了。
 
@@ -128,6 +145,8 @@ tracert 命令主要用来显示数据包到达目的主机所经过的路径。
 
 ## Transport layer
 
+![传输层](learn-internet.assets/传输层.png)
+
 ### UDP
 
 主要是两个问题：一台计算机有很多应用“同时访问”不同的网站，但一个IP只标注了一台计算机，就需要另外的协议把计算机上每个应用进程的请求数据区分开，也就是UDP协议！
@@ -163,10 +182,17 @@ A：因为要建立双向连接，双方都需要相互确认对方信息：
 
 A：在实体数据层面（光纤或网线的光电信号），一个包是既有TCP表头也有IP表头的，但是他们编号是不同的，TCP是以端口（）
 
----
+
+
+
+
+
+
 ## Application layer
 
 有了MAC和IP，我们就可以在整个互联网中不同的子网络跳转，相互访问；再有了Port，计算机也实现了多进程并发请求。这些就构成了当今计算机网络世界的骨干。但这还不够，就像是有了10和加法器，逻辑运算器，理论上就可以编写一切程序，但是后来还是有函数的定义，再到后来的面向对象，这些对实现功能可能没有太大帮助，但是这种人性化的设计会大大减少人学习和Debug的时间，而这也是不可忽视的，这些就属于应用层。
+
+![应用层](learn-internet.assets/应用层-7696908.png)
 
 ### SSH/Telnet
 
