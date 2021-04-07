@@ -759,6 +759,72 @@ int main()
 
 
 
+### 字符串
+
+
+
+#### 字符串指针
+
+```c++
+#include <iostream>
+
+int main()
+{
+    using namespace std;
+    const char * wail = "ululate";    // wail points to string
+
+    int a = 12;
+    int * p = &a;
+
+    cout << wail << endl;    //cout 重载了 指向char类型的地址，直接将其显示为字符串本身
+    
+    //下面指令结果：0x10539df50
+    cout << (int *) wail << endl;   //强制类型转换为int*，由于cout不重载int指针，所以能显示地址
+
+    cout << (long long int) wail << endl;
+
+    //下面指令结果：0x10539df50
+    printf("%p\n", wail);      
+
+    //下面指令结果：ululate
+    printf("%s\n", wail);      
+
+    //下面指令结果：87678800
+    printf("%d\n", wail);      //warning: format specifies type 'int' but the argument has type 'const char *'
+    
+    //下面是16进制int输出wail：a79ff40
+    printf("%x\n", wail);
+    
+    return 0;
+}
+
+```
+
+#### c/c++ 进制转换
+
+```c++
+#include <bitset>  
+#include<iostream>
+using namespace std;
+
+int main()
+{
+	printf("%05o\n",35);    //按八进制格式输出，保留5位高位补零
+	printf("%03d\n",35);    //按十进制格式输出，保留3位高位补零
+	printf("%05x\n",35);    //按十六进制格式输出，保留5位高位补
+    
+    cout << "35的8进制:" << std::oct << 35<< endl;  
+    cout << "35的10进制" << std::dec << 35 << endl;  
+    cout << "35的16进制:" << std::hex << 35 << endl;  
+    cout << "35的2进制: " << bitset<8>(35) << endl;      //<8>：表示保留8位输出
+    return 0;  
+}
+```
+
+
+
+
+
 ### 结构
 
 数组无法存储不是同一类型的一组数据，这时“结构”就应运而生。**结构声明定义了一种新类型**
