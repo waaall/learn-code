@@ -529,17 +529,13 @@ MMU是CPU的一部分，每个处理器core都有一个MMU，包含：
 
 
 
-### cache工作原理
+### cache工作原理（具体见《learn Computer Organization》）
 
 讲完了MMU和页表，来说说CPU、寄存器、cache、内存的关系，首先说明，cache是有单独的取址单元，类似内存控制器。可以“独立于”CPU访问并拷贝内存数据。而且这个过程并不依赖于任何软件编程（完全由硬件控制）。
 
 ![CPU-cache](learn-Computer-System.assets/CPU-cache.png)
 
 上图是节选自《深入理解计算机系统》。
-
-
-
-
 
 
 >  **Cache与DRAM存取的一致性**

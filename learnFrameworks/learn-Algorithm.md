@@ -107,6 +107,20 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 
 
 
+### 栈
+
+
+
+#### 出栈合法性
+
+
+
+![出栈合法性](learn-Algorithm.assets/出栈合法性.png)
+
+
+
+
+
 
 
 ## 串

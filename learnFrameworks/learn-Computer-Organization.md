@@ -1,8 +1,12 @@
 # learn Computer Organization
 
+---
+
+[toc]
 
 
 
+---
 
 ## 参考资料
 
@@ -11,6 +15,7 @@
 * [华科MOOC](https://www.icourse163.org/course/HUST-1205809816)
 * [华科MOOC资料](https://gitee.com/totalcontrol/hustzc)
 * [logisim官网](http://www.cburch.com/logisim/download.html)
+* [芯片架构wiki](https://en.wikichip.org/wiki/WikiChip)
 
 
 
@@ -42,19 +47,19 @@
 
 
 
-### 控制器
+## 控制器
 
 
 
 
 
-### 运算器
+## 运算器
 
 
 
 
 
-### 存储器（RAM）
+## 存储器（RAM）
 
 
 
@@ -74,9 +79,208 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
-#### 存储单元硬件
+### 存储单元硬件
 
 可以按照下图简单理解，但实际的电路远比这复杂，具体可以参照[《编码的奥秘》](https://www.zhihu.com/question/59889145)
 
 <img src="learn-Computer-Organization.assets/简易存储单元.png" alt="简易存储单元" style="zoom: 33%;" />
+
+而8个上图中的存储元并联就形成了一个存储单元，通常来说是一字节（8bit），如下图所示：
+
+<img src="learn-Computer-Organization.assets/RAM读过程.png" alt="RAM读过程" style="zoom: 25%;" />
+
+进一步的，我们就可以把RAM抽象下图这样一个存储芯片：实际上，一个RAM的引脚要比这多很多，比如供电引脚、接地引脚等。
+
+<img src="learn-Computer-Organization.assets/RAM抽象.png" alt="RAM抽象" style="zoom: 33%;" />
+
+
+
+### SRAM和DRAM的区别
+
+<img src="learn-Computer-Organization.assets/SRAM:DRAM.png" alt="SRAM:DRAM" style="zoom:50%;" />
+
+
+
+#### DRAM的刷新
+
+<img src="learn-Computer-Organization.assets/DRAM的刷新.png" alt="DRAM的刷新" style="zoom:33%;" />
+
+
+
+
+
+### ROM（Read-Only Memory）
+
+
+
+<img src="learn-Computer-Organization.assets/ROM.png" alt="ROM" style="zoom:50%;" />
+
+
+
+
+
+
+
+### 译码片选法
+
+当我们假设我们有8个8KB（存储字长是一字节/8位）的存储芯片，这样我们就有了8*8K = 2^16个地址，所以地址线宽度应该是16位，那这16位地址如何准确寻址到这8个存储芯片中的一个中的一个字节呢？
+
+这就需要地址线低13位作为片内寻址、高3位作为片选信号，也就是8个存储芯片选一个可以用这高三位地址唯一表示，但如何实现呢？这就是译码器的作用了，具体看下图：
+
+<img src="learn-Computer-Organization.assets/译码器.jpeg" alt="译码器" style="zoom:50%;" />
+
+关于实际的译码器比上述概念图复杂得多，比如它使用一个控制信号来保证信号的稳定性，如下图：
+
+![稳定译码器](learn-Computer-Organization.assets/稳定译码器.jpeg)
+
+
+
+### 双口RAM & 多模块存储器
+
+
+
+#### 交叉编址
+
+本质上也就是上节讲的译码器的问题，但现在结合存储芯片需要一定的恢复时间才能再次读写这个问题，我们会发现，将低位地址作为片选信号时，连续读写临近地址时，效率更高。具体见下图：
+
+![多体并行RAM](learn-Computer-Organization.assets/多体并行RAM.jpeg)
+
+上图很容易计算出：若模块数位m时，m = T/r，效率最高。因为连续读m个r之后，T就到了也就是第一个存储体恢复好了；若m > T/r，第一个存储体恢复好了还要闲置r时间；若m < T/r，连续读m个r之后，第一个还没恢复好。
+
+**而这种“低位交叉”的技术就是传说中的双通道，所以并不是并行访问两片内存，其实还是串行，不过流水线的方式避开了存储芯片刷新恢复的时间。**
+
+
+
+## cache
+
+
+
+### 关于cache line 大小
+
+![cache](learn-Computer-Organization.assets/cache.png)
+
+**上图中有一点有错误：cache“行”（cache line）和内存页面（Memory page）大小不一样**。
+
+> 一般来说（对于2020年前后的64位主流CPU来讲），cache line大小在64bytes，也就是8B，而Memory page size 是4KB，差距还是蛮大的，而不是上图中所说的一样大。
+>
+> 上述[数据参考](https://www.aristeia.com/TalkNotes/ACCU2011_CPUCaches.pdf)见下图，更详细的讨论见[stackoverflow](https://stackoverflow.com/questions/14707803/line-size-of-l1-and-l2-caches)、[sciencedirect相关论文](https://www.sciencedirect.com/topics/computer-science/cache-line-size)。结果不一，但都和64bytes在一个数量级，并不是内存页大小的量级（一般在4KB）。
+> 
+> **这也比较合理，一个内存页对于CPU来说数据量巨大，而一个cache line 若同数据总线宽度一致，就可以很顺利的存取一个cache line，也就是64位，而比如intel 8700B[L1 data cache 每核也就32KB](https://en.wikichip.org/wiki/intel/core_i7/i7-8700b)，4KB的话太不现实（只有8个cache line）**
+
+![cache line size](learn-Computer-Organization.assets/cache line size.png)
+
+#### [ ARM A77 core Instructure](https://en.wikichip.org/wiki/arm_holdings/microarchitectures/cortex-a77)
+
+这是ARM A77架构图，我们也可以看到，L1cache 只有64KB。
+
+![cortex-a77_block_diagram](learn-Computer-Organization.assets/cortex-a77_block_diagram.svg)
+
+
+
+
+### 再聊局部性原理
+
+下图中二维数组的存放与循环访问的问题是非常经典的，按行或列循环是截然不同的。
+
+![局部性原理](learn-Computer-Organization.assets/局部性原理.jpeg)
+
+
+
+### cache和RAM的映射关系
+
+
+
+#### 直接映射
+
+
+
+#### 全相联映射
+
+
+
+### cache 替换算法
+
+![cache替换算法吧](learn-Computer-Organization.assets/cache替换算法吧.jpeg)
+
+
+
+#### LRU（Least Recently Used）
+
+它是效率最高的，也只需要log2N（N为cache line 总数）位的额外硬件。
+
+![最近最少使用cache替换](learn-Computer-Organization.assets/最近最少使用cache替换.jpeg)
+
+
+
+### cache 写策略
+
+
+
+![IMG_0194](learn-Computer-Organization.assets/IMG_0194.jpeg)
+
+
+
+
+
+## 指令系统
+
+
+
+
+
+### 指令结构
+
+
+
+![Screen Shot 2021-04-15 at 10.05.16 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-15 at 10.05.16 AM.png)
+
+
+
+### 寻址
+
+
+
+* **找下一条指令的地址———指令寻址**
+
+* **找指令中操作数的地址——数据寻址**
+
+
+
+#### 指令寻址
+
+最简单的情况必定是“**PC（程序计数器）+1**”（这个1指的是一个指令长度，大多时候不是字节，而是一个字）。
+
+* 在前面内容中我们也知道，我们的指令总长一般是固定长度的，但是被分为不同长度的操作码和操作数，所以这种情况一般是**PC+1**。
+
+* 还有就是**JMP**指令，它会更新PC的值，从而使指令跳转。
+
+
+
+#### 数据寻址
+
+
+
+![Screen Shot 2021-04-15 at 10.01.10 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-15 at 10.01.10 AM.png)
+
+
+
+
+
+#### 变址寻址
+
+变址寻址为了在汇编层面更好的实现循环，如下图： 
+
+![Screen Shot 2021-04-15 at 9.51.01 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-15 at 9.51.01 AM.png)
+
+
+
+#### 复合寻址
+
+实际上，一个程序首先会使用基址寻址（其实还有虚拟地址的问题，也就是还要经过页表的转换，但如果“没有操作系统”，编译器一般还是会将程序按照基址寻址的方式编译？）。
+
+在此基础上，为了更好的实现循环，使用变址寻址；为了更好的函数跳转，使用间接寻址。而且在现代操作系统中，真是地址还要经过页表转换，是个非常复杂的过程。
+
+
+
+
 
