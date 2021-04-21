@@ -127,11 +127,85 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 
 
 
+### 定义
 
+
+
+
+
+### 朴素匹配算法
+
+
+
+
+
+### KMP匹配算法
+
+
+
+![Screen Shot 2021-04-18 at 10.19.01 AM](learn-Algorithm.assets/Screen Shot 2021-04-18 at 10.19.01 AM.png)
+
+### KMP算法优化
+
+
+
+![Screen Shot 2021-04-18 at 10.20.32 AM](learn-Algorithm.assets/Screen Shot 2021-04-18 at 10.20.32 AM.png)
 
 
 
 ## 树
+
+
+
+
+
+### 二叉树
+
+
+
+![Screen Shot 2021-04-19 at 10.50.41 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 10.50.41 AM.png)
+
+
+
+#### 二叉树的遍历
+
+* 先序遍历
+
+**递归**调用来实现，二叉树的遍历：
+
+![Screen Shot 2021-04-19 at 10.58.32 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 10.58.32 AM.png)
+
+
+
+* 层序遍历
+
+
+
+![Screen Shot 2021-04-19 at 11.51.22 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.51.22 AM.png)
+
+
+
+
+
+#### 二叉树的应用
+
+* 算数表达式：
+
+<img src="learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.02.03 AM.png" alt="Screen Shot 2021-04-19 at 11.02.03 AM" style="zoom: 25%;" />
+
+```c
+先序遍历：-+a*b-cd/ef	//前缀表达式
+中序遍历：a+b*c-d-e/f	//中缀表达式（需要加界限符）
+后序遍历：abcd-*+ef/-	//后缀表达式
+```
+
+
+
+* 求树的深度：
+
+![Screen Shot 2021-04-19 at 11.09.28 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.09.28 AM.png)
+
+
 
 
 

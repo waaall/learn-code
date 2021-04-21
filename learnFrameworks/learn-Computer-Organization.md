@@ -282,5 +282,58 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
+**具体应用哪种方式、使用哪个寄存器来实现高级语言的语句，这不是操作系统做的事情，其实是编译器要做的事情。**
+
+而硬件**（CPU有多少个寄存器、是否添加某个专用寄存器，这也要和编译器团队（往往就是C/C++编译器）协同的，而具体怎么权衡，《计算机体系结构-量化研究方法》一书中有提到）**也是随着历史的演变更迭的。
 
 
+
+
+
+### CISC & RISC
+
+下表中很多内容并不严谨，也不现实，但大体还是说明了不同指令集之间的区别。
+
+> 比如指令数目肯定有实效性。比如现代x86处理器吸收了很多ARM的优势，比如
+>
+> **能效比的问题**：其实这两种指令集并不意味着能效比有很大差距，主要还是x86架构在高频这条道路上愈走愈远，相对不舍得投入硬件成本（设计成本比如大小核、制造成本比如单核晶体管数量），有人可能会说ARM大小核等很多设计是因为它为了控制功耗，这样必然牺牲了性能。
+>
+> 但是我想说的是，功耗比提升了，一定程度上必然是提升了性能（规模大了性能就提升了）。另外Apple Silicon 就是个很好的例子（当然，这肯定也与Apple在编译器、操作系统方面极高的造诣有关）。
+
+![Screen Shot 2021-04-15 at 9.45.10 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-15 at 9.45.10 PM.png)
+
+
+
+## 中央处理器
+
+
+
+### 指令执行过程
+
+![Screen Shot 2021-04-17 at 11.14.01 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-17 at 11.14.01 AM.png)
+
+
+
+中断
+
+![Screen Shot 2021-04-17 at 11.13.06 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-17 at 11.13.06 AM.png)
+
+
+
+
+
+### 数据通路的结构
+
+
+
+![Screen Shot 2021-04-17 at 11.14.35 AM](learn-Computer-Organization.assets/Screen Shot 2021-04-17 at 11.14.35 AM.png)
+
+
+
+#### 以内部单总线为例（大题考点）
+
+
+
+注意的是，MDRin指的是MDR在CPU内部总线的输入信号，并不是内存到MDR的输入信号，所以下图中3部分的一句是错的。
+
+![Screen Shot 2021-04-17 at 4.08.27 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-17 at 4.08.27 PM.png)
