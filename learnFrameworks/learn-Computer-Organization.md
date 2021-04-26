@@ -8,15 +8,6 @@
 
 ---
 
-## 参考资料
-
-* [CMU公开课](https://www.youtube.com/playlist?list=PL5PHm2jkkXmhayPxddp9z5MixV8Q5Ty8u)
-
-* [华科MOOC](https://www.icourse163.org/course/HUST-1205809816)
-* [华科MOOC资料](https://gitee.com/totalcontrol/hustzc)
-* [logisim官网](http://www.cburch.com/logisim/download.html)
-* [芯片架构wiki](https://en.wikichip.org/wiki/WikiChip)
-
 
 
 ## 写在前面
@@ -41,19 +32,11 @@
 
 
 
-## 组成概述
 
 
+## 数据运算
 
 
-
-## 控制器
-
-
-
-
-
-## 运算器
 
 
 
@@ -337,3 +320,65 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 注意的是，MDRin指的是MDR在CPU内部总线的输入信号，并不是内存到MDR的输入信号，所以下图中3部分的一句是错的。
 
 ![Screen Shot 2021-04-17 at 4.08.27 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-17 at 4.08.27 PM.png)
+
+
+
+#### 专用数据通路方式
+
+
+
+![Screen Shot 2021-04-26 at 4.44.22 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-26 at 4.44.22 PM.png)
+
+
+
+
+
+### 控制器设计
+
+
+
+#### 硬布线控制器
+
+微指令才是机器执行的最小指令单位
+
+![Screen Shot 2021-04-26 at 4.52.36 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-26 at 4.52.36 PM.png)
+
+
+
+
+
+分析每个阶段的微操作序列：
+
+![Screen Shot 2021-04-26 at 4.53.54 PM](learn-Computer-Organization.assets/Screen Shot 2021-04-26 at 4.53.54 PM.png)
+
+
+
+
+
+#### 微程序控制器
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 参考资料
+
+* [CMU公开课](https://www.youtube.com/playlist?list=PL5PHm2jkkXmhayPxddp9z5MixV8Q5Ty8u)
+
+* [华科MOOC](https://www.icourse163.org/course/HUST-1205809816)
+* [华科MOOC资料](https://gitee.com/totalcontrol/hustzc)
+* [logisim官网](http://www.cburch.com/logisim/download.html)
+* [芯片架构wiki](https://en.wikichip.org/wiki/WikiChip)
+
