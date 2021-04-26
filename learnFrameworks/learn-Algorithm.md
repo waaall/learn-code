@@ -1,5 +1,7 @@
 # 算法与数据结构
 
+[toc]
+
 
 
 有两个问题至关重要：
@@ -153,6 +155,12 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 
 
 
+
+
+
+
+
+
 ## 树
 
 
@@ -204,6 +212,116 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 * 求树的深度：
 
 ![Screen Shot 2021-04-19 at 11.09.28 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.09.28 AM.png)
+
+#### 线索二叉树
+
+
+
+![Screen Shot 2021-04-22 at 9.45.32 PM](learn-Algorithm.assets/Screen Shot 2021-04-22 at 9.45.32 PM.png)
+
+
+
+**中序线索化代码过程：**
+
+![Screen Shot 2021-04-22 at 9.46.08 PM](learn-Algorithm.assets/Screen Shot 2021-04-22 at 9.46.08 PM.png)
+
+
+
+上述代码会建立一个pre的全局变量：
+
+
+
+**先序线索化代码过程：**
+
+我们需要注意到这样一个问题：如果访问到没有左子树的节点，将该节点的左子树节点置为其前驱节点。然后若此时再访问这个节点的左子树就会有问题。
+
+**Question：为何中、后序线索化就没有这种问题？**
+
+首先右子树总不会存在该问题，因为其若为NULL，则被替换为后继节点，也就是访问下个节点时才会更改；其次在中后序线索化中，先访问左子树，所以总会先“解决”那个左子树为NULL的节点，所以不会出现这种问题。
+
+![Screen Shot 2021-04-22 at 10.15.49 PM](learn-Algorithm.assets/Screen Shot 2021-04-22 at 10.15.49 PM.png)
+
+
+
+**中序线索二叉树找节点的前驱、后继：**
+
+![Screen Shot 2021-04-23 at 10.37.03 AM](learn-Algorithm.assets/中序线索二叉树找后继.png)
+
+```c
+//------------------中序线索二叉树找中序后继------------------
+//找到以P为根的子树中，第一个被中序遍历的结点
+ThreadNode *FirstNode(ThreadNode *p){
+    //循环找到最左下结点（不一定是叶结点）
+    while(0==p->ltag){
+        p=p->lchild;
+    }
+    return p;
+}
+
+//在中序线索二叉树中找到结点p的后继结点
+ThreadNode *NextNode(ThreadNode *p){
+    //在右子树中最左下结点
+    if(0==p->rtag)return FirstNode(p->rchild);
+    else return p->rchild;
+}
+
+//对中序线索二叉树进行中序遍历（利用线索实现的非递归算法），空间复杂度为O(1)；
+void InOrder(ThreadNode *T){
+    for (ThreadNode *p = FirstNode(T);  p!=NULL ; p=NextNode(p)) {
+        visit(p);
+    }
+}
+```
+
+##### 总结
+
+
+
+![Screen Shot 2021-04-26 at 10.04.24 AM](learn-Algorithm.assets/Screen Shot 2021-04-26 at 10.04.24 AM.png)
+
+### 树的存储结构
+
+**Question：为啥会有树的存储结构？明明二叉树都讲过了呀？**
+
+因为二叉树最多可以有两个子树节点，所以sturct是确定的，而一般意义的树是可以有任意多的子树节点的，所以这就让节点struct表述很困难。
+
+![Screen Shot 2021-04-26 at 11.28.18 AM](learn-Algorithm.assets/Screen Shot 2021-04-26 at 11.28.18 AM.png)
+
+
+
+#### 树、森林的遍历
+
+
+
+
+
+
+
+
+
+### 二叉排序（搜索）树BST
+
+知道了中序遍历等方法， 再结合之前提到的二叉排序树就可以发现它的好处———高效查找、排序。
+
+* BST的中序遍历结果是一个递增序列
+
+
+
+#### BST查找
+
+
+
+
+
+#### BST插入
+
+
+
+
+
+#### BST删除
+
+
 
 
 

@@ -23,6 +23,7 @@
 
 * [Linux内核设计与实现](https://book.douban.com/subject/6097773/)
 * [现代操作系统](https://book.douban.com/subject/27096665/)
+* linux git 仓库
 * [Linux Kernel Doc](https://www.kernel.org/doc/html/latest/index.html)
 * [LXR](http://lxr.linux.no)
 * [深入理解计算机系统](https://book.douban.com/subject/26912767/)
