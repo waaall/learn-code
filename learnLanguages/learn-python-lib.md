@@ -617,6 +617,22 @@ plt.show()
 
 
 
+### PDF
+
+
+
+#### pyPDF2
+
+* [pyPDF2 GitHub](https://github.com/mstamy2/PyPDF2)
+* [官方教程（英语）](https://pythonhosted.org/PyPDF2/)
+
+
+
+#### pdfminer
+
+* [Github](https://github.com/euske/pdfminer)
+
+
 
 
 

@@ -144,11 +144,10 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 **上图中有一点有错误：cache“行”（cache line）和内存页面（Memory page）大小不一样**。
 
-> 一般来说（对于2020年前后的64位主流CPU来讲），cache line大小在64bytes，也就是8B，而Memory page size 是4KB，差距还是蛮大的，而不是上图中所说的一样大。
+> 一般来说（对于2020年前后的64位主流CPU来讲），cache line大小在64bytes，也就是64B，而Memory page size 是4KB，差距还是蛮大的，而不是上图中所说的一样大。
 >
 > 上述[数据参考](https://www.aristeia.com/TalkNotes/ACCU2011_CPUCaches.pdf)见下图，更详细的讨论见[stackoverflow](https://stackoverflow.com/questions/14707803/line-size-of-l1-and-l2-caches)、[sciencedirect相关论文](https://www.sciencedirect.com/topics/computer-science/cache-line-size)。结果不一，但都和64bytes在一个数量级，并不是内存页大小的量级（一般在4KB）。
 > 
-> **这也比较合理，一个内存页对于CPU来说数据量巨大，而一个cache line 若同数据总线宽度一致，就可以很顺利的存取一个cache line，也就是64位，而比如intel 8700B[L1 data cache 每核也就32KB](https://en.wikichip.org/wiki/intel/core_i7/i7-8700b)，4KB的话太不现实（只有8个cache line）**
 
 ![cache line size](learn-Computer-Organization.assets/cache line size.png)
 

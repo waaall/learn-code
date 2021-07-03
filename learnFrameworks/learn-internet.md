@@ -19,7 +19,13 @@
 
 ![物理层](learn-internet.assets/物理层.png)
 
+### 奈氏准则
 
+
+
+> [知乎回答](https://www.zhihu.com/question/40443733/answer/1459206942)
+>
+> 
 
 
 
@@ -204,7 +210,7 @@ A：在实体数据层面（光纤或网线的光电信号），一个包是既�
 
 我们用域名()来一一对应的描述IP地址，这就像是IP相较于MAC地址，让层级关系更明确，我们更容易记忆和检索，但是计算机服务器还是需要IP，千万乃至上亿网络服务器的域名和IP的对应关系就存在DNS服务器上，当你键入www.google.com时候，浏览器首先会去DNS服务器问其对应的IP地址，返回来之后再进行我们之前说的那些网络传输流程。
 
-而且，为了检索方便，DNS的域名是以树状数据分布的，比如www.google.com就是一个二级域名，而www.mail.google.com就是一个在www.google.com底下的三级域名。
+而且，为了检索方便，DNS的域名是以树这种数据结构存储的，比如www.google.com就是一个二级域名，而www.mail.google.com就是一个在www.google.com底下的三级域名。
 
 ### HTTP
 

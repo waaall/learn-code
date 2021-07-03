@@ -197,7 +197,7 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 
 #### 二叉树的应用
 
-* 算数表达式：
+##### 算数表达式：
 
 <img src="learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.02.03 AM.png" alt="Screen Shot 2021-04-19 at 11.02.03 AM" style="zoom: 25%;" />
 
@@ -209,7 +209,7 @@ void 删除单链表某值(LinkList * & L, ElemType x) {
 
 
 
-* 求树的深度：
+##### 求树的深度：
 
 ![Screen Shot 2021-04-19 at 11.09.28 AM](learn-Algorithm.assets/Screen Shot 2021-04-19 at 11.09.28 AM.png)
 
