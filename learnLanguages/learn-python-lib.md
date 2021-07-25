@@ -310,6 +310,8 @@ flask run
 虚拟python环境
 
 
+
+
 ### pandas
 
 - [ ] **[pandas中文](https://www.pypandas.cn/docs/user_guide/)**
@@ -654,6 +656,18 @@ ipython --pylab #直接导入matplotlib，实时交互作图
 ### Modin
 
 这个库是专门用来对pandas进行多核并行优化的：[Modin Github](https://github.com/modin-project/modin)、[横向对比并行就算的效率](https://www.datarevenue.com/en-blog/pandas-vs-dask-vs-vaex-vs-modin-vs-rapids-vs-ray)。
+
+
+
+### numpy
+
+这主要是处理基本数学问题的库，其中最典型的函数就是数组、向量、矩阵的运算函数。
+
+#### [numpy中matrix 和 array的区别](https://blog.csdn.net/vincentlipan/article/details/20717163)
+
+
+
+
 
 
 
