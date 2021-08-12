@@ -905,9 +905,70 @@ struct inode {
 
 
 
+### B+树在文件系统中的应用
+
+>  相关链接：
+>
+> * https://www.zhihu.com/question/47874339
+> * https://blog.51cto.com/einst/1623269
+>
+> ## B+ 树在xfs中的应用
+>
+> 当前大部分Linux filesystem的inode都用B+ 树来组织他们的inode节点。使得查找更快更便捷。
+>
+> xfs相关的是参照 [ 麦子迈的博客](http://www.wzxue.com/xfs-的磁盘存储格式分析/)。
+>
+> ### Linux filesystem的结构特点
+>
+> 在Linux系统内部，一个文件系统是由逻辑块的序列组成的，每块为512个字节。具体组成下面表中所示。
+>
+> | 引导块               | 超级块                                                       | 索引节点（inode）区                                          | 数据区                                                       |
+> | -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+> | 用于读入启动操作系统 | 记录文件系统的当前状态，如硬盘空间的大小和文件系统的基本信息 | 存放文件系统的索引节点表，Linux系统中每个文件和目录都占据一个索引节点。文件系统一般从根节点开始 | 存放文件系统的索引节点表，Linux系统中每个文件和目录都占据一个索引节点。文件系统一般从根节点开始 |
+>
+> > 当然，现在主流的filesystem超级块可能不止一个，索引节点区和数据区又会划分成多个block group。
+>
+> ### xfs中Allocation Group
+>
+> XFS 引入了 Allocation Group(AG) 来划分一系列相等的块，每个 AG 所含的信息非常接近于一个完整的 XFS。每个 AG 都有三个主要功能:
+>
+> 1. 一个 Superblock 来描述整个文件系统信息
+> 2. 空闲空间管理
+> 3. Inode 分配和管理
+>
+> 多个 AG 的引入使得整个文件系统更加并行化，因为 AG 之间没有太多的共享资源和依赖。唯一的全局信息是第一个 AG 维护了一个全局的空闲空间情况和全局 inode 数(只在 umount 的时候会更新)。
+>
+> ### B+树在AG中得使用
+>
+> ![AG](http://wiki.sh.99cloud.net/lib/exe/fetch.php?media=xfs:xfs_ag.png)
+>
+> XFS 通过两个B+树来管理空闲空间，如上图所示，分别是 Key 为 Block number 和 Block count 的两个。这使得 XFS 能通过 Block number 或者 Block size 来快速定位。如上图所示”AG free block info”主要是包括两个B+树的 root 节点的 block number(一个 block 存储一个 root 节点)，level，第一个和最后一个空闲列表块，空闲列表块的数量等等。
+>
+> 从”AG free block info”得到两个B+树的 root 节点信息后，每个节点分为两部分，一部分是节点信息，另一部分是 Key(Block count 或者 Block size)。
+>
+> 而图中的”AG Free List”是每个 AG 保留下来供B+树增长使用的，通常来说会是4个 block。
+>
+> ### AG inode管理
+>
+> Inode 管理是每个 Linux 文件系统的重点，如何使用和分配 Inode 影响着文件系统的性能和利用率。”AG inode B+tree info”包含着 AG 的 inode 信息，如 inode 已分配数，root 节点，空闲 inode 数，最近分配的 inode 和一个已删除 inode (inode 被删除但是其管理的数据块仍在，需要推迟删除，这个表在 mount 和 umount 的时候通常会清空)的哈希表。
+>
+> 与空闲空间管理的B+树类似，inode B+树的每个节点都包含着节点信息和Key(块位置)。
+>
+> ### Data fork
+>
+> XFS 使用 extent 来管理空间，一个 extent 包含了文件的逻辑 offset 和 block 的开始位置与长度，状态。一个文件可能会有多个 extent 组成，当 extent 所代表的 block 连续时，多个 extent 会相互合并。
+>
+> data fork 里的 extent 数据在绝大多数都可以放在 inode block 里，每个 extent 代表一个记录组成一个数组放在 data fork。但是当 data fork 无法容纳更多的 extent 时，extent 会被使用B+树管理。B+树的 root 节点会被放在 data fork 里。
 
 
-### 逻辑文件结构与物理文件结构！
+
+
+
+
+
+
+
+### 逻辑文件结构与物理文件结构
 
 之前我们讲到的关于文件系统都是以操作系统的视角，怎么构建文件的物理结构，也就是文件在硬件中会是怎么存放与查找的。
 
