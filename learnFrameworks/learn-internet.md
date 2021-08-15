@@ -305,7 +305,69 @@ A：因为要建立双向连接，双方都需要相互确认对方信息：
 	  2. B收到后回复（A的序号+1），且同时发送B的序号
 	  3. A收到后回复（B的序号+1），并同时发送第一波包裹
 
-值得注意的是，**这个序列号和SYN标志位不仅仅是有些比喻为打招呼那么简单，而是避免了与旧报文混淆。**
+值得注意的是，**这个序列号和SYN标志位不仅仅是有些比喻为打招呼那么简单，而是避免了与旧报文混淆。**但这样讲还是说不清楚这个问题，《计算机网络---自顶向下》这本书的该部分内容思路就非常棒，完整的展示了，为什么我们需要这么多参数来保证这个“可靠性”传输。下节重点讲，这里还要提到一点：可靠性传输与网络安全完全是两码事，可靠性是担心环境、非人为因素导致数据损坏、丢失；安全问题是防止人为因素导致数据泄露。
+
+
+
+#### TCP与可靠传输实现！
+
+1. 首先来看若没有任何措施，发送会出现哪些意外情况：
+
+![IMG_1270](learn-internet.assets/IMG_1270.jpeg)
+
+a）也就是收到了数据，但是出错了，甚至都不会意识到自己的数据错误；
+
+b）也就是对丢包，接收方根本没收到，发送方不管，直接继续发。
+
+
+
+2. 解决上述两个问题：
+
+**首先是针对a）：**
+
+（1）肯定要加入bit检验位，也就是校验码，这是《组成原理》中学过的，不展开。
+
+（2）但是有很多情况是知道错误但是还原不出原有数据，所以这时候需要一个重传的机制，也就是接收方要跟发送方报告接收到的数据是否完整，所以就有了**ACK/NAK**（分别代表：没问题/有误需重发）。
+
+![IMG_1272](learn-internet.assets/IMG_1272.jpeg)
+
+c）所示，改进后出现bit错误没问题了；但是看d），当ACK/NAK包出错时，没有办法；另外如e）ACK丢包也是不行。
+
+**针对b）、e）丢包问题：**
+
+（3）我们可以让**发送方设置等待时间t**，若到时间未收到ACK/NAK包，则直接重发。
+
+**针对d）的ACK/NAK包错误问题：**
+
+（4）同样可以让发送方遇到错误的ACK/NAK包，NAK包，到时间t未收到包，都重发数据包。
+
+但此时又有了新的问题：就是这个包的序号0、1只有上帝视角知道，然而当接收方发送了ACK后，他会等待下一组数据，然而中途若ACK丢包或者ACK解析错误，发送方会重发，而此时接收方误以为下一组数据。这个问题很好解决，就是给**分组数据编号**。所以经过了（3）、（4）的改进，TCP的基本逻辑已经成型了。
+
+<img src="learn-internet.assets/IMG_1273.jpeg" alt="IMG_1273" style="zoom:33%;" />
+
+上图几种可能出现的错误情况都没问题，但是效率的问题就来了，这样发送太慢了，我们能不能多组一起发？可以，但问题就会复杂起来，这就是所谓的流水线问题：
+
+<img src="learn-internet.assets/Screen Shot 2021-08-14 at 22.03.32.png" alt="Screen Shot 2021-08-14 at 22.03.32" style="zoom:33%;" />
+
+这怎么确认呢？**GBN（Go-Back-N）协议**来了：
+
+<img src="learn-internet.assets/Screen Shot 2021-08-14 at 22.06.30.png" alt="Screen Shot 2021-08-14 at 22.06.30" style="zoom:33%;" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -315,7 +377,32 @@ A：在实体数据层面（光纤或网线的光电信号），一个包是既�
 
 
 
+**Q：这层的核心应该在于数据传输实现了进程到进程的抽象（端口）。为什么在这层建立可靠传输，而不是网络层或者应用层？**
 
+A：**网络传输中这些工作（路由选择、地址编码、可靠传输、安全性等等）是必须的，其他的都不是必须的**，尤其是所谓的分层问题，这更多的是历史遗留问题，我们可不可以只分两层：设备层、进程层？大概率也是没什么问题的，就是把这些实现方式重新打包一下，协议该“浓缩”成一个就浓缩一下，理想化的网络协议结构会精简的多。
+
+- 首先，当然可以。但是在那个时代，哪有这么多进程啥的，IP、路由协议，主要还是考虑设备到设备的通信，所以最大的原因是没有考虑到进程这一层面的通信问题，然后就有人在此基础上发明了新的协议来解决这个问题，就像是一层层的补丁（先是UDP用端口号来“独立”进程间的通信，然后TCP就“补”上了验证的机制，让通信可靠一点）。
+
+- 要说为什么不在网络层实现，还是有一点点原因的？因为很多延迟敏感、速度敏感，却对丢包相对 不敏感的网络应用很多，如视频直播、网络游戏等。它们倾向于“不可靠”传输。很明显，这种选择（到底是可靠速度慢还是不可靠速度快）是在进程这一层开始思考的问题，而对于设备（网络层）这一层来说，“无脑”转发，做 以一个设备的身份（所有进程）进行数据传输 要做的那部分工作最好。
+
+当然，HTTP这一层也可以在UDP的基础上实现“自己”的可靠传输，事实上也有这样的做法了———**QUIC**（Quick UDP Internet Connection）。
+
+> https://www.chromium.org/quic
+>
+> QUIC is a new multiplexed transport built on top of UDP. HTTP/3 is designed to take advantage of QUIC's features, including lack of Head-Of-Line blocking between streams.
+>
+> The QUIC project started as an alternative to TCP+TLS+HTTP/2, with the goal of improving user experience, particularly page load times. The [QUIC working group](https://datatracker.ietf.org/wg/quic/about/) at the IETF defined a clear boundary between the transport([QUIC](https://datatracker.ietf.org/doc/html/rfc9000)) and application(HTTP/3) layers, as well as migrating from QUIC Crypto to [TLS 1.3](https://datatracker.ietf.org/doc/html/rfc8446).
+>
+> Because TCP is implemented in operating system kernels and middleboxes, widely deploying significant changes to TCP is next to impossible. However, since QUIC is built on top of UDP and the transport functionality is encrypted, it suffers from no such limitations.
+>
+> **Key features of QUIC and HTTP/3 over TCP+TLS and HTTP/2 include** 
+>
+> - Reduced connection establishment time - 0 round trips in the common case
+> - Improved congestion control feedback
+> - Multiplexing without head of line blocking
+> - Connection migration
+> - Transport extensibility
+> - Optional unreliable delivery
 
 
 
@@ -332,10 +419,6 @@ A：在实体数据层面（光纤或网线的光电信号），一个包是既�
 ### FTP
 
 顾名思义，文件传输协议。在讲述这个协议的具体规范的之前，我们应当思考它为什么存在？可以扩展为：**文件传输与信息传输有何本质区别，以至于需要一系列单独的协议来实现？**
-
-
-
-
 
 
 

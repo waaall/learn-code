@@ -506,8 +506,25 @@ git config --local  --list  #看当前仓库信息
 ```bash
 git config --global credential.helper osxkeychain #Mac
 
-git config --global credential.helper cache #Linux
+git config --global credential.helper cache #Linux，暂存密码
+git config --global credential.helper store #Linux，密码放在 ~/.git-credentials
 ```
+
+2021年不再适用GitHub，其使用Personal access Token来部分替代密码，具体见[官方文档](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token)。
+
+But！ Github只是用Token码来代替密码，所以只需要将~/.git-credentials中的密码改成token码就ok，就像下图这样：
+
+<img src="learn-git.assets/Screen Shot 2021-08-14 at 10.18.31.png" alt="Screen Shot 2021-08-14 at 10.18.31" style="zoom:33%;" />
+
+
+
+然后Mac是用的osxkeychain来管理嘛，所以打开“钥匙串”，搜索git，就会有下图这个：
+
+<img src="learn-git.assets/Screen Shot 2021-08-14 at 10.04.50.png" alt="Screen Shot 2021-08-14 at 10.04.50" style="zoom: 33%;" />
+
+就是这个kind为internet password的这个，然后在show password这里修改为token码即可。
+
+
 
 #### git[忽略文件](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository#_ignoring)
 
