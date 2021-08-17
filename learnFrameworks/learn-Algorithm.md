@@ -2,7 +2,7 @@
 
 [toc]
 
-
+* [数据结构一个不错的网站](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
 
 有两个问题至关重要：
 
