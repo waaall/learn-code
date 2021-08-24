@@ -608,7 +608,7 @@ sudo apt install autoconf automake libtool #额外不在build-essential里的GNU
 
 
 
-## Detail
+## Theory
 
 ### 头文件
 
@@ -1865,4 +1865,57 @@ EigenSolver<Matrix3d> eig(A);     // [vec val] = eig(A)
 eig.eigenvalues();                // diag(val)
 eig.eigenvectors();               // vec
 ```
+
+
+
+## Detail
+
+
+
+### ++i 与 i++的区别
+
+> https://www.zhihu.com/question/19811087/answer/80210083
+>
+> i++ 与 ++i 的主要区别有两个：
+> **1、 i++ 返回原来的值，++i 返回加1后的值。**
+> **2、 i++ 不能作为左值，而++i 可以。**
+
+
+
+那么为什么『i++ 不能作为左值，而++i 可以』？
+看它们各自的实现就一目了然了：
+以下代码来自博客：[为什么(i++)不能做左值，而(++i)可以](https://link.zhihu.com/?target=http%3A//blog.csdn.net/zlhy_/article/details/8349300)
+
+```cpp
+// 前缀形式：
+int& int::operator++() //这里返回的是一个引用形式，就是说函数返回值也可以作为一个左值使用
+{//函数本身无参，意味着是在自身空间内增加1的
+  *this += 1;  // 增加
+  return *this;  // 取回值
+}
+
+//后缀形式:
+const int int::operator++(int) //函数返回值是一个非左值型的，与前缀形式的差别所在。
+{//函数带参，说明有另外的空间开辟
+  int oldValue = *this;  // 取回值
+  ++(*this);  // 增加
+  return oldValue;  // 返回被取回的值
+}
+```
+
+如上所示，i++ 最后返回的是一个临时变量，而**临时变量是右值**。
+
+
+
+#### 何为左值、右值？
+
+> 左值：
+>
+> C/C++语言中可以放在赋值符号左边的变量，即具有对应的可以由用户访问的存储单元，并且能够由用户去改变其值的量。左值表示存储在计算机内存的对象，而不是常量或计算的结果。或者说左值是代表一个内存地址值，并且通过这个内存地址，就可以对内存进行读并且写（主要是能写）操作；
+>
+> 这也就是为什么左值可以被赋值的原因了。相对应的还有右值：当一个符号或者常量放在操作符右边的时候，计算机就读取他们的“右值”，也就是其代表的真实值。简单来说就是，左值相当于地址值，右值相当于数据值
+
+
+
+这个[知乎问题](https://www.zhihu.com/question/26203703)问的很好，所谓的左值，也就是有内存地址的值，那么int a = 2；int b = a；a与2相比，多了内存占用（毕竟可以访问？）。有个[博客](https://www.cnblogs.com/catch/p/3500678.html)对左值右值探讨的细致一些。
 
