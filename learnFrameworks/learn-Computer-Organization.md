@@ -630,7 +630,7 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 ### 周期？周期？还TMD是周期！
 
-目前各种教材对周期的划分各种**前后矛盾**。
+目前各种教材对周期的划分各种**前后矛盾**。（这部分是[我的一个知乎回答](https://www.zhihu.com/question/53670481/answer/2116459568)的初稿。）
 
 
 
@@ -658,13 +658,19 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 执行一个指令，总要分为**最最最小的操作，这叫微操作**，这个时间是时钟周期（其实可能有的微操作快于时钟周期，但是快的就等着）；不同的微操作可能**用到完全不同的硬件，若其逻辑上也不冲突**，就可以并行（注意虽同时，但“不同地”），那么**一个时钟周期所完成的工作，总需要个名字，叫微指令**。
 
+> 其实这个依然有些问题，因为RISC（如ARM）处理器的设计初衷才是微指令才是在一个周期内完成的，而CISC（如X86）要复杂的多，那就默认是RICS）。
+
 当多个指令顺序执行时，之前那些划分的微指令，由于不同指令之间不存在逻辑冲突（其实有时存在，相互依赖等问题，这时候流水线就白算了，但这是后话，先假设不同指令是相互独立的），所以可以采用工业上流水线的方式。而问题就来了，流水线的划分，是用微指令划分（也就是流水线的时间单位也是时钟周期）呢？ 还是用什么划分？
 
 有人将**流水线的各“步骤”定义为「机器周期」**。对，这就是机器周期的由来！否则，如果仅仅将指令执行分为不同的阶段，当然是不等长的，而为何还要强调机器周期分为「定长」和「变长」一说？正是最初的流水线为了避免太过复杂，就把流水线的各步骤长度定为一致。才有了所谓定长机器周期的概念，也就是对应定长流水线。
 
-至于为啥不用刚刚「微指令」来定义流水线的“步骤”长度？还正好是一个时钟周期？嗯。。这个问题有待查阅与讨论。
-
 <img src="learn-Computer-Organization.assets/IMG_1639.jpeg" alt="IMG_1639" style="zoom: 33%;" />
+
+至于为啥不用刚刚「微指令」来定义流水线的“步骤”长度？还正好是一个时钟周期？嗯。好问题！因为微指令来并行，会有很多问题，最大的问题就是我们按照一个指令划分的微指令，这也意味着，对于一条指令，在不同的微指令执行阶段，它可能会访问同一个硬件（寄存器或者cache/MAR等）如下图所示：
+
+![IMG_1643](learn-Computer-Organization.assets/IMG_1643.jpeg)
+
+
 
 
 
@@ -680,15 +686,83 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
-再看下图中这两道408真题：与上图Wikipedia一致，还不如Wiki说的清楚：什么叫「功能段」？？？名字真的可以这么随便瞎JB取的吗？
-
-最终居然还问：**「时钟周期」「至少」**是多少？离谱的是间隔多年后又出了一遍。更无语的是，它将离谱的ns量级的时间，改为了ps，哎，这有用吗？问题是在这里吗？只有贱字形容。
+再看下图中这两道408真题：与上图Wikipedia一致，还不如Wiki说的清楚：什么叫「功能段」？最终居然还问：**「时钟周期」「至少」**是多少？离谱的是间隔多年后（18年）又出了一遍。且在18年将离谱的ns量级的时间，改为了ps，哎，问题是在这里吗？
 
 <img src="learn-Computer-Organization.assets/IMG_1635.jpeg" alt="IMG_1635" style="zoom:25%;" />
 
 
 
+来看个更「靠谱」点的书：《[现代处理器设计](https://book.douban.com/subject/2185652/)》，就摘出来两个图，来简单分析下，主要是找到流水线与机器周期、微指令（时钟周期）的关系。
 
+* 一个是将经典的（目前大量国内《计组》教材划分的机器周期，如取址、执行、写会等4-5步）4阶段流水线，“变”为11阶段流水线的过程。见Fig2.8。
+* 另一个就是进一步具体化为12阶段流水线（这次每个阶段都有非常具体的工作，见Fig2.9）。
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-12 at 09.17.07.png" alt="Screen Shot 2021-09-12 at 09.17.07" style="zoom:33%;" />
+
+
+
+> For example, assume that the total latency for the five generic subcomputations is 280 ns
+> and **that the resultant machine cycle times for the 4-stage design of Figure 2.8(a) and the 11 stage design of Figure 2.8(b) are 80 and 30 ns**, respectively. Consequently, the total latency for the 4-stage pipeline is 320 ns (80 ns × 4) and the total latency for the 11-stage pipeline is 330 ns (30 ns × 11). The difference between the new total latency and the original total latency of 280 ns represents the internal fragmentation. Hence, the internal fragmentation for the 4-stage design is 40 ns (320 ns - 280 ns), and the internal fragmentation for the 11-stage design is 50 ns (330 ns - 280 ns). It can be concluded that the 4-stage design is more efficient than the 11-stage design in terms of incurring less overhead due to internal fragmentation. Of course, the 11-stage design yields a throughput that is 9.3 (280 ns/ 30 ns) times that of a non-pipelined design, while the 4-stage design's throughput is only 3.5 (280 ns / 80 ns) times that of a nonpipelined design. As can be seen in both designs, the internal fragmentation has hindered the attainment of the idealized throughput increase by factors of 11 and 4 for the 11-stage and the 4-stage pipelines, respectively.
+>
+> 翻译一下：
+>
+> 例如，假设5个基本运算分量总的延迟为280 ns。 **图2.8（a）中的4级流水线设计和图2.8（b）中的11级流水线设计的「机器周期」分別是 80 ns和30 ns。**相应地，4级流水线总延迟为320 ns（80 nsx 4）、11级流水线总的延迟为330 ns （30 ns x 11），而最初的总延迟为 280 ns。
+>
+> 这之间的差距就是因为存在内部碎片，因此，4级流水线的内部碎片是40 ns ( 320 ns~280 ns). 11级流水线的内部碎片是50ns（330ns~280 ns)：可以认为4级流水线的效率要比11级流水线的效率更高。因为前者的内部碎片带来的开销小一些。当然，11级流水线的吞吐率是非流水设计9.3（280ns/30ns）倍，而4级流水线的吞吐率是非流水设计的 3.5倍（280 ns/80 ns)。
+>
+> 从这两个设汁中都可以看出，由于内部碎片的存在，使得11级流水线和4级流水线在性能的提高上都达不到理想情况下的11倍和4倍。
+
+上段引文中
+
+
+
+
+
+> To accommodate slow instruction memory, the IF generic subcomputation is subdivided and mapped to two pipeline stages, namely, the IF1 and IF2 stages. Instruction fetch is initiated in IF1 and completes in IF2. **Even though instruction fetch takes two machine cycles**, it is pipelined; that is, while the first instruction is completing the fetching in IF2, the second instruction can begin fetching in IF1. This means that the instruction memory **must be able to support two concurrent accesses, by IF1 and IF2 pipeline stages, in every machine cycle**. 
+>
+> 翻译一下：
+>
+> 为了适应慢速的指令存储器、IF“部分”被进一步分割并细化成两个流水段——IFI 和IF2段。IFI 进行取指的初始化，IF2 完成取指。**虽然取指要使用两个「时钟周期」**，但由于实现了流水化，当第一条指令进入IF2中进行取指时，第二指令在IF1中初始化，这表明指令存储器**每个「时钟周期」必须能够同时支持两个请求**。分別IF1 和IF2。
+
+
+
+在具体看下，12阶段的流水线，下图作的太棒了！信息量巨大。虽然此作者还是混淆了机器周期和时钟周期。
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-12 at 09.24.27.png" alt="Screen Shot 2021-09-12 at 09.24.27" style="zoom:25%;" />
+
+> MIPS processors normally employ separate instruction and data caches. In every machine cycle the R2000/R3000 pipeline must support the concurrent accesses of one I-cache read by the IF stage and one D-cache read (for a load instruction) or write (for a store instruction) by the MEM stage. Note that **with the split cache configuration, both the I-cache and the D-cache need not be multiported**. On the other hand, if both instructions and data are stored in the same cache, the unified cache will need to be dual-ported to support this pipeline. The register file must provide adequate ports to support two register reads by the RD stage and one register write by the WB stage in every machine cycle.
+>
+> 翻译一下：
+>
+> MIPS 处理器通常來用分离的指令和数据cache，每个时钟周期内，R2000/R3000流水线必须同咐支持一次l-cache读请求，一次D-cache 读请求（load 指令）或者写请求（store指令）。对l-cache 的访
+> 问IF阶段完成，对D-cache的访问在 MEM 阶段完成。注意**由于采用了分离的cache 配置，I-cache 和 D-cache 都不需要多端口**，另一方面，如果指令和数据都存放在一个cache 里，就需要双端口来提供支持。寄存器文件每个时钟周期有两次读请求（RD段）和一次写请求（WB段），因此至少要有两个端口。
+
+#### 现代CPU的流水线
+
+上文还是聚焦于很初级的流水线，只是进行了一定程度上的细分，理清了机器指令、流水线、时钟周期等概念。并讲述了如何在硬件上提高并行度（如划分指令和数据cache，或者多端口访问硬件）。实际上一个现代处理器的流水线极为复杂。下面简单提一提：
+
+1. 文中没有讲到的「数据/逻辑冲突」，也就是后面指令的计算 需要 前面指令的结果，这时候流水线进行就会出错，因为前面指令还没有写回，后面就要访问。当然这个也可以通过编译器优化（尽量把这种指令分开执行）；或者开「数据旁路」，就是不写回直接将结果送给流水线上的下一条指令。想想就复杂得很！
+2. 「跳转预测」：因为判断语句大概率会进行指令跳转，导致接下来的流水线指令执行结果都作废，怎么提前预测？也是个大问题。
+3. 「多发射」：也就是真正的同时并行，这要求每个微操作都是用多个相同的硬件（类似多核，但不是一个概念），比如一个CPU有8个加法器、8个解码器、8个累加器，啥都是8个，那么这个CPU在同一时刻、同一“地点”可以8条指令在运行（注意这还不考虑流水线）。见下图（2发射4级流水线）：
+
+<img src="https://pic2.zhimg.com/80/v2-2022801b0d179e967a02baffecf7b0a9_1440w.jpg?source=1940ef5c" alt="img" style="zoom:25%;" />
+
+4. 「乱序执行」：ROB(ReOrder Buffer)追踪着流水线中正在执行的指令。 ROB使得在流水线中实际上乱序执行的指令在程序员看来是顺序的，即将乱序的指令结果“重排序”。 指令经过译码和重命名之后，就会被派遣到ROB中，并进入发射队列，并被标记为“正在执行中”。 指令执行完毕后，ROB会被通知并将该指令的状态标记为“执行完毕”。 当ROB的头部指令执行完毕时，该指令会被提交(Commit)，这条指令的结果在外部将可以被“观测”到。 如果位于ROB头部的指令发生了异常，流水线将会清空，位于异常指令后面的指令都将不会被提交，同时ROB会将PC定向到异常处理函数。
+
+
+
+下图是几种芯片的架构示意图，他们的共同点大于差异，都是多发射、超标量、分支预测的处理器。
+
+<img src="learn-Computer-Organization.assets/现代处理器架构示意图.jpeg" alt="现代处理器架构示意图" style="zoom:25%;" />
+
+具体一些，AppleM1的 “预测架构图”如下：
+
+<img src="learn-Computer-Organization.assets/M1架构图.jpeg" alt="M1架构图" style="zoom: 50%;" />
+
+>  8宽度解码＋超大重排缓冲区＋超多LD/ST单元(AMDzen3的ipc提升一大部分也是靠这个)＋超多执
+> 行单元。基本上规格上是秒杀目前intel/amd的存在(ld/st可能不及zen3但是zen3有smt)。
+> 然后实际性能提升归功于加大的tlb和ld/st， 这个是以前arm最大的弱项。从实測表现来看基本上
+> 现在在内存延迟敏感的spec2006子项下，表现甚至已经超过了intel/amd.
 
 
 
