@@ -279,6 +279,26 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
+**写命中时**：
+
+* **直写（Write-through）**：修改当前cache的同时，也修改下一级存储器中的内容。
+
+* **写回（Write-back）**：仅修改当前命中cache（或RAM）的内容，下一级的修改在被换出当前级cache（或RAM）后
+
+
+
+低级的存储器（如3级cache、内存RAM、硬盘等）采用写回没毛病：首先他们有些大量的空间，需要被替换出的概率低一些；另外，若都用直写，那cache就没有存在的意义了，因为改一个数据，还要一路改到硬盘。
+
+
+
+《深入理解计算机系统》表示（见下引文）：CPU cache之间是直写多一些（有专门的写缓冲），而比如3级cache与RAM、RAM与硬盘是写回多一些。但是据我了解，现代CPU的cache之前也是写回多一些，这样能大量降低低一级的存储器访问压力。
+
+
+
+> 6.4.7 Performance Impact of Cache Parameters
+>
+> Write-through caches are simpler to implement and can use a write buffer that works independently of the cache to update memory. Furthermore, read misses are less expensive because they do not trigger a memory write. On the other hand, write-back caches result in fewer transfers, which allows more bandwidth to memory for I/O devices that perform DMA. Further, reducing the number of transfers becomes increasingly important as we move down the hierarchy and the transfer times increase. In general, **caches further down the hierarchy are more likely to use write-back than write-through.**
+
 
 
 ## 指令系统
