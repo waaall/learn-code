@@ -481,9 +481,13 @@ A：因为CPU制作商同操作系统厂商一起设定的在CPU层级的权限�
 
 值得注意的是，本节下述内容已经过时（2021年），在《现代操作系统》3.9小结中提到：如今UNIX和windows（x64）不支持真正意义的分段了。
 
-**但，物理内存不支持分段，虚拟内存地址空间（编译器生成）还是会分段的：**
+**但，物理内存不支持分段，虚拟内存地址空间（编译器生成）还是会分段的：[这个视频第49分钟](https://www.youtube.com/watch?v=IpspU4yXGPQ&list=PLjAs5kw1NNs39x5O23T-plIzer0pwFrPv&index=19)**，咸鱼讲的不错（关于程序虚拟地址空间、函数的执行与调用）。
 
 <img src="learn-Computer-System.assets/IMG_1730.jpeg" alt="IMG_1730" style="zoom:25%;" />
+
+
+
+
 
 > 下图文引用自一个博客https://manybutfinite.com/post/anatomy-of-a-program-in-memory/
 >
