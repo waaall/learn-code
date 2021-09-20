@@ -630,7 +630,7 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
-### CISC & RISC
+### [CISC & RISC](https://www.zhihu.com/question/325968121)
 
 下表中很多内容并不严谨，也不现实，但大体还是说明了不同指令集之间的区别。
 
@@ -1129,6 +1129,80 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
+### 程序的机器级表示
+
+```shell
+gcc -Og -S -masm=intel mstore.c #预处理+编译，且汇编语言为intel格式标准，-Og表示不进行优化
+
+g++ -E test.cpp (-o test.i)#预处理, -o是指定输出文件名
+g++ -S test.i (-o bala.s) #编译（生成的就是汇编文件）
+g++ -c test.s -o balabala.o #汇编，生成的为二进制文件
+g++ test.o #链接，就是把相关的#include文件链接起来，生成a.out文件
+
+objdump -d bala.o #反汇编
+
+#单文件直接生成可执行文件
+g++ test.cpp
+#多文件直接生成可执行文件
+g++ test1.cpp test2.cpp
+```
+
+Mac上安装反汇编
+
+```shell
+brew install binutils
+
+# 然后根据提示将环境变量加入zsh、等操作如：
+echo 'export PATH="/usr/local/opt/binutils/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+export LDFLAGS="-L/usr/local/opt/binutils/lib"
+export CPPFLAGS="-I/usr/local/opt/binutils/include"
+
+# 然后就可以运行啦
+g++ -c test.c -o bala.o #汇编，生成的为二进制文件
+objdump -d bala.o
+```
+
+
+
+####  408-2017真题（一段C代码的汇编）
+
+```c
+int f1(unsigned n){
+    int sum = 1, power = 1;
+    
+    for (int i = 0; i <=n-1; ++i){
+        power *= 2;
+        sum += power;
+    }
+
+    return sum;
+}
+```
+
+我们编译之后：
+
+```assembly
+	push	rbp
+	mov	rbp, rsp
+
+	mov	ecx, 1 ## ecx 寄存器放sum
+	mov	eax, 1 ## eax 寄存器放power
+
+LBB0_1:                             ## =>This Inner Loop Header: Depth=1
+	lea	eax, [rax + 2*rcx]			## lea 指令在《深入理解操作系统》 3.5.1 有讲
+                                    ## kill: def $ecx killed $ecx killed $rcx
+	add	ecx, ecx
+                                    ## kill: def $ecx killed $ecx def $rcx
+	dec	edi
+	jne	LBB0_1
+
+	pop	rbp
+	ret
+```
+
+显然和真题给的不太一样。比如这里用到了lea指令。没有用cmp指令等。
+
 
 
 
@@ -1146,4 +1220,5 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 * [芯片架构wiki](https://en.wikichip.org/wiki/WikiChip)
 * [编码的奥秘](https://book.douban.com/subject/1024570/)
 * [现代处理器设计](https://book.douban.com/subject/2185652/)
+* [深入理解计算机系统](https://book.douban.com/subject/26912767/)
 
