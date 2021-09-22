@@ -1140,6 +1140,8 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 #### 编译环境及指令
 
+[objdump指令的用法](https://ivanzz1001.github.io/records/post/linux/2018/04/09/linux-objdump)。
+
 ```shell
 gcc -Og -S -masm=intel mstore.c #预处理+编译，且汇编语言为intel格式标准，-Og表示不进行优化
 
@@ -1155,6 +1157,8 @@ g++ test.cpp
 #多文件直接生成可执行文件
 g++ test1.cpp test2.cpp
 ```
+
+
 
 Mac上安装反汇编
 
@@ -1172,6 +1176,38 @@ g++ -c test.c -o bala.o #汇编，生成的为二进制文件
 objdump -d bala.o
 ```
 
+#### 函数调用栈（虚拟地址空间）
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-21 at 09.27.52.png" alt="Screen Shot 2021-09-21 at 09.27.52" style="zoom: 33%;" />
+
+看着这个图，才能理解一个程序的汇编代码是怎么执行的，比如如何函数跳转，push的什么？
+
+（注意这是虚拟地址空间，而实际上，每次寻址都需要先找TLB，拿到物理地址，再找cache，拿到数据，而并不是这样连续存放的。但是假设虚拟地址就是物理地址，也是不影响理解这个问题的。）
+
+
+
+#### 汇编代码的意义？
+
+我找到了这个网站：https://godbolt.org
+
+我们来看这个C代码，以及这个网站生成的汇编代码：
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-22 at 10.53.29 2.png" alt="Screen Shot 2021-09-22 at 10.53.29 2" style="zoom: 25%;" />
+
+上图是C代码，不同颜色的代码行，对应着下图中汇编代码的相同颜色代码块：
+
+<img src="learn-Computer-Organization.assets/IMG_1635-2279706.jpeg" alt="IMG_1635" style="zoom:25%;" />
+
+这个汇编代码分析起来太简单了！比如61、62行，把esi、edi寄存器分别存入两个数（其实就是array[10]、r），这是因为这两个寄存器常用与传递变量，而看4、5行就可以看得出来，add函数的a、b变量，正是esi、edi这两个寄存器。所以也就达成了所谓函数调用传递变量的目的。
+
+
+
+比如这个所谓的栈空间，也很清楚：16行将rsp指针（栈顶指针-8112），就是准备把main函数中的局部变量“压”入栈（这里不用push，而是直接移动rsp，预留出main函数中局部变量占用的空间，之后直接赋值）。array数组2000、26个int变量、几个局部变量，正好是2028*4B = 8112B，这就是8112的由来。
+
+
+
+而我们也可以从2-12行中看到，当函数局部变量、形式参数等所需空间可以由寄存器表示时，不需要放在栈上（add函数的rsp指针没动），这点也是《深入理解计算机系统》3.7.1「运行时栈」中所讲到的。
+
 
 
 ####  408-2017真题（一段C代码的汇编）
@@ -1184,33 +1220,299 @@ int f1(unsigned n){
         power *= 2;
         sum += power;
     }
-
     return sum;
+}
+
+int main(){
+    unsigned x = 100;
+    f1(x);
+    return 0;
 }
 ```
 
-我们编译之后：
+我们再用[这个网站](https://godbolt.org)编译看看汇编代码：
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-22 at 12.04.21.png" alt="Screen Shot 2021-09-22 at 12.04.21"  />
+
+比如真题中有一问问的是，上图汇编代码10行，也就是用左移一位操作来实现power变量*2操作。搞清楚了整个汇编，这个问题就变的很简单了。
+
+
+
+##### 再看objdump反汇编
+
+这时候再看反汇编指令，就懂啦！（下面是Mac下对上述408真题中的代码的反汇编代码，与Linux略有不同，若上文网站中把编译器改为clang，结果会跟下面代码一致）
 
 ```assembly
-	push	rbp
-	mov	rbp, rsp
+a.out:     file format mach-o-x86-64
 
-	mov	ecx, 1 ## ecx 寄存器放sum
-	mov	eax, 1 ## eax 寄存器放power
 
-LBB0_1:                             ## =>This Inner Loop Header: Depth=1
-	lea	eax, [rax + 2*rcx]			## lea 指令在《深入理解操作系统》 3.5.1 有讲
-                                    ## kill: def $ecx killed $ecx killed $rcx
-	add	ecx, ecx
-                                    ## kill: def $ecx killed $ecx def $rcx
-	dec	edi
-	jne	LBB0_1
+Disassembly of section .text:
 
-	pop	rbp
-	ret
+0000000100000f20 <_f1>:
+   100000f20:  55                      push   %rbp
+   100000f21:  48 89 e5                mov    %rsp,%rbp
+   100000f24:  89 7d fc                mov    %edi,-0x4(%rbp) ##这就是将edi存入[rbp-4]这个地址，也就是将这个传入的参数n，放到栈中
+   100000f27:  c7 45 f8 01 00 00 00    movl   $0x1,-0x8(%rbp)
+   100000f2e:  c7 45 f4 01 00 00 00    movl   $0x1,-0xc(%rbp)
+   100000f35:  c7 45 f0 00 00 00 00    movl   $0x0,-0x10(%rbp)
+   100000f3c:  8b 45 f0                mov    -0x10(%rbp),%eax
+   100000f3f:  8b 4d fc                mov    -0x4(%rbp),%ecx
+   100000f42:  83 e9 01                sub    $0x1,%ecx
+   100000f45:  39 c8                   cmp    %ecx,%eax
+   100000f47:  0f 87 20 00 00 00       ja     100000f6d <_f1+0x4d>
+   100000f4d:  8b 45 f4                mov    -0xc(%rbp),%eax
+   100000f50:  c1 e0 01                shl    $0x1,%eax
+   100000f53:  89 45 f4                mov    %eax,-0xc(%rbp)
+   100000f56:  8b 45 f4                mov    -0xc(%rbp),%eax
+   100000f59:  03 45 f8                add    -0x8(%rbp),%eax
+   100000f5c:  89 45 f8                mov    %eax,-0x8(%rbp)
+   100000f5f:  8b 45 f0                mov    -0x10(%rbp),%eax
+   100000f62:  83 c0 01                add    $0x1,%eax
+   100000f65:  89 45 f0                mov    %eax,-0x10(%rbp)
+   100000f68:  e9 cf ff ff ff          jmpq   100000f3c <_f1+0x1c>
+   100000f6d:  8b 45 f8                mov    -0x8(%rbp),%eax
+   100000f70:  5d                      pop    %rbp
+   100000f71:  c3                      retq   
+   100000f72:  66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+   100000f79:  00 00 00 
+   100000f7c:  0f 1f 40 00             nopl   0x0(%rax)
+
+0000000100000f80 <_main>:
+   100000f80:  55                      push   %rbp
+   100000f81:  48 89 e5                mov    %rsp,%rbp
+   100000f84:  48 83 ec 10             sub    $0x10,%rsp
+   100000f88:  c7 45 fc 00 00 00 00    movl   $0x0,-0x4(%rbp)
+   100000f8f:  c7 45 f8 64 00 00 00    movl   $0x64,-0x8(%rbp)
+   100000f96:  8b 7d f8                mov    -0x8(%rbp),%edi
+   100000f99:  e8 82 ff ff ff          callq  100000f20 <_f1>
+   100000f9e:  31 c9                   xor    %ecx,%ecx
+   100000fa0:  89 45 f4                mov    %eax,-0xc(%rbp)
+   100000fa3:  89 c8                   mov    %ecx,%eax
+   100000fa5:  48 83 c4 10             add    $0x10,%rsp
+   100000fa9:  5d                      pop    %rbp
+   100000faa:  c3                      retq 
 ```
 
-显然和真题给的不太一样。比如这里用到了lea指令。没有用cmp指令等。
+
+
+
+
+一个不错的博客：
+
+> 原文链接：https://blog.csdn.net/K346K346/article/details/49339767
+>
+> 下面以Visual C++编译器为例进行研究。
+>
+> ```c
+> #include <stdio.h>
+> 
+> int mixAdd(int i,char c)
+> {
+> 	int tmpi=i;
+> 	char tmpc=c;
+> 	return tmpi+tmpc;
+> }
+> 
+> int main()
+> {
+> 	int res=mixAdd(4,'A');
+> 	printf("%c",res);
+> }
+> ```
+>
+> 在VS2017环境下，以C/C++默认的函数调用约定__cdecl来生成该程序的调试版本（Debug）的.
+>
+> (我们在Linux、Mac上再terminal中用gcc编译器一样，而且可以objdump反汇编生成类似有虚拟地址的汇编代码)
+>
+> ### 汇编代码
+>
+> mixAdd()函数对应的汇编代码是：
+>
+> ```assembly
+> int mixAdd(int i,char c)
+> {
+> 00F713E0  push        ebp  
+> 00F713E1  mov         ebp,esp  
+> 00F713E3  sub         esp,0D8h  
+> 00F713E9  push        ebx  
+> 00F713EA  push        esi  
+> 00F713EB  push        edi  
+> 00F713EC  lea         edi,[ebp-0D8h]  
+> 00F713F2  mov         ecx,36h  
+> 00F713F7  mov         eax,0CCCCCCCCh  
+> 00F713FC  rep stos    dword ptr es:[edi]  
+> 	int tmpi=i;
+> 00F713FE  mov         eax,dword ptr [i]  
+> 00F71401  mov         dword ptr [tmpi],eax  
+> 	char tmpc=c;
+> 00F71404  mov         al,byte ptr [c]  
+> 00F71407  mov         byte ptr [tmpc],al  
+> 	return tmpi+tmpc;
+> 00F7140A  movsx       eax,byte ptr [tmpc]  
+> 00F7140E  add         eax,dword ptr [tmpi]  
+> }
+> 001E1411  pop         edi  
+> 001E1412  pop         esi  
+> 001E1413  pop         ebx  
+> 001E1414  mov         esp,ebp  
+> 001E1416  pop         ebp  
+> 001E1417  ret  
+> ```
+>
+>
+> main()函数对应的汇编代码：
+>
+> ```assembly
+> int main()
+> {
+> 001E1430  push        ebp  
+> 001E1431  mov         ebp,esp  
+> 001E1433  sub         esp,0CCh  
+> 001E1439  push        ebx  
+> 001E143A  push        esi  
+> 001E143B  push        edi  
+> 001E143C  lea         edi,[ebp-0CCh]  
+> 001E1442  mov         ecx,33h  
+> 001E1447  mov         eax,0CCCCCCCCh  
+> 001E144C  rep stos    dword ptr es:[edi]  
+> 	int res=mixAdd(4,'A');
+> 001E144E  push        41h  
+> 001E1450  push        4  
+> 001E1452  call        mixAdd (01E1168h)
+> 001E1457  add         esp,8
+> 001E145A  mov         dword ptr [res],eax  
+> 	printf("%c",res);
+> 001E145D  mov         esi,esp  
+> 001E145F  mov         eax,dword ptr [res]  
+> 001E1462  push        eax  
+> 001E1463  push        1E5858h  
+> 001E1468  call        dword ptr ds:[1E92C0h]  
+> 001E146E  add         esp,8  
+> 001E1471  cmp         esi,esp  
+> 001E1473  call        __RTC_CheckEsp (01E1136h)  
+> }
+> 001E1478  xor			eax,eax
+> 001E147A  pop         	edi  
+> 001E147B  pop         	esi  
+> 001E147C  pop         	ebx  
+> 001E147D  add        	esp,0CCh  
+> 001E1483  cmp        	ebp,esp  
+> 001E1485  call        	__RTC_CheckEsp (01E1136h)  
+> 001E148A  mov         	esp,ebp  
+> 001E148C  pop         	ebp  
+> 001E148D  ret  
+> ```
+>
+> 
+>
+>
+> ### mixAdd()函数汇编代码详解
+>
+> 在进入mixAdd后，可以马上看到这样三条汇编指令：
+>
+> ```assembly
+> push ebp      //保留主调函数的帧指针
+> mov ebp,esp   //建立本函数的帧指针
+> sub esp,xxx   //为函数局部变量分配空间
+> ```
+>
+> 
+>
+> 这是所有C/C++函数的汇编代码所共同遵循的规范。其中ebp（Extended Base Pointer）为扩展基址指针寄存器，也被称为帧指针（Frame Pointer）寄存器，其存放一个指针，该指针指向系统栈最上面一个栈帧的底部。
+>
+> 一个栈帧起始位置由帧指针ebp指明，在函数运行期间，帧指针ebp的值保持不变。而栈帧的另一端由栈指针esp动态维护。esp（Extended Stack Pointer）为扩展栈指针寄存器，用于存放当前函数的栈顶指针。
+>
+> 在内存管理中，与栈对应是堆。对于堆来讲，生长方向是向上的，也就是向着内存地址增加的方向；对于栈来讲，它的生长方式是向下的，是向着内存地址减小的方向增长。在内存中，“堆”和“栈”共用全部的自由空间，只不过各自的起始地址和增长方向不同，它们之间并没有一个固定的界限，如果在运行时，“堆”和 “栈”增长到发生了相互覆盖时，称为“栈堆冲突”，程序将会崩溃。
+>
+> 在Debug模式下，一个C/C++函数即使没有定义一个局部变量，仍然会分配192B空间，供临时变量使用。如果定义了局部变量，则会为每个局部变量分配12字节的空间（大于任何基本数据类型）。mixAdd()函数中定义了两个局部变量，所以给局部变量和临时变量预留空间大小是192+12+12=216（D8h）。
+>
+> 接下来的汇编指令：
+>
+> ```assembly
+> 00F713E9  push        ebx  //保存扩展基址寄存器，入栈
+> 00F713EA  push        esi  //保存扩展源变址寄存器，入栈
+> 00F713EB  push        edi  //保存扩展目的变址寄存器，入栈
+> ```
+>
+>
+> 以上汇编指令保存本函数可能改变的几个寄存器的值，这些寄存器在函数结束后恢复到进入本函数的时候的值。
+>
+> 接下来的汇编指令：
+>
+> ```assembly
+> 00F713EC  lea         edi,[ebp-0D8h]      //获取栈顶地址
+> 00F713F2  mov         ecx,36h             //赋36H至扩展计数寄存器
+> 00F713F7  mov         eax,0CCCCCCCCh      //给扩展累加寄存器赋值
+> 00F713FC  rep stos    dword ptr es:[edi]  //作用见下面解释
+> ```
+>
+>
+> stos指令：字符串存储指令，将eax中的值拷贝至es:[edi]指向的空间，如果设置了direction flag，那么edi会在该指令执行后减小，如果没有设置direction flag，那么edi的值会增加，这是为了下一次存储做准备。
+>
+> rep指令：重复指令，重复执行后面的指令，重复次数由扩展计数寄存器ecx决定。
+>
+> 因此，上面四条指令的作用是从栈的低地址到高地址将所有的预留空间填充CCCCCCCCh，未赋值的局部变量也就默认被设置为CCCCCCCCh。
+>
+> 接下来的汇编指令：
+>
+> ```assembly
+> int tmpi=i;
+> 
+> 00F713FE  mov         eax,dword ptr [i]     //i赋值给eax
+> 00F71401  mov         dword ptr [tmpi],eax  //eax赋值给tmpi
+> 	char tmpc=c;
+> 00F71404  mov         al,byte ptr [c]    	//c赋值给寄存器ax低8位al
+> 00F71407  mov         byte ptr [tmpc],al 	//al赋值给tmpc
+> 	return tmpi+tmpc;
+> 00F7140A  movsx       eax,byte ptr [tmpc]  	//带符号扩展传送指令,将rmpc赋值给eax
+> 00F7140E  add         eax,dword ptr [tmpi] 	//tmpi与eax相加
+> ```
+>
+>
+> 以下汇编指令，用于函数结束的清理工作：
+>
+> ```assembly
+> 001E1411  pop         edi     //edi出栈，还原edi
+> 001E1412  pop         esi     // esi出栈，还原esi
+> 001E1413  pop         ebx     // ebx出栈，还原ebx
+> 001E1414  mov         esp,ebp // 清空栈，释放局部变量
+> 001E1416  pop         ebp     //源ebp出栈，恢复ebp
+> 001E1417  ret                 //子程序的返回指令,结束函数
+> ```
+>
+>
+> 注意： 以上汇编代码对mixAdd()函数的调用采用的函数调用约定是__cdecl，这是C/C++程序的默认函数调用约定，其重要的一点就是在被调用函数 (Callee) 返回后，由调用方 (Caller)调整堆栈，因此在main()函数中调用mixAdd()的地方会出现add esp 8这条指令。esp加上8，是因为main()函数将两个参数压入栈，用于传给mixAdd()。感兴趣的读者可以将mixAdd()函数的定义改为如下形式：
+>
+> ```c
+> int __stdcall mixAdd(int i,char c)
+> {
+> 	int tmpi=i;
+> 	char tmpc=c;
+> 	return tmpi+tmpc;
+> }
+> ```
+>
+>
+> 即将mixAdd()函数的调用约定改为标准调用约定，那么mixAdd()函数结束时的汇编代码会变成ret 8，main()函数调用mixAdd()的地方会原本出现的add esp 8这条指令将会消失，这是因为__stdcall约定被调函数自身清理堆栈。有关函数调用约定的介绍见我的另一篇blog：关于函数参数入栈的思考。
+>
+> ### main()函数对应的汇编代码注意要点
+>
+> main()函数的汇编代码大致与mixAdd()相似，但也有不同之处，需要注意以下几点。
+> （1）printf()函数参数的入栈和调用。
+>
+> ```assembly
+> push        1E5858h  					//将”%c”入栈
+> call        dword ptr ds:[1E92C0h]  	//调用printf()函数
+> 
+> 001E1471  cmp         esi,esp  
+> 001E1473  call        __RTC_CheckEsp (01E1136h)  
+> ```
+>
+> 
+
+
+
+
 
 
 
