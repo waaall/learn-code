@@ -176,19 +176,27 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 > 上述[数据参考](https://www.aristeia.com/TalkNotes/ACCU2011_CPUCaches.pdf)见下图，更详细的讨论见[stackoverflow](https://stackoverflow.com/questions/14707803/line-size-of-l1-and-l2-caches)、[sciencedirect相关论文](https://www.sciencedirect.com/topics/computer-science/cache-line-size)。结果不一，但都和64bytes在一个数量级，并不是内存页大小的量级（一般在4KB）。
 > 
 
-![cache line size](learn-Computer-Organization.assets/cache line size.png)
+<img src="learn-Computer-Organization.assets/cache line size.png" alt="cache line size" style="zoom:25%;" />
 
 #### [ ARM A77 core Instructure](https://en.wikichip.org/wiki/arm_holdings/microarchitectures/cortex-a77)
 
 这是ARM A77架构图，我们也可以看到，L1cache 只有64KB。
 
-![cortex-a77_block_diagram](learn-Computer-Organization.assets/cortex-a77_block_diagram.svg)
+<img src="learn-Computer-Organization.assets/cortex-a77_block_diagram.svg" alt="cortex-a77_block_diagram" style="zoom:25%;" />
+
+
+
+号外号外！2022王道强化班课程，终于改了这个问题，而且把这个过程梳理得很清楚了（显然参考了2018年408真题等资料）。页表与cache的拆分完全是独立的过程。而一般cache line大小是64B！看咸鱼做的这个ppt：
+
+<img src="learn-Computer-Organization.assets/Screen Shot 2021-09-22 at 22.43.15.png" alt="Screen Shot 2021-09-22 at 22.43.15" style="zoom:25%;" />
+
+当然上图是一个全相联的cache，简单一些，但是也能看到内存一页4KB（12bit地址）、cache line一块64B（6bit地址），而且这个没有必然联系。
 
 
 
 #### 408真题看cache结构与访存过程
 
-![IMG_1606](learn-Computer-Organization.assets/IMG_1606.jpeg)
+<img src="learn-Computer-Organization.assets/IMG_1606.jpeg" alt="IMG_1606" style="zoom:25%;" />
 
 1. 上图左上部分：CPU拿到一个虚拟地址去访存，首先访问TLB看看页表是否缓存在TLB，问题来了：只有TLB未命中时，才会访问页表基址寄存器PDBR，去内存找页表，PDBR的地址会在进程切换后修改为当前进程的页表存放的内存地址。这意味着，TLB只有当前进程页表的缓存？所以不需要这个PDBR？
 2. 上图左下部分：若TLB未命中，则访问PDBR寄存器，与虚拟页号相加，得到内存中页表项的物理地址，访存得到物理页号，再与页内地址想加得到物理地址。
@@ -197,6 +205,8 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 > ### Cache 总容量：
+>
+> <img src="learn-Computer-Organization.assets/IMG_1783.jpeg" alt="IMG_1783" style="zoom: 25%;" />
 >
 > **一**：1位**有效位**：是为了防止开始cache并没有数据，误认为这个“内存的cache line号”（内存块号）是0号。也就是说明cache中是否有数据。
 >
@@ -1292,6 +1302,54 @@ Disassembly of section .text:
    100000fa9:  5d                      pop    %rbp
    100000faa:  c3                      retq 
 ```
+
+
+
+#### new 分配内存的汇编
+
+```c++
+#include <stdio.h>
+
+struct StackNode{
+    double data;
+    StackNode *next;
+};
+
+bool InitStack(StackNode * S) {
+    S = new StackNode;//分配一个头节点
+    S->data = 1.2;
+    S->next = NULL;
+    return true;
+}
+```
+
+几种不同数据大小下的汇编：
+
+* int
+
+<img src="learn-Computer-Organization.assets/int.png" alt="int" style="zoom:25%;" />
+
+* double
+
+![double](learn-Computer-Organization.assets/double.png)
+
+* double + int
+
+![double+int](learn-Computer-Organization.assets/double+int.png)
+
+
+
+##### 分析
+
+Q：为何int 改成double，还是申请了16B的内存空间来存放这个struct呢？
+
+我们（高级语言）所谓定义的struct，其实就是内存中连续存放的变量 (是虚拟地址空间连续，物理地址不一定连续，虽然物理地址分配也会尽可能的连续的)，正如上文中我讲过的int a =1，内存中是不会存放这个a的，而是在编译时，把所有对a的引用都替换成它的地址。同样地，struct->data，就会被替换成相应的地址，struct->next也会被替换成相应的地址。所以能看得出来，struct这个数据结构的实现，本身就是面向对象的思想。
+
+回到问题本身，struct中存放的除了其他的struct，就是**地址**(指针、函数、数组等)、**基本数据类型**。所以struct无非就是最大8B的一个数据(也就是上图的QWORD)，比如地址(64位虚拟/逻辑地址)、double、long等类型的数据。而对于64位的机器，一个通用寄存器的宽度也就是63bit=8B，而不管是磁盘块、分页(4KB)还是cache line(64B)，都是64bit的整数倍，所以**我们以struct中最大的数据大小为单位**，分配给这个struct的空间为**N*max_size(struct->number)**，便于我们在移动、存储、传递这些数据时，是可以“一起拿走”的，也就是符合局部性原理。**这就是边界对齐的思想**。
+
+<img src="learn-Computer-Organization.assets/IMG_1779.jpeg" alt="IMG_1779" style="zoom:25%;" />
+
+
 
 
 
