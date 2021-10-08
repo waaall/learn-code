@@ -143,6 +143,14 @@ MAC地址是唯一的设备号，但是只在局域网中生效，也就是link 
 
 事实上Mac地址很像我们的身份证号，从出场就写入硬件了（网卡）。但是就像有人违规用假身份证号类似，Mac地址也可以“骗过”操作系统，“更改/伪造”Mac地址。
 
+#### MAC帧格式
+
+![MAC帧格式](learn-internet.assets/MAC帧格式.jpeg)
+
+
+
+
+
 ### ARP 协议/NDP协议
 
 [ARP](https://zhuanlan.zhihu.com/p/28771785)
@@ -241,6 +249,12 @@ A：这就需要下面讲到的UDP/TCP协议，制定了端口，然后[NAT协�
 4. 在CIDR中，分类编址规定的只能8、16、24位作为网络号被废弃，所以可以任意位作为网络号，大大增加了子网的数量。
 5. 所谓**网络地址（网络号）就是指的一个子网中IP相同的部分**。而**子网掩码就是相同的部分都写1（二进制），不同的部分写0**。
 6. 关于CIDR：比如**128.14.35.7/20**是某CIDR地址块中的一个地址，20指的前20位2进制为网络号。
+
+
+
+#### IP数据报
+
+![IMG_1851](learn-internet.assets/IMG_1851.jpeg)
 
 
 
@@ -348,7 +362,7 @@ tracert 命令主要用来显示数据包到达目的主机所经过的路径。
 
 [TCP-wiki](https://en.wikipedia.org/wiki/Transmission_Control_Protocol)、
 
-> [一篇很不错的博客](https://baike.baidu.com/item/DHCP): 
+> [一篇很不错的博客](): 
 > <img src="https://cdn.jsdelivr.net/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/6.jpg" alt="TCP 头格式" style="zoom: 33%;" />
 >
 > <img src="https://cdn.jsdelivr.net/gh/xiaolincoder/ImageHost2/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCP-%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B/12.jpg" alt="UDP 头部格式" style="zoom:50%;" />
@@ -647,9 +661,15 @@ A：**网络传输中这些工作（路由选择、地址编码、可靠传输�
 
 ## Application layer
 
+<img src="learn-internet.assets/应用层.png" alt="应用层" style="zoom: 25%;" />
+
 有了MAC和IP，我们就可以在整个互联网中不同的子网络跳转，相互访问；再有了Port，计算机也实现了多进程并发请求。这些就构成了当今计算机网络世界的骨干。但这还不够，就像是有了10和加法器，逻辑运算器，理论上就可以编写一切程序，但是后来还是有函数的定义，再到后来的面向对象，这些对实现功能可能没有太大帮助，但是这种人性化的设计会大大减少人学习和Debug的时间，而这也是不可忽视的，这些就属于应用层。
 
-![应用层](learn-internet.assets/应用层.png)
+### 回顾HTTP前的数据报
+
+![数据报](learn-internet.assets/数据报.jpeg)
+
+
 
 ### SSH/Telnet
 
@@ -706,6 +726,8 @@ A：**网络传输中这些工作（路由选择、地址编码、可靠传输�
 ### HTTP
 
 以上均为连接到目标服务器，但是连接上服务器之后，具体请求某个特定页面，我们还没有标准，这就是[HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview)的作用了。
+
+
 
 <div align = "center" >
     <img src="learn-internet.assets/HTTP_layers.png" style="zoom:33%;" />
