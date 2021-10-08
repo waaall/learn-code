@@ -97,6 +97,16 @@
 
 
 
+### 电磁波的频率
+
+由于编码方式主要针对于一周期的周期信号，所以频率高的信号，自然承载的信号量就多，网线中交流电的100MHz量级，远远小于电磁波的GHz-THz量级。
+
+<img src="learn-internet.assets/Electromagnetic-Spectrum.svg" alt="Electromagnetic-Spectrum" style="zoom:25%;" />
+
+
+
+
+
 ## 物理层
 
 巴拉巴拉
