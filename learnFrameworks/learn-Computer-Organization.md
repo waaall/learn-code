@@ -206,9 +206,8 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 <img src="learn-Computer-Organization.assets/07282672-D3C5-4302-AC87-D5D9BA365D87_1_105_c.jpeg" alt="07282672-D3C5-4302-AC87-D5D9BA365D87_1_105_c" style="zoom: 33%;" />
 
 
+#### Cache 总容量：
 
-> ### Cache 总容量：
->
 > <img src="learn-Computer-Organization.assets/IMG_1783.jpeg" alt="IMG_1783" style="zoom: 25%;" />
 >
 > **一**：1位**有效位**：是为了防止开始cache并没有数据，误认为这个“内存的cache line号”（内存块号）是0号。也就是说明cache中是否有数据。
@@ -241,9 +240,20 @@ MDR的位数就反映了存储字长（这是word，不同于字节Byte、位bit
 
 
 
+#### TLB“单元”、cache line、页表项的区别与联系
+
+同样参考上图：
+
+1. TLB可以看作只读的cache，所以**没有③脏位**；TLB同样有①Tag、②有效位、④替换信息；⑤TLB数据部分即物理页框号。
+2. 页表项顺序存放，所以**没有①Tag位。只读所以没有③脏位**，也不会有组号。多级页表项会有②有效位④替换信息⑤页表项数据部分同TLB，为物理页框号。
+
+ 
 
 
 
+> #### 硬盘块大小------一般与页面一致为4KB
+>
+> ![Screen Shot 2021-10-08 at 22.52.29](learn-Computer-Organization.assets/Screen Shot 2021-10-08 at 22.52.29.png)
 
 
 
