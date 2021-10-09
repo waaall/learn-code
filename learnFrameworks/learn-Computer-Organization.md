@@ -1239,6 +1239,62 @@ objdump -d bala.o
 
 
 
+#### 所谓函数压栈，push/pop rbp 到底做了哪些事？
+
+
+
+1. **函数开始push rbp做了什么？**
+
+首先，esp指针+“1”，也就是栈空间增长了一个地址的空间。然后把rbp(注意是上一个函数的栈底地址)，放在这个地址空间里。
+
+2. **函数结束leave（pop rbp）做了什么？**
+
+①pop rbp，就是将栈顶的数据放进rbp寄存器，然后栈顶指针rsp-1。
+
+②所以一般pop rbp之前，会把rbp地址也放进rsp，这也就是将当前的函数栈清空，栈中内容只剩下最初push的rbp(上一个函数的栈底地址)。这时候pop rbp，就是让rpb地址重新成为之前的函数栈底地址，并且由于rsp自动-1。
+
+③所以现在栈顶内容就是call指令发生时push的上一个函数指令的地址，也就是返回地址。
+
+④然后ret指令就是pop eip，也就是把这个指令地址放进（eip/pc？）寄存器，然后rsp自动-1，就是上一个函数的栈顶了。
+
+⑤到此，栈顶栈底PC寄存器的内容都是上一个函数的样子了，也就是所谓的函数返回并出栈。其实若有返回值参数，还会放到指定的寄存器中，比如esp之类的。上一个函数会去esp寄存器中找。
+
+
+
+具体见下文引用。
+
+
+
+> 一个[不错的知乎专栏](https://zhuanlan.zhihu.com/p/54954221)：
+>
+> ### 源代码
+>
+> ```c
+> int add(int a, int b)
+> {
+> 	int result = a + b;
+> 	return result;
+> }
+> 
+> int main(int argc)
+> {
+> 	int answer;
+> 	answer = add(40, 2);
+> }
+> ```
+>
+> ### main函数执行并调用add函数
+>
+> <img src="learn-Computer-Organization.assets/v2-61ee1744b4071fb7e1c3d86335153236_r.jpg" alt="v2-61ee1744b4071fb7e1c3d86335153236_r" style="zoom:50%;" />
+>
+> ### add 函数返回过程
+>
+> <img src="learn-Computer-Organization.assets/v2-be4fe29aa237507aaf6077bb8b6b2ca1_1440w.jpg" alt="v2-be4fe29aa237507aaf6077bb8b6b2ca1_1440w" style="zoom:50%;" />
+
+
+
+
+
 ####  408-2017真题（一段C代码的汇编）
 
 ```c
