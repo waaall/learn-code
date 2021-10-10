@@ -1283,6 +1283,8 @@ objdump -d bala.o
 > }
 > ```
 >
+> <img src="learn-Computer-Organization.assets/汇编看函数调用.jpeg" alt="汇编看函数调用" style="zoom:50%;" />
+>
 > ### main函数执行并调用add函数
 >
 > <img src="learn-Computer-Organization.assets/v2-61ee1744b4071fb7e1c3d86335153236_r.jpg" alt="v2-61ee1744b4071fb7e1c3d86335153236_r" style="zoom:50%;" />
