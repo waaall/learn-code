@@ -131,7 +131,35 @@ gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7/ -l
 -Wall 		#生成所有警告信息。
 ```
 
-## vscode c++[配置](https://code.visualstudio.com/docs/cpp/config-clang-mac)、
+### c++的标准库头文件都在哪？
+
+比如下面代码，常用include<...>，这些往往是标准库的头文件，他们在哪里呢？
+* Linux系统中，一般在usr/local/include，当然这主要取决去C_INCLUDE_PATH这个环境变量设置的路径。
+* 在MAC系统中，这些常用的编译器被XCODE“接管”了，一般在`/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include`
+
+
+
+```c++
+#include "apue.h"
+#include <sys/wait.h>
+
+int
+main(void)
+{
+	pid_t	pid;
+	int		status;
+
+	if ((pid = fork()) < 0)
+		err_sys("fork error");
+	else if (pid == 0)				/* child */
+		exit(7);
+}
+```
+
+
+## C++环境配置
+
+* vscode c++[配置](https://code.visualstudio.com/docs/cpp/config-clang-mac)、
 
 1.  **create a ``tasks.json`` file** 
 
@@ -282,9 +310,9 @@ gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7/ -l
 
 
 
-## windows的c++编译器
+### windows的c++编译器
 
-### GNU（mingw64）
+#### GNU（mingw64）
 
 * 安装mingw-[w64](http://mingw-w64.org/)、
 * [一个傻瓜式安装mingw64的博客](https://www.jianshu.com/p/d66c2f2e3537)、
@@ -307,7 +335,7 @@ gcc -print-search-dirs
 
 
 
-### Clang+LLVM
+#### Clang+LLVM
 
 * 官网有window[编译版本](https://releases.llvm.org/download.html)、
 
@@ -321,7 +349,9 @@ clang++ -O3 -target x86_64-pc-windows-gnu for.cpp -o for.exe
 
 
 
-### 安装[msys2](https://www.msys2.org/)、
+#### 安装msys2
+
+* [msys2](https://www.msys2.org/)、
 
 msys2和mingw的关系见下文节选知乎的片段，这里简要说明一下：
 
@@ -331,24 +361,24 @@ msys就像是“app store”，用来在windows系统 下载安装配置 一系�
 
 [一个msys2详细的安装博客](https://hustlei.github.io/2018/11/msys2-for-win.html)、
 
-### mingw、msys、cygwin？
+#### mingw、msys、cygwin？
 > [一个知乎回答](https://www.zhihu.com/question/22137175)
 
 
 
-## [Makefile](https://seisman.github.io/how-to-write-makefile/introduction.html):
+#### make
+* [Makefile](https://seisman.github.io/how-to-write-makefile/introduction.html):
 
 一般有一定规模的软件不会自己手动在命令行编译，这时候make工具包（也是一个软件）应运而生。也就是类似一个shell脚本，执行一系列的编译文件。
 
 但但但是！这也太麻烦了，中大型项目根本不可能自己完成makefile，所以，[autotools](http://inti.sourceforge.net/tutorial/libinti/autotoolsproject.html)应运而生，与此“竞争”的是cmake工具包，总之他们两个是目前（2020年）主流的c系语言大型软件编译的两大解决方案。
 
-### make
 
 
+#### cmake
+* [cmake](https://www.hahack.com/codes/cmake/)：
 
-### [cmake](https://www.hahack.com/codes/cmake/)：
-
-#### 什么是 CMake
+##### 什么是 CMake
 
 > All problems in computer science can be solved by another level of indirection. 
 >
@@ -366,7 +396,7 @@ CMake 就是针对上面问题所设计的工具：它首先允许开发者编�
 
 本文将从实例入手，一步步讲解 CMake 的常见用法，文中所有的实例代码可以在[这里](https://github.com/wzpan/cmake-demo)找到。如果你读完仍觉得意犹未尽，可以继续学习我在文章末尾提供的其他资源。
 
-#### 单个源文件
+##### 单个源文件
 
 
 对于简单的项目，只需要写几行代码就可以了。例如，假设现在我们的项目中只有一个源文件 [main.cc](http://main.cc/) ，该程序的用途是计算一个数的指数幂。
@@ -467,7 +497,7 @@ Linking C executable Demo
 2 ^ 10 is 1024
 ```
 
-#### 同一目录，多个源文件
+##### 同一目录，多个源文件
 
 上面的例子只有单个源文件。现在假如把 `power` 函数单独写进一个名为 `MathFunctions.c` 的源文件里，使得这个工程变成如下的形式：
 
@@ -519,7 +549,7 @@ add_executable(Demo ${DIR_SRCS})
 
 这样，CMake 会将当前目录所有源文件的文件名赋值给变量 `DIR_SRCS` ，再指示变量 `DIR_SRCS` 中的源文件需要编译成一个名称为 Demo 的可执行文件。
 
-#### 多个目录，多个源文件
+##### 多个目录，多个源文件
 
 
 
@@ -581,7 +611,9 @@ add_library (MathFunctions ${DIR_LIB_SRCS})
 
 
 
-## [automake](https://www.gnu.org/software/automake/manual/html_node/index.html#SEC_Contents):
+#### automake
+
+* [automake](https://www.gnu.org/software/automake/manual/html_node/index.html#SEC_Contents):
 
 ```bash
 #Ubuntu
@@ -1642,9 +1674,18 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 
 
 
-## Eigen 库
+## c++常用库
 
-### 类型转化
+### c++标准库
+
+
+
+
+### Qt库
+
+### Eigen 库
+
+#### 类型转化
 
 1. 数组转化为Eigen::Matrix
 ```c++
@@ -1669,7 +1710,7 @@ Map<MatrixXd>(eigMatptrnew, eigMat.rows(), eigMat.cols()) = eigMat;
 
 
 
-### new 申请堆
+#### new 申请堆
 
 ```c++
 MatrixXd *XN = new MatrixXd(3,N); //大矩阵用堆内存
@@ -1683,7 +1724,7 @@ XN->resize(0, 0); //有借就有还
 delete XN;
 ```
 
-### 常用函数
+#### 常用函数
 
 ```c++
 #include <Eigen/Dense>
