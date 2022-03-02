@@ -642,6 +642,12 @@ sudo apt install autoconf automake libtool #额外不在build-essential里的GNU
 
 ## Theory
 
+### c++参考网页
+* [cplusplus](https://www.cplusplus.com)
+* [cppreference](https://en.cppreference.com/w/)
+* [The C++ Standards Committee](http://www.open-std.org/JTC1/SC22/WG21/)
+* [Microsoft C++、C 和汇编程序文档](https://docs.microsoft.com/zh-cn/cpp/?view=msvc-170)
+
 ### 头文件
 
 头文件最大的作用在于，一个include 就可以把其他文件的所有函数声明写在“前面”，然后随时调用。
@@ -1675,6 +1681,7 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 
 
 ## c++常用库
+
 
 ### c++标准库
 
