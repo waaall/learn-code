@@ -2,7 +2,7 @@
 
 ### 参考
 * [一个公开课](https://classroom.udacity.com/courses/ud198)
-* 
+* [一个不错的网站](https://www.postgresqltutorial.com/postgresql-string-functions/)
 
 ### mac安装环境
 
@@ -313,18 +313,6 @@ ORDER BY COUNT(*) DESC) AS t;
 ```
 很明显，标准答案答非所问。
 
-#### SELECT子句顺序
-
-| 子句     | 说明                 | 是否必须使用       |
-|----------|----------------------|--------------------|
-| SELECT   | 要返回的列或表达式   | 是                 |
-| FROM     | 从中检索数据的表     | 仅在从表选择数据时 |
-| JOIN ON  | JOIN 联结表 ON 条件  | 否                 |
-| WHERE    | 行级过滤             | 否                 |
-| GROUP BY | 分组说明             | 仅在按组计算聚集时 |
-| HAVING   | 组级过滤             | 否                 |
-| ORDER BY | 输出排序顺序         | 否                 |
-| LIMIT    | 要检索的行数         | 否                 |
 
 #### DATE functions
 
@@ -371,7 +359,7 @@ SELECT account_id, CASE WHEN standard_qty = 0 OR standard_qty IS NULL
 FROM orders
 LIMIT 10;
 ```
-so, CASE is to catching cases that may cause the error.
+so, CASE is to catching cases that may cause the error, 但也可以看作对原有列做分类，形成一列新数据。（比如下面STRING functions一节中的例题2）
 
 #### 几个例题
 1. For the region with the largest sales total_amt_usd, how many total orders were placed? 
@@ -499,6 +487,86 @@ ORDER BY 2 DESC;
 
 #### STRING functions
 ![STRING-functions](learn-SQL.assets/String_functions.JPEG)
+注意：LEFT()等选择字符串是区分大小写的（也就是sql指令不区分大小写，sql数据区分）
+* `POSITION('c' IN col_name)`: 返回一列数字，该列数字中每个对应着每行的c(字符)所在位置
+* `REVERSE(col_name)` : 返回一列字符串，是原列的倒叙。
+* `CONCAT(first_name, ' ', last_name)` :几列字符串合并为一列（中间的字符串指的是一列是同为该字符串）。`CONCAT()` 同`||`,即`col_name（必须是string类型的列） || 'some字符串' || 。。。`具体例子见下面例题。
+* `CAST(expression AS target_type)`:把字符串转换成各种类型。target_type如DATE、INTEGER等，[具体参考](https://www.postgresqltutorial.com/postgresql-cast/)
+* `SUBSTR(string, start_position, length)`: start_position是从1开始的。
+
+SUBSTR/SUBSTRING例子：
+```sql
+SELECT SUBSTRING('PostgreSQL' FROM 1 FOR 8);
+
+SELECT SUBSTR('PostgreSQL', 1, 8);
+	
+SELECT SUBSTR(name, 1, 3) AS account_name
+FROM accounts; //该函数传递一列时，返回一列
+```
+
 
 * 几个例题：
 ![database-table4](learn-SQL.assets/relationship.png)
+1. In the accounts table, there is a column holding the website for each company. The last three digits specify what type of web address they are using.Pull these extensions and provide how many (这里应该是指的how many websites) of each website type exist in the accounts table.
+
+```sql
+# 答案(不是我的)
+SELECT RIGHT(website,3) AS domain, COUNT(*)
+FROM accounts
+GROUP BY 1;
+```
+所以，问题来了：
+RIGHT 对一列进行操作，依然返回一列，GROUP 可以作用于列名，所以可以GROUP，但此时RIGHT()返回的这一列，依然与原表绑定？这是很奇怪的，除非这种类似函数返回的都是操作后的一整个表(还有一个被操作的列名)，而SELECT作用于他们时，又可以通过它们返回的列名，只显示返回表的该列。
+
+2. There is much debate about how much the name (or even the first letter of a company name) matters. Use the accounts table to pull the first letter of each company name to see the distribution of company names that begin with each letter (or number)
+所以这个问题就是看下account name 是字母开头的，还是数字开头的，分别有多少？
+
+```sql
+# 这题我没想到用CASE WHEN (尤其是可以用IN) THEN END AS，看下面官方答案吧：
+SELECT SUM(num) nums, SUM(letter) letters
+FROM (
+    SELECT name, CASE WHEN LEFT(UPPER(name), 1) IN
+                    ('0','1','2','3','4','5','6','7','8','9') 
+                    THEN 1 ELSE 0 END AS num, 
+            CASE WHEN LEFT(UPPER(name), 1) IN
+                ('0','1','2','3','4','5','6','7','8','9') 
+                THEN 0 ELSE 1 END AS letter
+    FROM accounts) t1;
+    
+# 显示结果如下：
+ nums | letters 
+------+---------
+    1 |     350
+(1 row)
+
+# 宝宝想到更好的方法：
+SELECT CASE WHEN LEFT(UPPER(name), 1) IN
+            ('0','1','2','3','4','5','6','7','8','9') 
+            THEN 'number' ELSE 'letter' END AS la, COUNT(*)
+FROM accounts
+GROUP BY la;
+```
+3. 
+
+
+
+#### Window function
+* [一个关于Window-function的网站](https://ericfu.me/sql-window-function/)
+
+
+
+#### SELECT子句顺序
+
+| 子句     | 说明                 | 是否必须使用       |
+|----------|----------------------|--------------------|
+| SELECT   | 要返回的列或表达式   | 是                 |
+| FROM     | 从中检索数据的表     | 仅在从表选择数据时 |
+| JOIN ON  | JOIN 联结表 ON 条件  | 否                 |
+| WHERE    | 行级过滤             | 否                 |
+| GROUP BY | 分组说明             | 仅在按组计算聚集时 |
+| HAVING   | 组级过滤             | 否                 |
+| ORDER BY | 输出排序顺序         | 否                 |
+| LIMIT    | 要检索的行数         | 否                 |
+
+* SQL 各部分的逻辑执行顺序：
+![sql-evaluate-order](learn-SQL.assets/sql-logical-evaluate-order.png)
