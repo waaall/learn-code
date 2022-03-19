@@ -1,0 +1,880 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"E",
+				"EnQueue"
+			],
+			[
+				"vi",
+				"visit"
+			],
+			[
+				"NextNe",
+				"NextNeighbor"
+			],
+			[
+				"G",
+				"Graph"
+			],
+			[
+				"prinf",
+				"printf"
+			],
+			[
+				"L",
+				"Length"
+			],
+			[
+				"DE",
+				"def"
+			],
+			[
+				"M",
+				"MyList"
+			],
+			[
+				"Qu",
+				"QuickASor"
+			],
+			[
+				"Max",
+				"MaxSize"
+			],
+			[
+				"Ma",
+				"MaxSize"
+			],
+			[
+				"strut",
+				"struct"
+			],
+			[
+				"Me",
+				"Merge"
+			],
+			[
+				"v",
+				"VetData"
+			],
+			[
+				"V",
+				"VetStackNode"
+			],
+			[
+				"vets",
+				"vetstack"
+			],
+			[
+				"init",
+				"InitStack"
+			],
+			[
+				"I",
+				"InitGraph"
+			],
+			[
+				"in",
+				"InitGraph"
+			],
+			[
+				"A",
+				"ALGraph"
+			],
+			[
+				"ma",
+				"main"
+			],
+			[
+				"CR",
+				"CRIT_DMG_Rate"
+			],
+			[
+				"C",
+				"CalGeneral"
+			],
+			[
+				"d",
+				"dimension"
+			],
+			[
+				"w",
+				"Which"
+			],
+			[
+				"if",
+				"ifmain"
+			],
+			[
+				"D",
+				"Der"
+			],
+			[
+				"In",
+				"InitState"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "并查集.cpp",
+			"settings":
+			{
+				"buffer_size": 0,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					1,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					2,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAgAAAAAAAAABAAAAYg",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					3,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAwAAAAAAAAACAAAAYmk",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAACAAAAAAAAAAIAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					4,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAABAAAAAAAAAADAAAAYmlu",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAADAAAAAAAAAAMAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					5,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAABgAAAAAAAAAEAAAAYmluZw",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					6,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAACAAAAAAAAAAGAAAAYmluZyBh",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAGAAAAAAAAAAYAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					7,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAABgAAAAAAAAAIAAAAYmluZyBhIGg",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAIAAAAAAAAAAgAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					8,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAABAAAAAAAAAAGAAAAYmluZyBh",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAGAAAAAAAAAAYAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					9,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAwAAAAAAAAAEAAAAYmluZw",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAEAAAAAAAAAAQAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					10,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAgAAAAAAAAADAAAAYmlu",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAADAAAAAAAAAAMAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					11,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAQAAAAAAAAACAAAAYmk",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAACAAAAAAAAAAIAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					12,
+					1,
+					"",
+					null,
+					"AQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAYg",
+					"BQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAABAAAAAAAAAAEAAAAAAAAAAAAAAAAA8L8"
+				],
+				[
+					1,
+					1,
+					"paste",
+					null,
+					"AQAAAAAAAAAAAAAAnDUAAAAAAAAAAAAA",
+					"BAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/"
+				],
+				[
+					25,
+					1,
+					"left_delete",
+					null,
+					"AQAAAAAAAAAAAAAAAAAAAAAAAAD+NQAAPHNjcmlwdD4KICAvLyB2MC41LjIgLSBodHRwczovL2dpdGh1Yi5jb20vU2ltb25MYW1tZXIvYW5raS1wZXJzaXN0ZW5jZS9ibG9iLzYyNDYzYTdmNjNlNzljZTEyZjdhNjIyYThjYTBiZWI0YzFjNWQ1NTYvc2NyaXB0LmpzCiAgaWYodm9pZCAwPT09d2luZG93LlBlcnNpc3RlbmNlKXt2YXIgX3BlcnNpc3RlbmNlS2V5PSJnaXRodWIuY29tL1NpbW9uTGFtbWVyL2Fua2ktcGVyc2lzdGVuY2UvIixfZGVmYXVsdEtleT0iX2RlZmF1bHQiO2lmKHdpbmRvdy5QZXJzaXN0ZW5jZV9zZXNzaW9uU3RvcmFnZT1mdW5jdGlvbigpe3ZhciBlPSExO3RyeXsib2JqZWN0Ij09dHlwZW9mIHdpbmRvdy5zZXNzaW9uU3RvcmFnZSYmKGU9ITAsdGhpcy5jbGVhcj1mdW5jdGlvbigpe2Zvcih2YXIgZT0wO2U8c2Vzc2lvblN0b3JhZ2UubGVuZ3RoO2UrKyl7dmFyIHQ9c2Vzc2lvblN0b3JhZ2Uua2V5KGUpOzA9PXQuaW5kZXhPZihfcGVyc2lzdGVuY2VLZXkpJiYoc2Vzc2lvblN0b3JhZ2UucmVtb3ZlSXRlbSh0KSxlLS0pfX0sdGhpcy5zZXRJdGVtPWZ1bmN0aW9uKGUsdCl7dm9pZCAwPT10JiYodD1lLGU9X2RlZmF1bHRLZXkpLHNlc3Npb25TdG9yYWdlLnNldEl0ZW0oX3BlcnNpc3RlbmNlS2V5K2UsSlNPTi5zdHJpbmdpZnkodCkpfSx0aGlzLmdldEl0ZW09ZnVuY3Rpb24oZSl7cmV0dXJuIHZvaWQgMD09ZSYmKGU9X2RlZmF1bHRLZXkpLEpTT04ucGFyc2Uoc2Vzc2lvblN0b3JhZ2UuZ2V0SXRlbShfcGVyc2lzdGVuY2VLZXkrZSkpfSx0aGlzLnJlbW92ZUl0ZW09ZnVuY3Rpb24oZSl7dm9pZCAwPT1lJiYoZT1fZGVmYXVsdEtleSksc2Vzc2lvblN0b3JhZ2UucmVtb3ZlSXRlbShfcGVyc2lzdGVuY2VLZXkrZSl9KX1jYXRjaChlKXt9dGhpcy5pc0F2YWlsYWJsZT1mdW5jdGlvbigpe3JldHVybiBlfX0sd2luZG93LlBlcnNpc3RlbmNlX3dpbmRvd0tleT1mdW5jdGlvbihlKXt2YXIgdD13aW5kb3dbZV0saT0hMTsib2JqZWN0Ij09dHlwZW9mIHQmJihpPSEwLHRoaXMuY2xlYXI9ZnVuY3Rpb24oKXt0W19wZXJzaXN0ZW5jZUtleV09e319LHRoaXMuc2V0SXRlbT1mdW5jdGlvbihlLGkpe3ZvaWQgMD09aSYmKGk9ZSxlPV9kZWZhdWx0S2V5KSx0W19wZXJzaXN0ZW5jZUtleV1bZV09aX0sdGhpcy5nZXRJdGVtPWZ1bmN0aW9uKGUpe3JldHVybiB2b2lkIDA9PWUmJihlPV9kZWZhdWx0S2V5KSx0W19wZXJzaXN0ZW5jZUtleV1bZV18fG51bGx9LHRoaXMucmVtb3ZlSXRlbT1mdW5jdGlvbihlKXt2b2lkIDA9PWUmJihlPV9kZWZhdWx0S2V5KSxkZWxldGUgdFtfcGVyc2lzdGVuY2VLZXldW2VdfSx2b2lkIDA9PXRbX3BlcnNpc3RlbmNlS2V5XSYmdGhpcy5jbGVhcigpKSx0aGlzLmlzQXZhaWxhYmxlPWZ1bmN0aW9uKCl7cmV0dXJuIGl9fSx3aW5kb3cuUGVyc2lzdGVuY2U9bmV3IFBlcnNpc3RlbmNlX3Nlc3Npb25TdG9yYWdlLFBlcnNpc3RlbmNlLmlzQXZhaWxhYmxlKCl8fCh3aW5kb3cuUGVyc2lzdGVuY2U9bmV3IFBlcnNpc3RlbmNlX3dpbmRvd0tleSgicHkiKSksIVBlcnNpc3RlbmNlLmlzQXZhaWxhYmxlKCkpe3ZhciB0aXRsZVN0YXJ0SW5kZXg9d2luZG93LmxvY2F0aW9uLnRvU3RyaW5nKCkuaW5kZXhPZigidGl0bGUiKSx0aXRsZUNvbnRlbnRJbmRleD13aW5kb3cubG9jYXRpb24udG9TdHJpbmcoKS5pbmRleE9mKCJtYWluIix0aXRsZVN0YXJ0SW5kZXgpO3RpdGxlU3RhcnRJbmRleD4wJiZ0aXRsZUNvbnRlbnRJbmRleD4wJiZ0aXRsZUNvbnRlbnRJbmRleC10aXRsZVN0YXJ0SW5kZXg8MTAmJih3aW5kb3cuUGVyc2lzdGVuY2U9bmV3IFBlcnNpc3RlbmNlX3dpbmRvd0tleSgicXQiKSl9fQo8L3NjcmlwdD4KCjxkaXYgY2xhc3M9IndyYXAtY29udGFpbmVyIj4KICA8ZGl2IGNsYXNzPSJib2R5Ij4KICAgIDxkaXYgY2xhc3M9InF1ZXN0aW9uIj48c3BhbiBpZD0icXVlc3Rpb25UeXBlIiBjbGFzcz0icXVlc3Rpb24tdHlwZSI+IDwvc3Bhbj57e3F1ZXN0aW9uMX19PC9kaXY+CiAgICA8ZGl2IGNsYXNzPSJvcHRpb25zIiBpZD0iZnJvbnQtb3B0aW9ucyI+PC9kaXY+CiAgICA8ZGl2IGlkPSJmcm9udC10YWciPjwvZGl2PgogIDwvZGl2Pgo8L2Rpdj4KCjxkaXYgaWQ9ImZyb250LWZvb3RlciIgY2xhc3M9ImZvb3RlciI+PC9kaXY+Cgo8ZGl2IGlkPSJzZXR0aW5nc01vZGFsIiBjbGFzcz0ibW9kYWwiPgoKPC9kaXY+Cgo8c2NyaXB0PgoKICB2YXIgREVGQVVMVF9TSE9XX1FVRVNUSU9OX1RZUEUgPSAnMScKICB2YXIgREVGQVVMVF9ISURFX09QVElPTlMgPSAnMCcKICB2YXIgREVGQVVMVF9SQU5ET01fT1BUSU9OUyA9ICcwJwogIHZhciBERUZBVUxUX0RFTEFZX09QVElPTlMgPSAnMCcKICB2YXIgREVGQVVMVF9OT1JNQUxfT1BUSU9OUyA9ICcwJwogIHZhciBERUZBVUxUX0hJREVfTk9URVMgPSAnMCcKICB2YXIgREVGQVVMVF9BVVRPX0ZMSVAgPSAnMCcKCgogIHZhciBzaG93UXVlc3Rpb25UeXBlID0gREVGQVVMVF9TSE9XX1FVRVNUSU9OX1RZUEUKICB2YXIgaGlkZU9wdGlvbnMgPSBERUZBVUxUX0hJREVfT1BUSU9OUwogIHZhciByYW5kb21PcHRpb25zID0gREVGQVVMVF9SQU5ET01fT1BUSU9OUwogIHZhciBkZWxheU9wdGlvbnMgPSBERUZBVUxUX0RFTEFZX09QVElPTlMKICB2YXIgbm9ybWFsT3B0aW9uID0gREVGQVVMVF9OT1JNQUxfT1BUSU9OUwogIHZhciBoaWRlTm90ZXMgPSBERUZBVUxUX0hJREVfTk9URVMKICB2YXIgYXV0b0ZsaXAgPSBERUZBVUxUX0FVVE9fRkxJUAoKICBmdW5jdGlvbiBzaG93RnJvbnRPcHRpb25zKGhpZGVPcHRpb24sIHJhbmRvbU9wdGlvbiwgZGVsYXlPcHRpb24pIHsKICAgIHZhciBrZXlTZXEgPSBbXQogICAgdmFyIG9wdGlvbk9ianMgPSBnZXRPcHRpb25PYmpzKHJhbmRvbU9wdGlvbikKICAgIGluaXRFbXB0eU9wdGlvbkxpc3Qob3B0aW9uT2JqcykKICAgIHZhciBsaUxpc3QgPSAnJwogICAgZm9yICh2YXIgaSBpbiBvcHRpb25PYmpzKSB7CiAgICAgIHZhciBfb3B0aW9uT2JqID0gb3B0aW9uT2Jqc1tpXQogICAgICB2YXIgX29wdGlvbiA9IF9vcHRpb25PYmoubGFiZWwKICAgICAgaWYgKGhpZGVPcHRpb24gPT09ICcxJykgewogICAgICAgIHZhciBlbmRJbmRleCA9IF9vcHRpb25PYmoubGFiZWwuaW5kZXhPZigi44CKIikgPiAtMSA/IDIgOiAxCiAgICAgICAgX29wdGlvbiA9IF9vcHRpb25PYmoubGFiZWwuc3Vic3RyaW5nKDAsIGVuZEluZGV4KQogICAgICB9CiAgICAgIGxpTGlzdCArPSAiPGxpIGlkPSciICsgX29wdGlvbk9iai5rZXkgKyAiJyBjbGFzcz0nb3B0aW9uJyBvbmNsaWNrPSdtYXJrU2VsZWN0ZWQodGhpcyknPiIgKyBfb3B0aW9uICsgIjwvbGk+IgogICAgICBrZXlTZXEucHVzaChfb3B0aW9uT2JqLmtleSkKICAgIH0KICAgIGlmIChQZXJzaXN0ZW5jZS5pc0F2YWlsYWJsZSgpKSB7CiAgICAgIFBlcnNpc3RlbmNlLnNldEl0ZW0oJ0FOS0ktT1BUSU9OUy1PUkRFUicsIGtleVNlcS50b1N0cmluZygpKQogICAgfQogICAgaWYgKGRlbGF5T3B0aW9uID09PSAnMScpIHsKICAgICAgc2V0VGltZW91dChmdW5jdGlvbiAoKSB7CiAgICAgICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImZyb250LW9wdGlvbnMiKS5pbm5lckhUTUwgPSBsaUxpc3QKICAgICAgfSwgMTUwMCkKICAgIH0gZWxzZSB7CiAgICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJmcm9udC1vcHRpb25zIikuaW5uZXJIVE1MID0gbGlMaXN0CiAgICB9CiAgfQoKICBmdW5jdGlvbiBpbml0RW1wdHlPcHRpb25MaXN0KG9wdGlvbk9ianMpIHsKICAgIHZhciBsaUxpc3QgPSAnJwogICAgZm9yICh2YXIgaSBpbiBvcHRpb25PYmpzKSB7CiAgICAgIGxpTGlzdCArPSAiPGxpIGNsYXNzPSdvcHRpb24nPjwvbGk+IgogICAgfQogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImZyb250LW9wdGlvbnMiKS5pbm5lckhUTUwgPSBsaUxpc3QKICB9CgogIGZ1bmN0aW9uIGdldE9wdGlvbk9ianMocmFuZG9tT3B0aW9uKSB7CiAgICB2YXIgb3B0aW9uQXJyYXkgPSAne3tvcHRpb25zfX0nLnRyaW0oKS5zcGxpdCgifHwiKQogICAgdmFyIG9wdGlvbk9ianMgPSBbXQogICAgZm9yICh2YXIgaSBpbiBvcHRpb25BcnJheSkgewogICAgICBvcHRpb25PYmpzLnB1c2goewogICAgICAgIGtleTogTnVtYmVyLnBhcnNlSW50KGkpICsgMSwKICAgICAgICBsYWJlbDogb3B0aW9uQXJyYXlbaV0KICAgICAgfSkKICAgIH0KICAgIGlmIChyYW5kb21PcHRpb24gPT09ICcxJykgewogICAgICBmb3IgKGxldCBpID0gMTsgaSA8IG9wdGlvbk9ianMubGVuZ3RoOyBpKyspIHsKICAgICAgICBjb25zdCByYW5kb20gPSBNYXRoLmZsb29yKE1hdGgucmFuZG9tKCkgKiAoaSArIDEpKQogICAgICAgIGNvbnN0IHRlbXAgPSBvcHRpb25PYmpzW2ldCiAgICAgICAgb3B0aW9uT2Jqc1tpXSA9IG9wdGlvbk9ianNbcmFuZG9tXQogICAgICAgIG9wdGlvbk9ianNbcmFuZG9tXSA9IHRlbXAKICAgICAgfQogICAgfQogICAgcmV0dXJuIG9wdGlvbk9ianMKICB9CgogIGZ1bmN0aW9uIGdldFNlbGVjdGVkS2V5KCkgewogICAgcmV0dXJuIG5vcm1hbE9wdGlvbiA9PT0gJzEnID8gJ3NlbGVjdGVkJyA6ICdzZWxlY3RlZC1saWdodCcKICB9CgogIGZ1bmN0aW9uIG1hcmtTZWxlY3RlZChsaSkgewogICAgdmFyIHNlbGVjdGVkS2V5ID0gZ2V0U2VsZWN0ZWRLZXkoKQogICAgLy8g5a+55bqU5aSa6YCJCiAgICBpZiAoInt7YW5zd2VyfX0iLmluZGV4T2YoJ3x8JykgPiAwKSB7CiAgICAgIGlmIChQZXJzaXN0ZW5jZS5pc0F2YWlsYWJsZSgpKSB7CiAgICAgICAgdmFyIHNlbGVjdGVkQXJyYXkgPSBQZXJzaXN0ZW5jZS5nZXRJdGVtKCdBTktJLVNFTEVDVEVEJykgPyBQZXJzaXN0ZW5jZS5nZXRJdGVtKCdBTktJLVNFTEVDVEVEJykuc3BsaXQoJywnKSA6IFtdCiAgICAgICAgaWYgKGxpLmNsYXNzTmFtZS5pbmRleE9mKHNlbGVjdGVkS2V5KSA+IDApIHsKICAgICAgICAgIHNlbGVjdGVkQXJyYXkuc3BsaWNlKHNlbGVjdGVkQXJyYXkuaW5kZXhPZihsaS5pZCksIDEpCiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgIHNlbGVjdGVkQXJyYXkucHVzaChsaS5pZCkKICAgICAgICB9CiAgICAgICAgc2VsZWN0ZWRBcnJheS5zb3J0KCkKICAgICAgICBQZXJzaXN0ZW5jZS5zZXRJdGVtKCdBTktJLVNFTEVDVEVEJywgc2VsZWN0ZWRBcnJheS50b1N0cmluZygpKQogICAgICAgIGlmIChzZWxlY3RlZEFycmF5Lmxlbmd0aCA9PT0gInt7YW5zd2VyfX0iLnRyaW0oKS5zcGxpdCgnfHwnKS5sZW5ndGggJiYgYXV0b0ZsaXAgPT09ICcxJykgewogICAgICAgICAgc2V0VGltZW91dChmdW5jdGlvbiAoKSB7CiAgICAgICAgICAgIGZsaXBUb0JhY2soKQogICAgICAgICAgfSwgMTAwKQogICAgICAgIH0KICAgICAgfQogICAgICBpZiAobGkuY2xhc3NOYW1lLmluZGV4T2Yoc2VsZWN0ZWRLZXkpID4gMCkgewogICAgICAgIGxpLmNsYXNzTmFtZSA9ICJvcHRpb24iCiAgICAgIH0gZWxzZSB7CiAgICAgICAgbGkuY2xhc3NOYW1lID0gIm9wdGlvbiAiICsgc2VsZWN0ZWRLZXkKICAgICAgfQogICAgfSBlbHNlIHsKICAgICAgLy8g5Y2V6YCJCiAgICAgIGZvciAodmFyIG9wdGlvbiBvZiBkb2N1bWVudC5nZXRFbGVtZW50c0J5Q2xhc3NOYW1lKCdvcHRpb24nKSkgeyBvcHRpb24uY2xhc3NOYW1lID0gJ29wdGlvbid9CiAgICAgIGxpLmNsYXNzTmFtZSA9ICJvcHRpb24gIiArIHNlbGVjdGVkS2V5CiAgICAgIGlmIChQZXJzaXN0ZW5jZS5pc0F2YWlsYWJsZSgpKSB7CiAgICAgICAgUGVyc2lzdGVuY2Uuc2V0SXRlbSgnQU5LSS1TRUxFQ1RFRCcsIGxpLmlkKQogICAgICB9CiAgICAgIGlmIChhdXRvRmxpcCA9PT0gJzEnKSB7CiAgICAgICAgc2V0VGltZW91dChmdW5jdGlvbiAoKSB7CiAgICAgICAgICBmbGlwVG9CYWNrKCkKICAgICAgICB9LCAxMDApCiAgICAgIH0KICAgIH0KICB9CgogIGZ1bmN0aW9uIGZsaXBUb0JhY2sgKCkgewogICAgaWYgKHR5cGVvZiBweWNtZCAhPT0gInVuZGVmaW5lZCIpIHsKICAgICAgcHljbWQoImFucyIpCiAgICB9IGVsc2UgaWYgKHR5cGVvZiBzdHVkeSAhPT0gInVuZGVmaW5lZCIpIHsKICAgICAgc3R1ZHkuZHJhd0Fuc3dlcigpCiAgICB9IGVsc2UgaWYgKHR5cGVvZiBBbmtpRHJvaWRKUyAhPT0gInVuZGVmaW5lZCIpIHsKICAgICAgc2hvd0Fuc3dlcigpCiAgICB9IGVsc2UgaWYgKHdpbmRvdy5hbmtpICYmIHdpbmRvdy5zZW5kTWVzc2FnZTIpIHsKICAgICAgd2luZG93LnNlbmRNZXNzYWdlMigiYW5raXRhcCIsICJtaWRDZW50ZXIiKQogICAgfQogIH0KCiAgZnVuY3Rpb24gc2hvd1RhZ3MgKCkgewogICAgdmFyIHRhZ3MgPSAie3tUYWdzfX0iCiAgICBpZiAoIXRhZ3MpIHJldHVybgogICAgdGFncyA9IHRhZ3Muc3BsaXQoJyAnKQogICAgdmFyIHRhZ0xpc3QgPSAnPHNwYW4gY2xhc3M9InRhZy10aXRsZSI+5qCH562+OiA8L3NwYW4+JwogICAgZm9yICh2YXIgdGFnIG9mIHRhZ3MpIHsKICAgICAgaWYgKHRhZykgewogICAgICAgIHRhZ0xpc3QgKz0gJzxzcGFuIGNsYXNzPSJzaW5nbGUtdGFnIj4nICsgdGFnICsgJzwvc3Bhbj4nCiAgICAgIH0KICAgIH0KICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJmcm9udC10YWciKS5pbm5lckhUTUwgPSB0YWdMaXN0CiAgfQoKICBmdW5jdGlvbiBzaG93U2V0dGluZ3MoKSB7CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic2V0dGluZ3NNb2RhbCIpLnN0eWxlLmRpc3BsYXkgPSAnYmxvY2snCiAgfQoKICBmdW5jdGlvbiBoaWRlU2V0dGluZ3MoKSB7CiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgic2V0dGluZ3NNb2RhbCIpLnN0eWxlLmRpc3BsYXkgPSAnbm9uZScKICB9CgogIGZ1bmN0aW9uIHJlbmFtZUlPc1NlbmRNZXNzYWdlKCl7CiAgICBpZiAod2luZG93WydzZW5kTWVzc2FnZSddKSB7CiAgICAgIHdpbmRvd1snc2VuZE1lc3NhZ2UyJ10gPSB3aW5kb3dbJ3NlbmRNZXNzYWdlJ10KICAgICAgd2luZG93WydzZW5kTWVzc2FnZSddID0gbnVsbAogICAgfQogIH0KCiAgZnVuY3Rpb24gYXBwbHlTZXR0aW5ncygpIHsKICAgIGlmIChQZXJzaXN0ZW5jZS5pc0F2YWlsYWJsZSgpKSB7CiAgICAgIHNob3dRdWVzdGlvblR5cGUgPSBQZXJzaXN0ZW5jZS5nZXRJdGVtKCdBTktJLVNFVFRJTkdTLVNIT1ctUVVFU1RJT04tVFlQRScpIHx8IERFRkFVTFRfU0hPV19RVUVTVElPTl9UWVBFCiAgICAgIGhpZGVPcHRpb25zID0gUGVyc2lzdGVuY2UuZ2V0SXRlbSgnQU5LSS1TRVRUSU5HUy1ISURFLU9QVElPTlMnKSB8fCBERUZBVUxUX0hJREVfT1BUSU9OUwogICAgICByYW5kb21PcHRpb25zID0gUGVyc2lzdGVuY2UuZ2V0SXRlbSgnQU5LSS1TRVRUSU5HUy1SQU5ET00tT1BUSU9OUycpIHx8IERFRkFVTFRfUkFORE9NX09QVElPTlMKICAgICAgZGVsYXlPcHRpb25zID0gUGVyc2lzdGVuY2UuZ2V0SXRlbSgnQU5LSS1TRVRUSU5HUy1ERUxBWS1PUFRJT05TJykgfHwgREVGQVVMVF9ERUxBWV9PUFRJT05TCiAgICAgIG5vcm1hbE9wdGlvbiA9IFBlcnNpc3RlbmNlLmdldEl0ZW0oJ0FOS0ktU0VUVElOR1MtTk9STUFMLU9QVElPTlMnKSB8fCBERUZBVUxUX05PUk1BTF9PUFRJT05TCiAgICAgIGhpZGVOb3RlcyA9IFBlcnNpc3RlbmNlLmdldEl0ZW0oJ0FOS0ktU0VUVElOR1MtSElERS1OT1RFUycpIHx8IERFRkFVTFRfSElERV9OT1RFUwogICAgICBhdXRvRmxpcCA9IFBlcnNpc3RlbmNlLmdldEl0ZW0oJ0FOS0ktU0VUVElOR1MtQVVUTy1GTElQJykgfHwgREVGQVVMVF9BVVRPX0ZMSVAKICAgICAgUGVyc2lzdGVuY2Uuc2V0SXRlbSgnQU5LSS1TRUxFQ1RFRCcsICcnKQogICAgfQogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2hpZGUtb3B0aW9uJykuY2hlY2tlZCA9IGhpZGVPcHRpb25zID09PSAnMScKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyYW5kb20tb3B0aW9uJykuY2hlY2tlZCA9IHJhbmRvbU9wdGlvbnMgPT09ICcxJwogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3Nob3ctdHlwZScpLmNoZWNrZWQgPSBzaG93UXVlc3Rpb25UeXBlID09PSAnMScKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdkZWxheS1vcHRpb24nKS5jaGVja2VkID0gZGVsYXlPcHRpb25zID09PSAnMScKICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdub3JtYWwtb3B0aW9uJykuY2hlY2tlZCA9IG5vcm1hbE9wdGlvbiA9PT0gJzEnCiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnaGlkZS1ub3RlcycpLmNoZWNrZWQgPSBoaWRlTm90ZXMgPT09ICcxJwogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ2F1dG8tZmxpcCcpLmNoZWNrZWQgPSBhdXRvRmxpcCA9PT0gJzEnCiAgICBzaG93RnJvbnRPcHRpb25zKGhpZGVPcHRpb25zLCByYW5kb21PcHRpb25zLCBkZWxheU9wdGlvbnMpCiAgICBkZWFsUXVlc3Rpb25UeXBlKHNob3dRdWVzdGlvblR5cGUpCiAgfQoKICBmdW5jdGlvbiBzd2l0Y2hIaWRlT3B0aW9uKGlucHV0KSB7CiAgICByZXJlbmRlck9wdGlvbnMoaW5wdXQsICdBTktJLVNFVFRJTkdTLUhJREUtT1BUSU9OUycpCiAgfQoKICBmdW5jdGlvbiBzd2l0Y2hEZWxheU9wdGlvbihpbnB1dCkgewogICAgcmVyZW5kZXJPcHRpb25zKGlucHV0LCAnQU5LSS1TRVRUSU5HUy1ERUxBWS1PUFRJT05TJykKICB9CgogIGZ1bmN0aW9uIHN3aXRjaFJhbmRvbU9wdGlvbihpbnB1dCkgewogICAgcmVyZW5kZXJPcHRpb25zKGlucHV0LCAnQU5LSS1TRVRUSU5HUy1SQU5ET00tT1BUSU9OUycpCiAgfQoKICBmdW5jdGlvbiBzd2l0Y2hOb3JtYWxPcHRpb24oaW5wdXQpIHsKICAgIGV4dHJhY3RLZXlGcm9tSW5wdXRBbmRTYXZlKGlucHV0LCAnQU5LSS1TRVRUSU5HUy1OT1JNQUwtT1BUSU9OUycpCiAgICB2YXIgc2VsZWN0ZWRLZXkgPSBnZXRTZWxlY3RlZEtleSgpCiAgICBmb3IgKHZhciBvcHRpb24gb2YgZG9jdW1lbnQuZ2V0RWxlbWVudHNCeUNsYXNzTmFtZSgnb3B0aW9uJykpIHsKICAgICAgaWYgKG9wdGlvbi5jbGFzc05hbWUuaW5kZXhPZignICcpID4gLTEpIHsKICAgICAgICBvcHRpb24uY2xhc3NOYW1lID0gIm9wdGlvbiAiICsgc2VsZWN0ZWRLZXkKICAgICAgfQogICAgfQogIH0KCiAgZnVuY3Rpb24gc3dpdGNoSGlkZU5vdGVzKGlucHV0KSB7CiAgICBleHRyYWN0S2V5RnJvbUlucHV0QW5kU2F2ZShpbnB1dCwgJ0FOS0ktU0VUVElOR1MtSElERS1OT1RFUycpCiAgfQoKICBmdW5jdGlvbiBzd2l0Y2hTaG93VHlwZShpbnB1dCkgewogICAgZXh0cmFjdEtleUZyb21JbnB1dEFuZFNhdmUoaW5wdXQsICdBTktJLVNFVFRJTkdTLVNIT1ctUVVFU1RJT04tVFlQRScpCiAgICBkZWFsUXVlc3Rpb25UeXBlKHNob3dRdWVzdGlvblR5cGUpCiAgfQoKICBmdW5jdGlvbiBzd2l0Y2hBdXRvRmxpcChpbnB1dCkgewogICAgZXh0cmFjdEtleUZyb21JbnB1dEFuZFNhdmUoaW5wdXQsICdBTktJLVNFVFRJTkdTLUFVVE8tRkxJUCcpCiAgfQoKICBmdW5jdGlvbiBleHRyYWN0S2V5RnJvbUlucHV0QW5kU2F2ZShpbnB1dCwgcGVyc2lzdEtleSkgewogICAgdmFyIGtleSA9IGlucHV0LmNoZWNrZWQgPyAnMScgOiAnMCcKICAgIGlmIChQZXJzaXN0ZW5jZS5pc0F2YWlsYWJsZSgpKSB7CiAgICAgIFBlcnNpc3RlbmNlLnNldEl0ZW0ocGVyc2lzdEtleSwga2V5KQogICAgICBpZiAocGVyc2lzdEtleSA9PT0gJ0FOS0ktU0VUVElOR1MtUkFORE9NLU9QVElPTlMnIHx8IHBlcnNpc3RLZXkgPT09ICdBTktJLVNFVFRJTkdTLURFTEFZLU9QVElPTlMnIHx8IHBlcnNpc3RLZXkgPT09ICdBTktJLVNFVFRJTkdTLUhJREUtT1BUSU9OUycpIHsKICAgICAgICBQZXJzaXN0ZW5jZS5zZXRJdGVtKCdBTktJLVNFTEVDVEVEJywgJycpCiAgICAgIH0KICAgIH0KICAgIGlmIChwZXJzaXN0S2V5ID09PSAnQU5LSS1TRVRUSU5HUy1ISURFLU9QVElPTlMnKSB7CiAgICAgIGhpZGVPcHRpb25zID0ga2V5CiAgICB9IGVsc2UgaWYgKHBlcnNpc3RLZXkgPT09ICdBTktJLVNFVFRJTkdTLURFTEFZLU9QVElPTlMnKSB7CiAgICAgIGRlbGF5T3B0aW9ucyA9IGtleQogICAgfSBlbHNlIGlmIChwZXJzaXN0S2V5ID09PSAnQU5LSS1TRVRUSU5HUy1SQU5ET00tT1BUSU9OUycpIHsKICAgICAgcmFuZG9tT3B0aW9ucyA9IGtleQogICAgfSBlbHNlIGlmIChwZXJzaXN0S2V5ID09PSAnQU5LSS1TRVRUSU5HUy1OT1JNQUwtT1BUSU9OUycpIHsKICAgICAgbm9ybWFsT3B0aW9uID0ga2V5CiAgICB9IGVsc2UgaWYgKHBlcnNpc3RLZXkgPT09ICdBTktJLVNFVFRJTkdTLVNIT1ctUVVFU1RJT04tVFlQRScpIHsKICAgICAgc2hvd1F1ZXN0aW9uVHlwZSA9IGtleQogICAgfSBlbHNlIGlmIChwZXJzaXN0S2V5ID09PSAnQU5LSS1TRVRUSU5HUy1ISURFLU5PVEVTJykgewogICAgICBoaWRlTm90ZXMgPSBrZXkKICAgIH0gZWxzZSBpZiAocGVyc2lzdEtleSA9PT0gJ0FOS0ktU0VUVElOR1MtQVVUTy1GTElQJykgewogICAgICBhdXRvRmxpcCA9IGtleQogICAgfQogICAgcmV0dXJuIGtleQogIH0KCiAgZnVuY3Rpb24gcmVyZW5kZXJPcHRpb25zKGlucHV0LCBwZXJzaXN0S2V5KSB7CiAgICBleHRyYWN0S2V5RnJvbUlucHV0QW5kU2F2ZShpbnB1dCwgcGVyc2lzdEtleSkKICAgIHNob3dGcm9udE9wdGlvbnMoaGlkZU9wdGlvbnMsIHJhbmRvbU9wdGlvbnMsIGRlbGF5T3B0aW9ucywgbm9ybWFsT3B0aW9uKQogIH0KCiAgZnVuY3Rpb24gZGVhbFF1ZXN0aW9uVHlwZShzaG93UXVlc3Rpb25UeXBlKSB7CiAgICBpZiAoc2hvd1F1ZXN0aW9uVHlwZSA9PT0gJzEnKSB7CiAgICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdxdWVzdGlvblR5cGUnKS5pbm5lckhUTUwgPSAie3thbnN3ZXJ9fSIuaW5kZXhPZignfHwnKSA+IC0xID8gJ+OAkOWkmumAieOAkScgOiAn44CQ5Y2V6YCJ44CRJwogICAgfSBlbHNlIHsKICAgICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3F1ZXN0aW9uVHlwZScpLmlubmVySFRNTCA9ICcgJwogICAgfQogIH0KCiAgZnVuY3Rpb24gYWRkTW9kZWxDb250ZW50KCkgewogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3NldHRpbmdzTW9kYWwnKS5pbm5lckhUTUwgPSAnPGRpdiBjbGFzcz0ibW9kYWwtY29udGVudCI+XG4nICsKICAgICAgJyAgICA8c3BhbiBjbGFzcz0iY2xvc2UiIG9uY2xpY2s9ImhpZGVTZXR0aW5ncygpIj4mdGltZXM7PC9zcGFuPlxuJyArCiAgICAgICcgICAgPGRpdiBjbGFzcz0ic2V0dGluZ3MtYmxvY2siPlxuJyArCiAgICAgICcgICAgICA8ZGl2IGNsYXNzPSJzaW5nbGUtc2V0dGluZyI+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1sYWJlbCI+5pi+56S657G75Z6LPC9kaXY+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1zd2l0Y2giPlxuJyArCiAgICAgICcgICAgICAgICAgPGlucHV0IGlkPSJzaG93LXR5cGUiIGNsYXNzPSJtdWktc3dpdGNoIG11aS1zd2l0Y2gtYW5pbSIgdHlwZT0iY2hlY2tib3giIG9uY2hhbmdlPSJzd2l0Y2hTaG93VHlwZSh0aGlzKSI+XG4nICsKICAgICAgJyAgICAgICAgPC9kaXY+XG4nICsKICAgICAgJyAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8ZGl2IGNsYXNzPSJzaW5nbGUtc2V0dGluZyI+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1sYWJlbCI+6ZqQ6JeP6YCJ6aG5PC9kaXY+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1zd2l0Y2giPlxuJyArCiAgICAgICcgICAgICAgICAgPGlucHV0IGlkPSJoaWRlLW9wdGlvbiIgY2xhc3M9Im11aS1zd2l0Y2ggbXVpLXN3aXRjaC1hbmltIiB0eXBlPSJjaGVja2JveCIgb25jaGFuZ2U9InN3aXRjaEhpZGVPcHRpb24odGhpcykiPlxuJyArCiAgICAgICcgICAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8L2Rpdj5cbicgKwogICAgICAnICAgICAgPGRpdiBjbGFzcz0ic2luZ2xlLXNldHRpbmciPlxuJyArCiAgICAgICcgICAgICAgIDxkaXYgY2xhc3M9InNldHRpbmctbGFiZWwiPumaj+acuumAiemhuTwvZGl2PlxuJyArCiAgICAgICcgICAgICAgIDxkaXYgY2xhc3M9InNldHRpbmctc3dpdGNoIj5cbicgKwogICAgICAnICAgICAgICAgIDxpbnB1dCBpZD0icmFuZG9tLW9wdGlvbiIgY2xhc3M9Im11aS1zd2l0Y2ggbXVpLXN3aXRjaC1hbmltIiB0eXBlPSJjaGVja2JveCIgb25jaGFuZ2U9InN3aXRjaFJhbmRvbU9wdGlvbih0aGlzKSI+XG4nICsKICAgICAgJyAgICAgICAgPC9kaXY+XG4nICsKICAgICAgJyAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8ZGl2IGNsYXNzPSJzaW5nbGUtc2V0dGluZyI+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1sYWJlbCI+5bu26L+f6YCJ6aG5PC9kaXY+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1zd2l0Y2giPlxuJyArCiAgICAgICcgICAgICAgICAgPGlucHV0IGlkPSJkZWxheS1vcHRpb24iIGNsYXNzPSJtdWktc3dpdGNoIG11aS1zd2l0Y2gtYW5pbSIgdHlwZT0iY2hlY2tib3giIG9uY2hhbmdlPSJzd2l0Y2hEZWxheU9wdGlvbih0aGlzKSI+XG4nICsKICAgICAgJyAgICAgICAgPC9kaXY+XG4nICsKICAgICAgJyAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8ZGl2IGNsYXNzPSJzaW5nbGUtc2V0dGluZyI+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1sYWJlbCI+57qv6Imy5qih5byPPC9kaXY+XG4nICsKICAgICAgJyAgICAgICAgPGRpdiBjbGFzcz0ic2V0dGluZy1zd2l0Y2giPlxuJyArCiAgICAgICcgICAgICAgICAgPGlucHV0IGlkPSJub3JtYWwtb3B0aW9uIiBjbGFzcz0ibXVpLXN3aXRjaCBtdWktc3dpdGNoLWFuaW0iIHR5cGU9ImNoZWNrYm94IiBvbmNoYW5nZT0ic3dpdGNoTm9ybWFsT3B0aW9uKHRoaXMpIj5cbicgKwogICAgICAnICAgICAgICA8L2Rpdj5cbicgKwogICAgICAnICAgICAgPC9kaXY+XG4nICsKICAgICAgJyAgICAgIDxkaXYgY2xhc3M9InNpbmdsZS1zZXR0aW5nIj5cbicgKwogICAgICAnICAgICAgICA8ZGl2IGNsYXNzPSJzZXR0aW5nLWxhYmVsIj7pmpDol4/op6PmnpA8L2Rpdj5cbicgKwogICAgICAnICAgICAgICA8ZGl2IGNsYXNzPSJzZXR0aW5nLXN3aXRjaCI+XG4nICsKICAgICAgJyAgICAgICAgICA8aW5wdXQgaWQ9ImhpZGUtbm90ZXMiIGNsYXNzPSJtdWktc3dpdGNoIG11aS1zd2l0Y2gtYW5pbSIgdHlwZT0iY2hlY2tib3giIG9uY2hhbmdlPSJzd2l0Y2hIaWRlTm90ZXModGhpcykiPlxuJyArCiAgICAgICcgICAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8L2Rpdj5cbicgKwogICAgICAnICAgICAgPGRpdiBjbGFzcz0ic2luZ2xlLXNldHRpbmciPlxuJyArCiAgICAgICcgICAgICAgIDxkaXYgY2xhc3M9InNldHRpbmctbGFiZWwiPuiHquWKqOe/u+i9rDwvZGl2PlxuJyArCiAgICAgICcgICAgICAgIDxkaXYgY2xhc3M9InNldHRpbmctc3dpdGNoIj5cbicgKwogICAgICAnICAgICAgICAgIDxpbnB1dCBpZD0iYXV0by1mbGlwIiBjbGFzcz0ibXVpLXN3aXRjaCBtdWktc3dpdGNoLWFuaW0iIHR5cGU9ImNoZWNrYm94IiBvbmNoYW5nZT0ic3dpdGNoQXV0b0ZsaXAodGhpcykiPlxuJyArCiAgICAgICcgICAgICAgIDwvZGl2PlxuJyArCiAgICAgICcgICAgICA8L2Rpdj5cbicgKwogICAgICAnICAgIDwvZGl2PlxuJyArCiAgICAgICcgIDwvZGl2PicKICB9CgogIGZ1bmN0aW9uIHVwZGF0ZUZyb250Rm9vdGVyKCkgewogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoImZyb250LWZvb3RlciIpLmluc2VydEFkamFjZW50SFRNTCgnYmVmb3JlZW5kJywgJyA8YSBocmVmPSJqYXZhc2NyaXB0OnNob3dTZXR0aW5ncygpOyI+5Y2h54mH6K6+572uPC9hPiAgJyk7CiAgfQoKICBzaG93VGFncygpCiAgcmVuYW1lSU9zU2VuZE1lc3NhZ2UoKQogIGFkZE1vZGVsQ29udGVudCgpCiAgYXBwbHlTZXR0aW5ncygpCiAgdXBkYXRlRnJvbnRGb290ZXIoKQoKPC9zY3JpcHQ+Cg",
+					"BAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAACcNQAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		},
+		{
+			"file": "Try_QuickSorting.cpp",
+			"settings":
+			{
+				"buffer_size": 1256,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/zxll/Desktop/mygit/just-some-code/genshinDMG/daoqijiemi.py",
+			"settings":
+			{
+				"buffer_size": 2248,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Packages/C++/C++ Single File.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				]
+			],
+			[
+				"Packages/Python/Python.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"intall",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/zxll/Desktop/code/c++/Algorithm/图的邻接表拓扑排序.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/图的邻接矩阵逆拓扑排序.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/DFS.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/BFS.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/图的基本操作.cpp",
+		"/Users/zxll/Desktop/mygit/just-some-code/genshinDMG/GenshinDMG.py",
+		"/Users/zxll/Desktop/mygit/just-some-code/genshinDMG/daoqijiemi.py",
+		"/usr/local/texlive/2019basic/readme-txt.dir/README.ZH-CN",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_QuickSorting.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_LinkList.cpp",
+		"/Users/zxll/Desktop/单链表的双指针和逆置.cpp",
+		"/Users/zxll/Desktop/try.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/new分配的数组指针与普通指针混淆问题.cpp",
+		"/Users/zxll/Desktop/try.c",
+		"/Users/zxll/Desktop/code/c++/Algorithm/LearnAlgorithm.sublime-project",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_MergeSorting.cpp",
+		"/Users/zxll/Desktop/new分配的数组指针与普通指针混淆问题.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/指针的初始化问题.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/传指针和指针引用的区别.cpp",
+		"/Users/zxll/.gitconfig",
+		"/Users/zxll/.zshrc",
+		"/Users/zxll/.git-credentials",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_AVL.cpp",
+		"/Users/zxll/Desktop/mygit/new-git-clone.txt",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_4_TreeAndBinaryTree/DS_4_8_AVL.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_Shunting_yard.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_BTree.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_BST.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_Graph.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_ThreadedBiTree.cpp",
+		"/Users/zxll/Desktop/mygit/just-some-code/Al/Try_Graph.cpp",
+		"/Users/zxll/Desktop/mygit/just-some-code/some_Algorithm/Graph_InverTopo.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/vect.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/usetime.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/string1.h",
+		"/Users/zxll/Desktop/code/c++/C++Primer/new-array.cpp",
+		"/Users/zxll/Desktop/code/c++/C++Primer/stock20.cpp",
+		"/Users/zxll/Library/Application Support/Sublime Text/Packages/User/bh_core.sublime-settings",
+		"/Users/zxll/Desktop/mygit/computer-tips/cofig-files/sublime/bh_core.sublime-settings",
+		"/Users/zxll/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings",
+		"/Users/zxll/Desktop/mygit/computer-tips/cofig-files/sublime/Preferences.sublime-settings",
+		"/Users/zxll/Desktop/code/c++/C++Primer/引用.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_BiTreeOrder.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/Try_Stack.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/DS_2_StackAndQueue/DS_2_6_LiQueue0.cpp",
+		"/Users/zxll/Desktop/code/c++/Algorithm/DS_2_StackAndQueue/DS_2_7_LiQueue1.cpp",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_4_TreeAndBinaryTree/DS_4_3_ThreadedBiTree.cpp",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_4_TreeAndBinaryTree/DS_4_1_BiTreeLink.cpp",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_4_TreeAndBinaryTree/DS_4_2_BiTreeF.cpp",
+		"/Users/zxll/Desktop/code/c++/算法与数据结构/try_semaphores.cpp",
+		"/Users/zxll/Desktop/TryGraph.cpp",
+		"/Users/zxll/Desktop/code/c++/tryLinkList.cpp",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_5_Graph/DS_5_0_Arc.cpp",
+		"/Users/zxll/Desktop/考研资料/408zx补充版/DataStructure/Src/DS_4_TreeAndBinaryTree/DS_4_7_BST.cpp",
+		"/Users/zxll/Desktop/tryLinkList.cpp",
+		"/Users/zxll/Desktop/try_semaphores.cpp",
+		"/Users/zxll/Desktop/test.cpp",
+		"/Users/zxll/Desktop/code/java/hello.java",
+		"/Users/zxll/Desktop/mygit/just-some-code/genshinDMG/FunctionDMG.py"
+	],
+	"find":
+	{
+		"height": 32.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"black",
+			"backg",
+			"color",
+			"AMGraph",
+			"// bool AddVex(AMGraph * Gra, string data);\n// bool AddEdge(AMGraph * Gra, int invexnum, int outvexnum);",
+			"VetStackNode",
+			"<<\n",
+			"**",
+			"BSTNode",
+			"key",
+			"BSTree",
+			"BSTInsert",
+			"BSTSearch",
+			"BSTNode",
+			"：",
+			"1：时间复杂度与空间复杂度",
+			"：",
+			"第",
+			"()",
+			"string",
+			",);",
+			"i",
+			"vetid",
+			"id",
+			"vexnum",
+			"LS",
+			"VetStackNode",
+			"MyGra",
+			"true",
+			"MyGra->vernum",
+			"ALGraph",
+			"Vertex"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "并查集.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Try_QuickSorting.cpp",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 1256,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/zxll/Desktop/mygit/just-some-code/genshinDMG/daoqijiemi.py",
+					"selected": true,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2248,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 32.0
+	},
+	"input":
+	{
+		"height": 55.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 150.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "LearnAlgorithm.sublime-project",
+	"replace":
+	{
+		"height": 60.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 160.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
