@@ -156,6 +156,17 @@ gcc -fPIC -shared great_module.c -o great_module.so -I/usr/include/python2.7/ -l
 -w 			#不生成任何警告信息。
 -Wall 		#生成所有警告信息。
 ```
+#### c++ 编译结果分析(重要!)
+
+1. 编译过程分析
+
+![](learn-c++.assets/汇编看函数调用.jpg)
+
+
+2. Class编译结果分析
+
+![](learn-c++.assets/classToAssembly.JPEG)
+
 
 ### c++的标准库头文件都在哪？
 
