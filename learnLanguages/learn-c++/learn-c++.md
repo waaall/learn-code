@@ -4,7 +4,28 @@
 
 ## 参考
 
-* 
+### 开源项目
+
+> 1. 写一个Json库：
+> https://github.com/miloyip/json-tutorial/blob/master/tutorial01/tutorial01.md
+> 2. 写一个红黑树：
+> https://github.com/william-zk/RB_Tree
+> 3. 写一个STL：
+> https://github.com/Alinshans/MyTinySTL
+> 4. 写一个NoSQL:
+> https://www.lanqiao.cn/courses/1341
+> 5. 写一个高并发内存池：
+> https://blog.csdn.net/qq_41562665/article/details/90546750
+> 6. 写一个线程库：
+> https://github.com/Winnerhust/uthread
+> 7. 写一个网络库：
+> https://github.com/chenshuaihao/NetServer
+> 8. 写一个服务器框架：
+> https://www.bilibili.com/video/av53602631?from=search&seid=9029288577396826503
+> 9. 写一个WebServer可以参考一些书:《Linux高性能服务器编程》还有陈硕的那本书
+> https://github.com/linyacool/WebServer
+> 10. 写一个操作系统内核搜一下 “MIT 6.828”感觉课程里的一个作业都可以拿来当做一个项目了: 
+> https://github.com/woai3c/MIT6.828
 
 
 ## Framework
@@ -164,7 +185,14 @@ main(void)
 
 ## C++环境配置
 
-* vscode c++[配置](https://code.visualstudio.com/docs/cpp/config-clang-mac)、
+> 注意mac用xcode--select 安装的clang编译器，默认不使用gcc标准，所以在编译时，可以使用下面指令：
+> ```c
+> g++ your_c_file.cpp -std=c++17
+> ```
+
+###  vscode c++配置
+
+[配置](https://code.visualstudio.com/docs/cpp/config-clang-mac)、
 
 1.  **create a ``tasks.json`` file** 
 
@@ -659,7 +687,7 @@ sudo apt install autoconf automake libtool #额外不在build-essential里的GNU
 
 这样就又产生了另一个好处：在编译的时候，只要头文件没有更改（也就是函数声明没有改变），只改动了函数的定义（具体实现方式），需要它（这个文件）的文件是不需要重新编译的。
 
-比如，makefile中，文件只依赖于“所需函数”所在的头文件，而不依赖于它的定义，也就是“库文件”，这样改变函数定义（没有改声明）的话，make只需要重编译库文件，再进行链接。
+比如，makefile中，文件只依赖于“所需函数”所在的头文件，而不依赖于它的定义，也就是“库文件”，这样改变函数定义（没有改声明）的话，make只需要重编译库文件，再进行链接。头文件中常包含的内容。● 函数原型。● 使用#define或const定义的符号常量。● 结构声明。● 类声明。● 模板声明。● 内联函数。1. 头文件名称> 包含头文件时，我们使用“coordin.h”，而不是<coodin.h>。如果文件名包含在尖括号中，则C++编译器将在存储标准头文件的主机系统的文件系统中查找；但如果文件名包含在双引号中，则编译器将首先查找当前的工作目录或源代码目录（或其他目录，这取决于编译器）。如果没有在那里找到头文件，则将在标准位置查找。因此**在包含自己的头文件时，应使用引号而不是尖括号**。2. 同一个文件中只能将同一个头文件包含一次   所有头文件都应该使用 `#define` 来防止头文件被多重包含 (在同一个文件中只能将同一个头文件包含一次)。记住这个规则很容易，但很可能在不知情的情况下将头文件包含多次。例如，可能使用包含了另外一个头文件的头文件。   有一种标准的C/C++技术可以避免多次包含同一个头文件。它是基于预处理器编译指令`#ifndef`（即if not defined）的。下面的代码片段意味着仅当以前没有使用预处理器编译指令`#define`定义名称`FOO_BAR_BAZ_H_`时，才处理`#ifndef`和`#endif`之间的语句.   为保证唯一性, 头文件的命名应该基于所在项目源代码树的全路径, 命名格式当是: `<PROJECT>_<PATH>_<FILE>_H_` . 例如, 项目 `foo` 中的头文件 `foo[表情]c/bar/baz.h` 可按如下方式保护:      ```c++   #ifndef FOO_BAR_BAZ_H_   #define FOO_BAR_BAZ_H_   ...   #endif // FOO_BAR_BAZ_H_   ```
 
 ### sublime写c++小技巧
 
@@ -865,6 +893,21 @@ int main()
     return 0;  
 }
 ```
+
+#### 字符串转数字
+
+![stringToNumber](learn-c++.assets/stringToNumber.jpg)
+这个算法题解答见leetcode:
+* [atoi--leetcode](https://leetcode-cn.com/problems/string-to-integer-atoi/)
+* [atof--leetcode](https://leetcode-cn.com/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/)
+
+当然, c标准库中都替我们实现好了,具体有三个系列: 
+* sto 系列 
+* ato 系列
+* strto 系列
+![stringToNumberFunc](learn-c++.assets/stringToNumberFunc.png)
+注: 后面接i就是转int, 后面接d就是转double, 比如atio就是转int, strtod就是转double.
+
 
 ### 输入输出
 
@@ -1956,46 +1999,6 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 
 
 
-### Map
-
-> c++中map与unordered_map的区别: 
-> 
-> 1. 头文件
-> 
-> map: #include < map >
-> unordered_map: #include < unordered_map
-> 
-> 2. 内部实现机理
-> 
-> map： map内部实现了一个红黑树，该结构具有自动排序的功能，因此map内部的所有元素都是有序的，红黑树的每一个节点都代表着map的一个元素，因此，对于map进行的查找，删除，添加等一系列的操作都相当于是对红黑树进行这样的操作，故红黑树的效率决定了map的效率。
-> 
-> unordered_map: unordered_map内部实现了一个哈希表，因此其元素的排列顺序是杂乱的，无序的
-> 
-> 3. 优缺点以及适用处
-> 
-> map优点： 
-> * 有序性，这是map结构最大的优点，其元素的有序性在很多应用中都会简化很多的操作
-> * 红黑树，内部实现一个红黑书使得map的很多操作在lg(n)的时间复杂度下就可以实现，因此效率非常的高
-> 
-> map缺点：
-> 空间占用率高，因为map内部实现了红黑树，虽然提高了运行效率，但是因为每一个节点都需要额外保存父节点，孩子节点以及红/黑性质，使得每一个节点都占用大量的空间
-> 适用: 对于那些有顺序要求的问题，用map会更高效一些
-> 
-> unordered_map 
-> 
-> 优点： 
-> 因为内部实现了哈希表，因此其查找速度非常的快
-> 缺点： 
-> 哈希表的建立比较耗费时间
-> 适用：对于查找问题，unordered_map会更加高效一些，因此遇到查找问题，常会考虑一下
-> 
-> 
-> unordered_map
-> 
-> 对于unordered_map或者unordered_set容器，其遍历顺序与创建该容器时输入元素的顺序是不一定一致的，遍历是按照哈希表从前往后依次遍历的
-
-
-
 ## c++标准库(STL)
 
 ### STL 模版类
@@ -2018,7 +2021,7 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 * string ✔
 * map    ✔
 * stack  ✔
-* list   
+* list   ✔
 * array  
 * queue  ✔
 * pair
@@ -2092,12 +2095,32 @@ int main()
 1.  cout操作符可以直接输出指针的值，但是对迭代器进行在操作的时候会报错。通过看报错信息和头文件知道，迭代器返回的是对象引用而不是对象的值，所以cout只能输出迭代器使用*取值后的值而不能直接输出其自身。
 2.  指针能指向函数而迭代器不行，迭代器只能指向容器。这就说明了迭代器和指针其实是完全不一样的概念来的。指针是一种特殊的变量,它专门用来存放另一变量的地址，而迭代器只是参考了指针的特性进行设计的一种STL接口。
 
-#### c++容器共有的函数
+### c++容器共有的函数
 
 
 
+#### 1.序列容器(Sequence containers)：
+![Sequence-containers](learn-c++.assets/Sequence-containers.png)
 
-#### vector 类
+#### 容器适配器(Container adaptors)
+* stack
+* queue
+这个名字起的太差劲，其实就是继承与容器，本质一样的数据结构实现用法上的不同，比如stack就是“禁用”了一端的deque，看stack的定义语句也能看出：
+
+```c++
+template <class T, class Container = deque<T> > class stack;
+```
+
+#### 关联容器(Associative containers)：
+一般关联容器（见下图）是由二叉树实现的，其为了排序与更有效的查询（unordered_map是哈希表构建的，之后会详细讲到）。
+所以这类容器，push_back()、pop_back()等操作就没有意义了。（存取没有顺序）
+
+
+> 下图截取自[cpluslpus官网](https://www.cplusplus.com/reference/stl/):
+> ![Associative-containers](learn-c++.assets/Associative-containers.png)
+
+
+### vector 类
 
 > （具体见《c++ Primer Plus》16.3）
 > “模板类vector类似于string类，也是一种动态数组。您可以在运行阶段设置vector对象的长度，可在末尾附加新数据，还可在中间插入新数据。基本上，它是使用new创建动态数组的替代品。实际上，vector类确实使用new和delete来管理内存，但这种工作是自动完成的。”
@@ -2120,7 +2143,7 @@ int main()
 
 思考：vector对象？这应该就是一个类的应用吧！还要include，说明也是一个库文件，这个库文件定义了vector类模版？然后vector<int>就是vector类模版的具体化，然后我们就创建了这个实例vi。
 
-##### vector类的常用函数
+#### vector类的常用函数
 
 > push_back(i)      在数组的最后添加一个数据
 > pop_back()        去掉数组的最后一个数据
@@ -2139,13 +2162,28 @@ int main()
 > empty()           判断vector是否为空
 > swap              与另一个vector交换数据
 
+### list类
+内部是由双向链表实现。缺点当然就是不支持随机访问，优点就是中间插入快很多。
+
+### deque类
+即双端队列(double-end-queue)。
+
+> [深入剖析deque容器实现](https://www.cnblogs.com/jinxiang1224/p/8468417.html)
+> 
+> 下图可以看到，在物理存储方面，deque应该是分块连续存储的。所以可以看作是list类和vector类的取舍。
+> ![double-end-queue](learn-c++.assets/deque.png)
+> deque的二级数组是一个连续内存，它纪录了一级数组各元素的指针。
+
+所以deque类中间插入速度和随机访问速度都介于list和vector之间。
 
 
-#### String类
+
+
+### String类
 string是C++标准库的一个重要的部分，主要用于字符串处理。可以使用输入输出流方式直接进行操作，也可以通过文件等手段进行操作。同时C++的算法库对string也有着很好的支持，而且string还和c语言的字符串之间有着良好的接口。虽然也有一些弊端，但是瑕不掩瑜。 
 其中使用的代码多数都是来自cpp官网，因为例子非常全。
 
-##### 声明和初始化方法：
+#### 声明和初始化方法：
 
 想使用string首先要在头文件当中加入< string > 
 声明方式也很简单
@@ -2190,7 +2228,7 @@ int main()
 }
 ```
 
-##### substr操作：
+#### substr操作：
 
 注意substr没有迭代器作为参数的操作
 
@@ -2214,7 +2252,7 @@ int main()
 如果输入的位置超过字符的长度，会抛出一个out_of_range的异常
 
 
-##### insert操作:
+#### insert操作:
 
 代码来自cpp官网，经过自己的整理 
 注意用迭代器当参数和无符号数当参数的区别
@@ -2258,7 +2296,7 @@ int main()
 }
 ```
 
-##### erase操作：
+#### erase操作：
 
 用来执行删除操作 
 删除操作有三种
@@ -2294,7 +2332,7 @@ int main ()
 ```
 
 
-##### append和replace操作:
+#### append和replace操作:
 
 append函数可以用来在字符串的末尾追加字符和字符串。由于string重载了运算符，也可以用+=操作实现 
 repalce顾名思义，就是替换的意思，先删除，后增加。 
@@ -2374,7 +2412,7 @@ int main ()
 
 以上的replace操作可以用insert和erase的操作组合替换，但是replace操作更加方便。
 
-##### assign操作： 
+#### assign操作： 
 assign操作在一起列容器当中都存在，比如vector等等。是一个很基本的操作函数，string使用assign可以灵活的对其进行赋值。 
 代码来自cpp官网
 ```c
@@ -2413,7 +2451,7 @@ int main ()
 }
 ```
 
-##### string的搜索操作:（find和rfind）
+#### string的搜索操作:（find和rfind）
 
 string类中提供了很多性能优秀，使用方便的成员方法。而且在泛型算法当中也有很多实用的技巧。
 
@@ -2521,7 +2559,7 @@ int main()
 
 find_last_of和find_last_not_of与first基本相同，就不写例子代码了。
 
-##### 比较与转换:（compare、to_string）
+#### 比较与转换:（compare、to_string）
 
 类似c语言的字符串比较函数strcmp函数一样，支持字符串比较操作，同时也类似python、C#语言中的函数一样，支持把数字和字符串转换。有些特性是C++11当中才有。 
 注意编译器bug： 
@@ -2601,7 +2639,7 @@ int main()
     return 0;
 }
 ```
-#### Map与unordered_map
+### Map与unordered_map
 
 就是把两种类型的数据映射在一起，一一对应（类似函数，“自变量(key)”是唯一的，但是value不唯一）
 
@@ -2611,12 +2649,49 @@ int main()
 
 * map则是为了更好的将数据排序，使用红黑树实现。
 
-##### unordered_map常用函数
+#### unordered_map与map的区别
+> 1. 内部实现机理
+> 
+> map： map内部实现了一个红黑树，该结构具有自动排序的功能，因此map内部的所有元素都是有序的，红黑树的每一个节点都代表着map的一个元素，因此，对于map进行的查找，删除，添加等一系列的操作都相当于是对红黑树进行这样的操作，故红黑树的效率决定了map的效率。
+> 
+> unordered_map: unordered_map内部实现了一个哈希表，因此其元素的排列顺序是杂乱的，无序的
+> 
+> 2. 优缺点以及适用处
+> 
+> map优点： 
+> * 有序性，这是map结构最大的优点，其元素的有序性在很多应用中都会简化很多的操作
+> * 红黑树，内部实现一个红黑书使得map的很多操作在lg(n)的时间复杂度下就可以实现，因此效率非常的高
+> map缺点：
+> 空间占用率高，因为map内部实现了红黑树，虽然提高了运行效率，但是因为每一个节点都需要额外保存父节点，孩子节点以及红/黑性质，使得每一个节点都占用大量的空间
+> 适用: 对于那些有顺序要求的问题，用map会更高效一些
+> 
+> unordered_map 
+> 优点： 
+> 因为内部实现了哈希表，因此其查找速度非常的快
+> 缺点： 
+> 哈希表的建立比较耗费时间
+> 适用：对于查找问题，unordered_map会更加高效一些，因此遇到查找问题，常会考虑一下
+> 对于unordered_map或者unordered_set容器，其遍历顺序与创建该容器时输入元素的顺序是不一定一致的，遍历是按照哈希表从前往后依次遍历的
 
-* insert()
-* .find(key)	    搜索具有给定键的元素。返回指向该元素的迭代器(iterator)。
+
+#### unordered_map常用函数
+参考链接：
+* [] 
+
+* .insert()
+
+* .emplace() 
+
+* .find(key)	    搜索具有给定键的元素。返回指向该元素的迭代器(iterator)
+
 * .count()	       获取与给定键匹配的元素数。
-* erase(key or iterator)   
+
+* .erase(key or iterator)
+  
+
+
+> emplace 和 insert 的区别：
+> emplace 最大的作用是避免产生不必要的临时变量，因为它可以完成in place的构造。没啥卵用目前。
 
 ```c
 
@@ -2625,6 +2700,16 @@ int main()
 
 
 ## C++面试题
+
+* 动态规划
+
+* 贪心算法
+
+* 搜索与回溯
+
+* 分治思想
+
+他们都是啥？有什么区别与联系？
 
 
 ### 两数之和

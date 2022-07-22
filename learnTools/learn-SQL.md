@@ -1,7 +1,9 @@
 # learn SQL
 
 ### 参考
-* [一个公开课](https://classroom.udacity.com/courses/ud198)
+
+* [公开课1](https://www.bilibili.com/video/BV1ta411C7xq)
+* [公开课2](https://classroom.udacity.com/courses/ud198)
 * [一个不错的网站](https://www.postgresqltutorial.com/postgresql-string-functions/)
 
 ### mac安装环境

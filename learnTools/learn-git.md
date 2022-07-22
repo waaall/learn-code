@@ -1,4 +1,5 @@
 # learn [git](https://git-scm.com/book/zh/v2)
+
 [toc]
 
 - - - -
@@ -768,3 +769,8 @@ gk	\gitk --all --branches
 
 #### git命令的区别
 1.[git clone/git pull/git fetch/git merge/get init 的区别](https://www.cnblogs.com/lalalagq/p/9968949.html)
+
+
+### git commit message 的规范
+
+* [Commit message 和 Change log 编写指南](https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
