@@ -4,6 +4,8 @@
 
 ## 参考
 
+> * [一个不错的博客](https://elloop.github.io/categories.html#c++-ref)
+
 ### 开源项目
 
 > 1. 写一个Json库：
@@ -2706,6 +2708,58 @@ int main()
 
 ```c
 
+```
+
+### 多线程与锁
+
+> [std::mutex的实现](https://zhiqiang.org/coding/std-mutex-implement.html)
+> [std::mutex的使用/lock_guard的使用](https://zhuanlan.zhihu.com/p/91062516)
+> [join的意义](https://blog.csdn.net/duan19920101/article/details/121357347): T.join()表示T这个线程执行结束才可以返回, 然后执行接下来的代码
+> [如何理解互斥锁、条件锁、读写锁以及自旋锁？ - 果冻虾仁的回答 - 知乎](https://www.zhihu.com/question/66733477/answer/1267625567)
+
+```c++
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+#include <chrono>
+#include <stdexcept>
+
+int counter = 0;
+std::mutex mtx; // 保护counter
+
+void increase_proxy(int time, int id) {
+    for (int i = 0; i < time; i++) {
+        // std::lock_guard对象构造时，自动调用mtx.lock()进行上锁
+        // std::lock_guard对象析构时，自动调用mtx.unlock()释放锁
+        std::lock_guard<std::mutex> lk(mtx);
+        // 线程1上锁成功后，抛出异常：未释放锁
+        if (id == 1) {
+            throw std::runtime_error("throw excption....");
+        }
+        // 当前线程休眠1毫秒
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        counter++;
+    }
+}
+
+void increase(int time, int id) {
+    try {
+        increase_proxy(time, id);
+    }
+    catch (const std::exception& e){
+        std::cout << "id:" << id << ", " << e.what() << std::endl;
+    }
+}
+
+int main(int argc, char** argv) {
+    std::thread t1(increase, 10000, 1);
+    std::thread t2(increase, 10000, 2);
+    t1.join();
+    t2.join();
+    std::cout << "counter:" << counter << std::endl;
+    return 0;
+}
 ```
 
 
