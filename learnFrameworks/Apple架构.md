@@ -10,7 +10,7 @@ swift是一门语言，语言本身和操作系统，硬件，API等都是没有
 
 所以我们从一开始就不应该拿过语言来学习（比如怎么声明量，函数或者类，然后有哪些“新”特性），而是先了解Mac系统的框架：
 
-<img src="Apple架构.assets/3BC46C46-DAED-4078-AC48-3B4051948A4C.png" alt="3BC46C46-DAED-4078-AC48-3B4051948A4C" style="zoom:67%;" />
+![](Apple架构.assets/3BC46C46-DAED-4078-AC48-3B4051948A4C.png)
 
 ### 设计模式
 
@@ -61,9 +61,6 @@ UIkit是iOS端类似于MacOS的AppKit的图形界面API，而SwiftUI是在WWDC20
 
 * 工业设计：这也是Apple的核心竞争力之一，这一点是普通消费者最看重的，也是很多“果粉”和“果黑”的争执重点之一。不得不说，一家电子产品公司像奢侈品公司一样注重工业设计，工艺，产品质量是极其可贵的，这也的确是Apple的魅力所在。iPhone4，iPhone7，iPad pro11，MacbookAir，MacPro，iMac，Apple Watch这些经典设计会载入史册。（额……iPhone 11pro的丑也会载入史册的，前刘海后浴霸，这倒车开的猝不及防）
 
-![Screen Shot 2020-06-29 at 22.15.05](Apple架构.assets/Screen Shot 2020-06-29 at 22.15.05-3440285.png)
-
-  ![](Apple架构.assets/Screen Shot 2020-06-29 at 22.17.21.png)
 
 * Clang&LLVM编译器：Apple注重自己产品的运行效率（谁不想呢？只是做到很难），而系统主要用类c语言写，而Mac软件开始是用Objective-C写（API对其适配），但GNU不给力，最终还是自己做吧：Chris Lattner，苹果开发LLVM编译器的主导者，人才是企业和国家发展的原材料啊！
 * HFS/APFS文件系统：开始苹果使用开源的文件系统，但这远不及Mac发展的步伐，而文件系统也是实现高效率检索的底层基础，而经过几代发展，APFS文件系统已十分优异，Apple产品的Spotlight搜索也是竞争对手目前难以企及的。（当然从效率，安全性等角度，微软的NTFS文件系统也毫不逊色）

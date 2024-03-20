@@ -94,43 +94,7 @@ Qt的缺点：
 
 有不少较大型的c++软件项目使用Qt作为GUI开发库：
 
-- [Adobe Photoshop Album](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Adobe_Photoshop_Album)[[37\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-37)
-- [Adobe Photoshop Elements](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Adobe_Photoshop_Elements)[[38\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-38)
-- AMD's [Radeon Software](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Radeon_Software) Crimson Edition driver tool application.[[39\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-39)
-- [Autodesk Maya](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Autodesk_Maya)[[40\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-40)
-- [Autodesk 3ds Max](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Autodesk_3ds_Max)[[41\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-41)
-- [Bitcoin Core](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bitcoin_Core), a bitcoin client
-- [Bitcoin ABC](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Bitcoin_Cash), a bitcoin cash client
-- [CryEngine V](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/CryEngine) editor[[42\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-42)
-- [DaVinci Resolve](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/DaVinci_Resolve), a video editor
-- [Dolphin (emulator)](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Dolphin_(emulator)), an emulator for the [Nintendo Wii](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Nintendo_Wii) and [Nintendo GameCube](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Nintendo_GameCube)systems.
-- [Dorico](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Dorico) notation software
-- [Dragonframe](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Dragonframe)[[43\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-43) stop motion animation software
-- [EAGLE](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/EAGLE_(program)) by [CadSoft Computer](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/CadSoft_Computer) / [Autodesk](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Autodesk), an EDA application with schematic capture, PCB layout, auto-router and CAM features
-- Electrum, a lightweighed bitcoin client
-- [FreeMat](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/FreeMat) free open source numerical computing environment
-- [Google Earth](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Google_Earth)[[44\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-44)
-- [Krita](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Krita) graphics editing and digital painting software[[45\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-45)
-- [LMMS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/LMMS), a cross-platform music production software
-- [Mathematica](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Mathematica), a mathematical symbolic computation program, sometimes termed a computer algebra system or program, used in many scientific, engineering, mathematical, and computing fields.[[46\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-46)
-- Moonlight Stream, an open-source implementation of Nvidia Shield[[47\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-47)
-- [OBS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Open_Broadcaster_Software), a libre cross-platform screencast software
-- [Opera](https://link.zhihu.com/?target=http%3A//zh.wikipedia.org/wiki/Opera)：著名的网页浏览器。
-- [Orange](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Orange_(software)) data mining suite[[48\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-48)
-- [QGIS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/QGIS) geographic information system[[49\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-49)
-- [QuiteRSS](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/QuiteRSS) Feed Reader
-- [Scribus](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Scribus) desktop publishing software[[50\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-50)
-- [Sibelius](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Sibelius_(software)) music composition and notation software[[51\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-51)
-- [Source 2](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Source_2) engine tools[[52\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-52) a 3D video game engine developed by [Valve Corporation](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Valve_Corporation)
-- [Stellarium](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Stellarium_(software)), a planetarium program
-- [Subsurface](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Subsurface_(software)), a software for logging and planning scuba dives initially designed and developed by Linus Torvalds[[53\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-53)
-- [Teamviewer](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Teamviewer), a computer software package for remote control, desktop sharing, online meetings, web conferencing and file transfer between computers[[54\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-54)
-- [Telegram](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Telegram_(software)), a messaging client available for Windows, Mac and Linux[[55\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-55)
-- [VirtualBox](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/VirtualBox) OS virtualization software[[56\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-56)
-- [VLC media player](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/VLC_media_player)[[57\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-57)
-- [WPS Office](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/WPS_Office)[[58\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-58)
-- [XnView MP](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/XnView_MP)[[59\]](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Qt_%28software%29%23cite_note-59)
-
+- [Adobe Photoshop Album](https://link.zhihu.com/?target=https%3A//en.wikipedia.org/wiki/Adobe_Photoshop_Album)
 
 #### [**Electron-Web**](https://www.electronjs.org/docs)
 
