@@ -1111,4 +1111,64 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 # 浏览器内核(客户端)
 [chromium知乎](https://www.zhihu.com/question/290767285/answer/1200063036)
 虽然从操作系统底层就有基本网络协议的API，但是现代网络数据解码收发的主要角色还是浏览器内核，我们可以从Webkit说起，当然不可避免要谈Chrome内核，上述的链接文章就总结的不错。![IMG_0411](learn-internet.assets/IMG_0411.JPG)
-
+## 浏览器开发工具
+- [Chrome浏览器开发者工具介绍](https://blog.csdn.net/csucsgoat/article/details/117811466)
+要想了解这个工具，不仅要知道上文中的网络协议相关的知识，还有了解网页的组成以及如何被本地浏览器渲染成我们看到的画面。
+### 网页的组成与渲染
+下文节选自[渲染页面：浏览器的工作原理](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work)（分为解析、渲染和交互）
+> 1.[解析](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E8%A7%A3%E6%9E%90)
+一旦浏览器收到第一个数据分块，它就可以开始解析收到的信息。[“解析”](https://developer.mozilla.org/zh-CN/docs/Glossary/Parse)是浏览器将通过网络接收的数据转换为 [DOM](https://developer.mozilla.org/zh-CN/docs/Glossary/DOM) 和 [CSSOM](https://developer.mozilla.org/zh-CN/docs/Glossary/CSSOM) 的步骤，通过渲染器在屏幕上将它们绘制成页面。
+虽然 DOM 是浏览器标记的内部表示，但是它也被暴露出来，可以通过 JavaScript 中的各种 API 进行操作。
+即使请求页面的 HTML 大于初始的 14KB 数据包，浏览器也将根据其拥有的数据开始解析并尝试渲染。这就是为什么在前 14KB 中包含浏览器开始渲染页面所需的所有内容，或者至少包含页面模板（第一次渲染所需的 CSS 和 HTML）对于 web 性能优化来说是重要的。但是在渲染到屏幕上面之前，HTML、CSS、JavaScript 必须被解析完成。
+1.1[构建 DOM 树](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E6%9E%84%E5%BB%BA_dom_%E6%A0%91)
+我们在[关键渲染路径](https://developer.mozilla.org/zh-CN/docs/Web/Performance/Critical_rendering_path)这篇文章中描述了五个步骤。
+第一步是处理 HTML 标记并构造 DOM 树。HTML 解析涉及到[符号化](https://developer.mozilla.org/zh-CN/docs/Web/API/DOMTokenList)和树的构造。HTML 标记包括开始和结束标记，以及属性名和值。如果文档格式良好，则解析它会简单而快速。解析器将标记化的输入解析到文档中，构建文档树。
+DOM 树描述了文档的内容。[`<html>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/html) 元素是第一个标签也是文档树的根节点。树反映了不同标记之间的关系和层次结构。嵌套在其他标记中的标记是子节点。DOM 节点的数量越多，构建 DOM 树所需的时间就越长。
+![我们示例代码的 DOM 树，显示了所有节点（包括文本节点）。](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work/dom.gif)
+当解析器发现非阻塞资源，例如一张图片，浏览器会请求这些资源并且继续解析。当遇到一个 CSS 文件时，解析也可以继续进行，但是对于 `<script>` 标签（特别是没有 [`async`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/async_function) 或者 `defer` 属性的）会阻塞渲染并停止 HTML 的解析。尽管浏览器的预加载扫描器加速了这个过程，但过多的脚本仍然是一个重要的瓶颈。
+1.2[预加载扫描器](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E9%A2%84%E5%8A%A0%E8%BD%BD%E6%89%AB%E6%8F%8F%E5%99%A8)
+浏览器构建 DOM 树时，这个过程占用了主线程。同时，_预加载扫描器_会解析可用的内容并请求高优先级的资源，如 CSS、JavaScript 和 web 字体。多亏了预加载扫描器，我们不必等到解析器找到对外部资源的引用时才去请求。它将在后台检索资源，而当主 HTML 解析器解析到要请求的资源时，它们可能已经下载中了，或者已经被下载。预加载扫描器提供的优化减少了阻塞。
+```
+<link rel="stylesheet" href="styles.css" />
+<script src="myscript.js" async></script>
+<img src="myimage.jpg" alt="图像描述" />
+<script src="anotherscript.js" async></script>
+```
+ >在这个例子中，当主线程在解析 HTML 和 CSS 时，预加载扫描器将找到脚本和图像，并开始下载它们。为了确保脚本不会阻塞进程，当 JavaScript 解析和执行顺序不重要时，可以添加 `async` 属性或 `defer` 属性。
+等待获取 CSS 不会阻塞 HTML 的解析或者下载，但是它确实会阻塞 JavaScript，因为 JavaScript 经常用于查询元素的 CSS 属性。
+1.3[构建 CSSOM 树](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E6%9E%84%E5%BB%BA_cssom_%E6%A0%91)
+第二步是处理 CSS 并构建 CSSOM 树。CSS 对象模型和 DOM 是相似的。DOM 和 CSSOM 是两棵树。它们是独立的数据结构。浏览器将 CSS 规则转换为可以理解和使用的样式映射。浏览器遍历 CSS 中的每个规则集，根据 CSS 选择器创建具有父、子和兄弟关系的节点树。
+与 HTML 类似，浏览器需要将接收到的 CSS 规则转换为可处理的格式。因此，它重复了 HTML 到对象的过程，但这次是针对 CSS。
+CSSOM 树包括来自用户代理样式表的样式。浏览器从适用于节点的最通用规则开始，并通过应用更具体的规则递归地优化计算的样式。换句话说，它级联属性值。
+构建 CSSOM 非常快，并且在当前的开发工具中没有以独特的颜色显示。相反，开发人员工具中的“重新计算样式”显示解析 CSS、构建 CSSOM 树和递归计算计算样式所需的总时间。在 web 性能优化方面，它是可轻易实现的，因为创建 CSSOM 的总时间通常小于一次 DNS 查询所需的时间。
+1.4[其他过程](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E5%85%B6%E4%BB%96%E8%BF%87%E7%A8%8B)
+JavaScript 编译
+在解析 CSS 和创建 CSSOM 的同时，包括 JavaScript 文件在内的其他资源也在下载（这要归功于预加载扫描器）。JavaScript 会被解析、编译和解释。脚本被解析为抽象语法树。有些浏览器引擎会将[抽象语法树](https://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91)输入编译器，输出字节码。这就是所谓的 JavaScript 编译。大部分代码都是在主线程上解释的，但也有例外，例如在 [web worker](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API) 中运行的代码。
+构建无障碍树
+浏览器还构建辅助设备用于分析和解释内容的[无障碍](https://developer.mozilla.org/zh-CN/docs/Learn/Accessibility)树。无障碍对象模型（AOM）类似于 DOM 的语义版本。当 DOM 更新时，浏览器会更新辅助功能树。辅助技术本身无法修改无障碍树。
+在构建 AOM 之前，[屏幕阅读器 (en-US)](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Screen_Reader_Implementors_Guide "Currently only available in English (US)")无法访问内容。
+2.[渲染](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E6%B8%B2%E6%9F%93)
+渲染步骤包括样式、布局、绘制，在某些情况下还包括合成。在解析步骤中创建的 CSSOM 树和 DOM 树组合成一个渲染树，然后用于计算每个可见元素的布局，然后将其绘制到屏幕上。在某些情况下，可以将内容提升到它们自己的层并进行合成，通过在 GPU 而不是 CPU 上绘制屏幕的一部分来提高性能，从而释放主线程。
+2.1[样式](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E6%A0%B7%E5%BC%8F)
+关键呈现路径的第三步是将 DOM 和 CSSOM 组合成渲染树。计算样式树或渲染树的构建从 DOM 树的根开始，遍历每个可见节点。
+不会被显示的元素，如 [`<head>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/head) 元素及其子元素，以及任何带有 `display: none` 的节点，如用户代理样式表中的 `script { display: none; }`，都不会包含在渲染树中，因为它们不会出现在渲染输出中。应用了 `visibility: hidden` 的节点会包含在渲染树中，因为它们会占用空间。由于我们没有给出任何指令来覆盖用户代理默认值，因此上述代码示例中的 `script` 节点不会包含在渲染树中。
+每个可见节点都应用了 CSSOM 规则。渲染树包含所有可见节点的内容和计算样式，将所有相关样式与 DOM 树中的每个可见节点匹配起来，并根据 [CSS 级联](https://developer.mozilla.org/zh-CN/docs/Web/CSS/Cascade)，确定每个节点的计算样式。
+2.2[布局](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E5%B8%83%E5%B1%80)
+第四步是在渲染树上运行布局以计算每个节点的几何体。_布局_是确定呈现树中所有节点的尺寸和位置，以及确定页面上每个对象的大小和位置的过程。_重排_是后续过程中对页面的任意部分或整个文档的大小和位置的重新计算。
+渲染树构建完毕后，浏览器就开始布局。渲染树标识了哪些节点会显示（即使不可见）及其计算样式，但不标识每个节点的尺寸或位置。为了确定每个对象的确切大小和位置，浏览器会从渲染树的根开始遍历。
+在网页上，大多数东西都是一个盒子。不同的设备和不同的桌面设置意味着无限数量的不同视区大小。在此阶段，根据视口大小，浏览器将确定屏幕上所有盒子的大小。以视口大小为基础，布局通常从 body 开始，设置所有 body 后代的大小，同时给不知道其尺寸的替换元素（例如图像）提供占位符空间，空间大小以相应元素盒模型的属性为准。
+第一次确定每个节点的大小和位置称为_布局_。随后对节点大小和位置的重新计算称为_重排_。在我们的示例中，假设初始布局发生在返回图像之前。由于我们没有声明图像的尺寸，因此一旦知道图像的尺寸，就会出现重排。
+2.3[绘制](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E7%BB%98%E5%88%B6)
+关键渲染路径中的最后一步是将各个节点绘制到屏幕上，其中第一次的绘制被称为[首次有意义的绘制](https://developer.mozilla.org/zh-CN/docs/Glossary/First_meaningful_paint)。在绘制或光栅化阶段，浏览器将在布局阶段计算的每个盒子转换为屏幕上的实际像素。绘制涉及将元素的每个可见部分绘制到屏幕上，包括文本、颜色、边框、阴影以及按钮和图像等替换元素。浏览器需要以超快的速度执行这个过程。
+为了确保平滑滚动和动画效果，包括计算样式、回流和绘制等占用主线程的所有操作，必须在不超过 16.67 毫秒的时间内完成。在 2048 x 1536 分辨率下，iPad 需要将超过 314.5 万个像素绘制到屏幕上。这是非常多的像素，必须要非常快速地绘制出来。为了确保重绘能够比初始绘制更快地完成，绘制到屏幕的操作通常被分解成几个图层。如果发生这种情况，浏览器则需要进行合成。
+绘制可以将布局树中的元素分解为多个层。将内容提升到 GPU 上的层（而不是 CPU 上的主线程）可以提高绘制和重新绘制性能。有一些特定的属性和元素可以实例化一个层，包括 [`<video>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/video) 和 [`<canvas>`](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/canvas)，任何 CSS 属性为 [`opacity`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/opacity) 、3D [`transform`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform)、[`will-change`](https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change) 的元素，还有一些其他元素。这些节点将与子节点一起绘制到它们自己的层上，除非子节点由于上述一个（或多个）原因需要自己的层。
+分层确实可以提高性能，但在内存管理方面成本较高，因此不应作为 Web 性能优化策略的过度使用。
+2.4[合成](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E5%90%88%E6%88%90)
+当文档的各个部分以不同的层绘制，相互重叠时，必须进行合成，以确保它们以正确的顺序绘制到屏幕上，并正确显示内容。
+当页面继续加载资源时，可能会发生回流（回想一下我们迟到的示例图像），回流会触发重新绘制和重新合成。如果我们定义了图像的大小，就不需要重新绘制，只需要绘制需要重新绘制的层，并在必要时进行合成。但我们并没有定义图像大小！所以从服务器获取图像后，渲染过程将返回到布局步骤并从那里重新开始。
+3.[交互](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work#%E4%BA%A4%E4%BA%92)
+一旦主线程绘制页面完成，你会认为我们已经“准备好了”，但事实并非如此。如果加载包括正确延迟加载的 JavaScript，并且仅在 [`onload`](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/load_event) 事件触发后执行，那么主线程可能会忙于执行脚本，无法用于滚动、触摸和其他交互操作。
+[可交互时间（TTI） (en-US)](https://developer.mozilla.org/en-US/docs/Glossary/Time_to_interactive "Currently only available in English (US)")是测量从第一个请求导致 DNS 查询和 SSL 连接到页面可交互时所用的时间——可交互是在[首次内容绘制](https://developer.mozilla.org/zh-CN/docs/Glossary/First_contentful_paint)之后页面在 50ms 内响应用户的交互。如果主线程正在解析、编译和执行 JavaScript，则无法及时（小于 50ms）响应用户交互。
+在我们的示例中，可能图像加载很快，但 `anotherscript.js` 文件的大小可能是 2MB，而且用户的网络连接很慢。在这种情况下，用户可以非常快地看到页面，但是在下载、解析和执行脚本之前，就无法滚动。这不是一个好的用户体验。避免占用主线程，如下面的网页测试示例所示：
+![通过快速连接，主线程被 JavaScript 文件下载、解析和执行占用](https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work/visa_network.png)
+在本例中，DOM 内容加载过程花费了超过 1.5 秒的时间，主线程在这段时间内完全被占用，对单击事件或屏幕点击没有响应。
