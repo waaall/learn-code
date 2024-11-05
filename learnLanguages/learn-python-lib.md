@@ -1,3 +1,24 @@
+# python&pip版本管理
+不能用brew安装python，也不能用pip安装库了，我每次更新python所有库重新安装一遍，何况更新python就挺麻烦，包括设置环境变量等问题。
+这时候有很多python和pip管理工具，包括pyenv、pipenv或者conda、pipx
+
+## pyenv
+- 
+
+## pip包管理
+目前还是算了，就每个python单独用pip安装吧。
+
+• pipx: 专注于安装和管理**全局**的 Python 应用程序和命令行工具，每个工具在独立的虚拟环境中运行。
+• pipenv: 专注于管理项目级别的依赖和**虚拟**环境，适用于开发过程中的依赖管理。
+### pipx
+- [pipx-doc](https://pipx.pypa.io/stable/)
+- [pipx - 为 Python 应用构建独立的安装与运行环境](https://sspai.com/post/82002)
+- [python找不到pipx安装的库](https://stackoverflow.com/questions/76499565/python-does-not-find-module-installed-with-pipx)
+The `binance-connector` library is not found because it is installed in an isolated virtual environment. `pipx`'s main purpose is to expose Python apps and does not support to import libraries. I would suggest creating a virtual environment (via `venv`, `pipenv`, `poetry`) and installing `binance-connector` in order to be importable.
+也就是说，pipx安装的全局库就不是为了python import的。。。
+
+### pyenv
+
 # python库
 
 [toc]
@@ -102,8 +123,68 @@ print(list3)
 还有Match，Compile，Findall，Group等好多函数很好用，具体看官方文档。
 
 
+### 并行计算
+基于线程还是基于进程？
+```
+`multiprocessing`模块和`ThreadPoolExecutor`（来自`concurrent.futures`模块）都是用于并行执行任务的工具，但它们在实现和适用场景上有一些显著的不同：
 
-### [`multiprocessing`](https://docs.python.org/zh-cn/3/library/multiprocessing.html#module-multiprocessing) 库
+### ThreadPoolExecutor
+
+**特点**：
+1. **线程池**：`ThreadPoolExecutor`使用的是线程。线程是轻量级的，并且所有线程在同一个进程中共享内存。
+2. **适用于I/O密集型任务**：由于线程共享同一进程的内存空间，它们在等待I/O操作（如网络请求、文件读写）时可以有效地切换，因此在I/O密集型任务中使用线程通常能提高效率。
+3. **GIL的限制**：Python的全局解释器锁（GIL）使得在CPython解释器中，多个线程不能同时执行Python字节码，因此`ThreadPoolExecutor`对于CPU密集型任务的并行化支持有限。
+
+**用法**：
+- 常用于网络请求、文件读写等I/O操作。
+- 适合在需要大量任务并行时，且这些任务主要等待外部资源。
+
+### multiprocessing
+
+**特点**：
+1. **进程池**：`multiprocessing`使用的是进程。每个进程有自己的内存空间，进程间的资源是完全独立的。
+2. **适用于CPU密集型任务**：由于进程有独立的内存空间，它们能够真正并行地执行多个任务，这对于需要大量CPU计算的任务非常有用。
+3. **开销更大**：由于进程之间不共享内存，进程的启动和切换开销比线程大得多。此外，进程间的通信（如通过管道或队列）也更为复杂和耗时。
+
+**用法**：
+- 适用于需要并行处理大量计算任务的场景。
+- 适合利用多核CPU的计算能力。
+
+### 选择依据
+
+1. **I/O vs CPU 密集**：如果任务是I/O密集型的（如网络请求、文件操作），`ThreadPoolExecutor`通常是更好的选择。如果任务是CPU密集型的（如大量计算），`multiprocessing`通常更合适。
+2. **内存隔离**：如果任务之间需要完全的内存隔离（例如需要确保任务之间的内存不共享），`multiprocessing`更合适。
+3. **资源和效率**：线程的开销小于进程，但受GIL限制。对于大量短期任务，线程的启动和切换开销更低。
+
+### 示例代码比较
+
+**ThreadPoolExecutor**：
+```python
+from concurrent.futures import ThreadPoolExecutor
+
+def task(n):
+    print(f"Processing {n}")
+
+with ThreadPoolExecutor() as executor:
+    executor.map(task, range(10))
+```
+
+**multiprocessing**：
+```python
+from multiprocessing import Pool
+
+def task(n):
+    print(f"Processing {n}")
+
+if __name__ == "__main__":
+    with Pool() as pool:
+        pool.map(task, range(10))
+```
+
+总结来说，`ThreadPoolExecutor`和`multiprocessing`模块都提供了方便的并行执行任务的接口。选择哪一个取决于具体任务的性质（I/O密集型还是CPU密集型）以及其他资源和效率的考虑。
+```
+
+#### [`multiprocessing`](https://docs.python.org/zh-cn/3/library/multiprocessing.html#module-multiprocessing) 库
 
 函数的参数是数组，然后循环执行：
 
@@ -181,6 +262,8 @@ PS：以前叫optparse
 
 
 ## 第三方库
+
+关于GUI也就是pyside等太过复杂， 见《Learn_Embedded》中的《关于GUI开发》
 
 ### line_profiler（性能分析）
 
@@ -318,6 +401,19 @@ flask run
 
 - [ ] **[pandas-eng](https://pandas.pydata.org/docs/getting_started/index.html#getting-started)**
 
+####  Pandas 中的数据结构
+
+1. Series
+- Series 是一个一维的类似的数组对象，包含一个数组的数据（任何 NumPy 的数据类型）和一个与数组关联的数据标签，被叫做**索引**。最简单的Series是由一个数组的数据构成。
+- Series 是一个定长的，有序的字典，因为它把索引和值映射起来了。
+- Series 与 Numpy 中的一维 array 类似。二者与 Python 基本的数据结构 List 也很相近。其区别是：List 中的元素可以是不同的数据类型，而 Array 和 Series 中则只允许存储相同的数据类型，这样可以更有效的使用内存，提高运算效率。
+- Time-Series：以时间为索引的 Series。
+
+2. DataFrame
+- DataFrame：**二维**的表格型数据结构。很多功能与 R 中的 data.frame 类似。可以将 DataFrame 理解为 Series 的容器。
+- 有很多方法来构建一个 DataFrame，但最常用的一个是用一个相等长度列表的字典或 NumPy 数组。
+- 像 Series 一样， DataFrame 的 values 属性返回一个包含在 DataFrame 中的数据的二维 ndarray。
+- Panel ：三维的数组，可以理解为 DataFrame 的容器。
 #### read data
 
 ```python
@@ -667,7 +763,7 @@ ipython --pylab #直接导入matplotlib，实时交互作图
 
 
 
-
+### DFT [傅里叶变换](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html)
 
 
 
