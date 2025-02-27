@@ -223,9 +223,26 @@ $ git fetch --all; git branch -vv
 
 ![merge](learn-git.assets/merge.png)
 
+### 本地分支和远程分支的关系zx
+```bash
+# 查看分支关系
+git branch -vv
+```
+
+#### 本地分支绑定远程分支
+```bash
+# 切换本地分支
+git checkout 本地分支名
+
+# 切换本地分支，如果本地没有，则新创建一个
+git checkout -b 本地分支名
+
+# 将本地分支与远程分支关联起来
+git branch --set-upstream-to=origin/远程分支名 本地分支名
+```
 
 
-### 删除远程分支
+#### 删除远程分支
 
 假设你已经通过远程分支做完所有的工作了——也就是说你和你的协作者已经完成了一个特性， 并且将其合并到了远程仓库的 `master` 分支（或任何其他稳定代码分支）。 可以运行带有 `--delete` 选项的 `git push` 命令来删除一个远程分支。 如果想要从服务器上删除 `serverfix` 分支，运行下面的命令：
 
@@ -237,6 +254,12 @@ To https://github.com/schacon/simplegit
 
 基本上这个命令做的只是从服务器上移除这个指针。 Git 服务器通常会保留数据一段时间直到垃圾回收运行，所以如果不小心删除掉了，通常是很容易恢复的。
 
+#### 已经删除的远程分支本地依旧存在
+```bash
+git remote show origin
+
+git remote prune origin
+```
 
 
 ## git 框架---重置（reset）

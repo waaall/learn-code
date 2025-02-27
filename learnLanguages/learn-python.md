@@ -3,19 +3,17 @@
 
 ## 0.1 brew安装python
 
-```bash
-Python has been installed as
- /usr/local/bin/python3
+Python has been installed as `/usr/local/bin/python3`
 Unversioned symlinks `python`, `python-config`, `pip` etc. pointing to
 `python3`, `python3-config`, `pip3` etc., respectively, have been installed into
  /usr/local/opt/python/libexec/bin
  
 You can install Python packages with
- pip3 install <package>
-They will install into the site-package directory
- /usr/local/lib/python3.7/site-packages
-See: https://docs.brew.sh/Homebrew-and-Python
-```
+```bash
+pip3 install <package>
+``` 
+
+They will install into the site-package directory`/usr/local/lib/python3.7/site-packages`. See: https://docs.brew.sh/Homebrew-and-Python
 
 python文件有中文的话最好以这个开头，避免编码错误
 ```python
@@ -1064,3 +1062,14 @@ def function(*numbers):  # *代表可变参数
 
 ### 3.1.1 data class
 - [data class](https://blog.csdn.net/qiuyehuanghun/article/details/135961817)
+
+
+## 3.2 调试
+
+
+### 3.2.1 try & raise
+
+
+### 3.2.2 logging
+
+- [logging-advanced-tutorial](https://docs.python.org/zh-cn/3/howto/logging.html#logging-advanced-tutorial)
