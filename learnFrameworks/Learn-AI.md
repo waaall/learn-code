@@ -5,9 +5,46 @@
 - []()
 - []()
 
+# 配置
+
+## cuda和cudnn
+CUDA（Compute Unified Device Architecture）是 NVIDIA 的通用 GPU 编程模型和 API 框架。
+- **核心功能**: 
+    - 提供 C/C++/Fortran 等语言的 GPU 编程接口
+    - 管理 GPU 内存、线程调度和硬件加速计算
+    - 实现 CPU-GPU 异构计算
+
+cuDNN（CUDA Deep Neural Network Library）：专门为深度神经网络优化的 GPU 加速库。
+- **核心功能**：
+    - 高效实现卷积、池化、归一化等神经网络层
+    - 支持 FP16/FP32 精度自动混合计算
+    - 提供 Winograd 等加速算法
+
+- [What is the CUDA Software Platform?](https://modal.com/gpu-glossary/host-software/cuda-software-platform)
+![/light-cuda-toolkit](learn-AI.assets/light-cuda-toolkit.svg)
+- [# 显卡，显卡驱动,nvcc, cuda driver,cudatoolkit,cudnn到底是什么？](https://www.cnblogs.com/marsggbo/p/11838823.html)
+pytorch 安装cuda版会自带安装cuda&cudnn的动态库，而如果只是使用whisper这种机遇pytorch的，就不用安装，但是如果编译whisper.cppCUDA版这种，就需要安装官方支持。
+### 版本
+```bash
+# 该指令知识查看当前硬件&驱动可以安装的最高cuda版本，并不代表安装了cuda
+nvidia-smi
+
+# 该指令一般是安装了官方的cuda组件（即包含了nvcc编译器）之后可以查看
+nvcc -V
+```
+
+### pytorch cuda&cudnn动态库
+- [pytorch官方安装](https://pytorch.org/get-started/locally/)
+
+### nvidia官方cuda工具包
+- [cuda-downloads](https://developer.nvidia.com/cuda-downloads)
+- [cudnn-archive](https://developer.nvidia.com/rdp/cudnn-archive)
+上述链接是官方下载的，cudnn是个压缩包，对应的文件放到cuda的同名的安装目录中即可。
+
+### 无法调用？
+pytorch显示没有GPU占用---nvidia-smi和windows的任务管理器都有统计问题，CUDA是默认不在统计范围。在windows的任务管理器-性能-GPU中可以把默认的copy换成Cuda就可以看到CUDA是可以被调用的。
 
 # 问题
-
 
 ## 框架
 
