@@ -6,6 +6,16 @@
 - []()
 
 # 配置
+## huggingface
+- [huggingface](https://huggingface.co)
+- [国内镜像](https://hf-mirror.com)
+```bash
+# 这是huggingface官方指定的下载上传工具
+pip install -U huggingface_hub
+
+# 这句放到zshrc
+export HF_ENDPOINT=https://hf-mirror.com
+```
 
 ## cuda和cudnn
 CUDA（Compute Unified Device Architecture）是 NVIDIA 的通用 GPU 编程模型和 API 框架。
@@ -42,7 +52,7 @@ nvcc -V
 上述链接是官方下载的，cudnn是个压缩包，对应的文件放到cuda的同名的安装目录中即可。
 
 ### 无法调用？
-pytorch显示没有GPU占用---nvidia-smi和windows的任务管理器都有统计问题，CUDA是默认不在统计范围。在windows的任务管理器-性能-GPU中可以把默认的copy换成Cuda就可以看到CUDA是可以被调用的。
+pytorch显示没有GPU占用---nvidia-smi和windows10的任务管理器都有统计问题，CUDA是默认不在统计范围。在windows10的任务管理器-性能-GPU中可以把默认的copy换成Cuda就可以看到CUDA是可以被调用的。
 
 # 问题
 
@@ -117,3 +127,6 @@ h(x, y)，表示一个山坡的梯度。x，y是独立的。作为自变量，�
 
 #### chatgpt解释
 
+### 模型格式
+
+- [大模型格式](https://zhuanlan.zhihu.com/p/686570419)
