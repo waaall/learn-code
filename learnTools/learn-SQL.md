@@ -163,7 +163,12 @@ pg_ctl start      [-D DATADIR] [-l FILENAME] [-W] [-t SECS] [-s]
 也就意味着，即使表明了`SELECT accounts.name, sales_reps.name`，理论上没有歧义了吧？原因是，生成的新表的列名，不能重复？好吧，上述英文描述有问题，下面实践证否它：
 
 ```sql
-SELECT r.name, s.name, a.nameFROM accounts aJOIN sales_reps sON a.sales_rep_id = s.idJOIN region ron r.id = s.region_id WHERE r.name = 'Midwest' AND s.name LIKE 'S%' ORDER BY a.name;
+SELECT r.name, s.name, a.name
+FROM accounts a
+JOIN sales_reps s
+ON a.sales_rep_id = s.id
+JOIN region r
+on r.id = s.region_id WHERE r.name = 'Midwest' AND s.name LIKE 'S%' ORDER BY a.name;
 ```
 
 上述代码的结果为下图：

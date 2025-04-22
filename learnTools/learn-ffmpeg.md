@@ -1,15 +1,12 @@
-
-
-
-
+- [ffmpeg](https://ffmpeg.org)
 # [硬件加速](https://trac.ffmpeg.org/wiki/HWAccelIntro)
 
 这个链接约等于翻译的上述官网链接：https://zhuanlan.zhihu.com/p/645241136
 主要针对ffmpeg支持的硬解码做一个总结阐述。
 
-许多平台提供对专用硬件的访问，以执行一系列与视频相关的任务。使用此类硬件可以更快地完成某些操作，例如解码、编码或过滤，或者使用更少的其他资源（尤其是 CPU），但可能会产生不同或较差的结果，或者施加仅使用软件时不存在的额外限制。在类似 PC 的平台上，视频硬件通常集成到 [GPU](https://zhida.zhihu.com/search?content_id=231517755&content_type=Article&match_order=1&q=GPU&zhida_source=entity)（来自 AMD、Intel 或 NVIDIA）中，而在移动 SoC 类型的平台上，它通常是一个独立的 [IP 核](https://zhida.zhihu.com/search?content_id=231517755&content_type=Article&match_order=1&q=IP+%E6%A0%B8&zhida_source=entity)（许多不同的供应商）。
+许多平台提供对专用硬件的访问，以执行一系列与视频相关的任务。使用此类硬件可以更快地完成某些操作，例如解码、编码或过滤，或者使用更少的其他资源（尤其是 CPU），但可能会产生不同或较差的结果，或者施加仅使用软件时不存在的额外限制。在类似 PC 的平台上，视频硬件通常集成到 GPU（来自 AMD、Intel 或 NVIDIA）中，而在移动 SoC 类型的平台上，它通常是一个独立的 IP 核
 
-[硬件解码器](https://zhida.zhihu.com/search?content_id=231517755&content_type=Article&match_order=1&q=%E7%A1%AC%E4%BB%B6%E8%A7%A3%E7%A0%81%E5%99%A8&zhida_source=entity)将产生与软件解码器相同的输出，但可能使用更少的功率和 CPU 来这样做。功能支持各不相同——对于具有许多不同配置文件的更复杂的编解码器，硬件解码器很少实现所有这些（例如，硬件解码器往往不会在 H.264 的 8 位深度下实现 [YUV 4:2:0](https://zhida.zhihu.com/search?content_id=231517755&content_type=Article&match_order=1&q=YUV+4%3A2%3A0&zhida_source=entity) 以外的任何内容）。许多硬件解码器的一个共同特点是能够在适合其他组件使用的硬件表面中生成输出（对于独立显卡，这意味着表面在卡上的内存中而不是在系统内存中）——这通常对播放很有用，因为在呈现输出之前不需要进一步复制，并且在某些情况下，它还可以与支持硬件表面输入的编码器一起使用，以避免在转码情况下进行任何复制。
+硬件解码器将产生与软件解码器相同的输出，但可能使用更少的功率和 CPU 来这样做。功能支持各不相同——对于具有许多不同配置文件的更复杂的编解码器，硬件解码器很少实现所有这些（例如，硬件解码器往往不会在 H.264 的 8 位深度下实现 YUV 。许多硬件解码器的一个共同特点是能够在适合其他组件使用的硬件表面中生成输出（对于独立显卡，这意味着表面在卡上的内存中而不是在系统内存中）——这通常对播放很有用，因为在呈现输出之前不需要进一步复制，并且在某些情况下，它还可以与支持硬件表面输入的编码器一起使用，以避免在转码情况下进行任何复制。
 
 硬件编码器生成的输出质量通常比好的软件编码器（如 x264）低得多，但通常速度更快并且不使用太多 CPU 资源。（也就是说，它们需要更高的比特率才能以相同的感知质量进行输出，或者在相同的比特率下以较低的感知质量进行输出。）
 
@@ -95,7 +92,6 @@ Output: hevc (Main) (hvc1 / 0x31637668), yuv420p(tv, bt709, progressive), 1920×
 
 ## Intel-VAAPI
 https://cloud.tencent.com/developer/article/1871152
-
 
 全称：Video Acceleration API，视频加速 API (VAAPI) 是一种非专有且免版税的开源软件库 (“libva”) 和 API 规范，最初由英特尔开发，但可与其他设备结合使用。
 

@@ -5,8 +5,6 @@
 > 项目GitHub地址：https://github.com/Tencent/TencentOS-kernel
 
 
-
-
 # TencentOS Server kernel
 [TencentOS Server kernel](#tencentos-server-kernel)
 

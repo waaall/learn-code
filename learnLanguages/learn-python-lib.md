@@ -762,17 +762,11 @@ ipython --pylab #直接导入matplotlib，实时交互作图
 #### [numpy中matrix 和 array的区别](https://blog.csdn.net/vincentlipan/article/details/20717163)
 
 
-
 ### DFT [傅里叶变换](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html)
 
 
-
-
 ### scipy
-
-- [ ] **[scipy中文](https://reverland.org/2012-08-24-scipy.html)**
-
-- [ ] **[scipy-eng](https://docs.scipy.org/doc/scipy/reference/tutorial/index.html)**
+- [lectures.scientific-python](https://lectures.scientific-python.org)
 
 #### FFT(快速傅立叶变换)
 

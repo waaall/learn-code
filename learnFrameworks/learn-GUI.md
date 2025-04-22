@@ -1,7 +1,5 @@
 # Learn GUI---Qt
 
-
-
 [toc]
 
 [Deepin GUI方案](https://www.jianshu.com/p/e871723f9460)。

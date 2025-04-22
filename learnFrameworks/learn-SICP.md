@@ -1,11 +1,5 @@
 # learn SICP
 
-
-
-
-
-
-
 ## 参考文献
 
 1. [SICP课程网站](https://mitpress.mit.edu/sites/default/files/sicp/index.html)
