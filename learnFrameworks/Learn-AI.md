@@ -1,8 +1,8 @@
 
 # Reference
-- []()
-- []()
-- []()
+- [zh.d2l.ai](https://zh.d2l.ai/)
+- [zh-d2l-github](https://github.com/d2l-ai/d2l-zh)
+- [transformer快速入门](https://github.com/jsksxs360/How-to-use-Transformers)
 - []()
 
 # 基础知识
@@ -361,6 +361,13 @@ MCP其实就是各家function call函数的统一接口标准，但截至25年�
 - SD3.5: 
 
 
+
+
+# Transformer
+
+
+
+
 # 问题
 
 ## 框架
@@ -382,7 +389,6 @@ MCP其实就是各家function call函数的统一接口标准，但截至25年�
 - SGD（随即梯度下降）和反向传播算法的关系是什么？替代关系还是互补？属于机器学习架构中的哪部分？ 什么叫学习率？
 
 - 
-
 - 模型切开多GPU训练如何实现？如何通信？ 
 
 ## 细节
