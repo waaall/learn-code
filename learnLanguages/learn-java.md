@@ -25,6 +25,11 @@
 >
 > 而且，再安装时java编译器会将几个重要的可执行文件如Java、javac等连接到另一个文件夹中，然后将此路径加入Path，但是由于这些可执行文件不全，所以最好还是设置一个JAVA_HOME，然后将%JAVA_HOME%\bin加入Path（其实就没必要用它安装时设置的那个环境变量了）。
 
+所以：
+1. **删除**下载 JDK 时自动在 Path 中添加的变量
+2. 设置一个`JAVA_HOME = %JAVA_HOME21%` (这一步是为了方便管理多个版本)
+3. 设置一个`JAVA_HOME21 = 安装目录`
+4. 将`%JAVA_HOME%\bin\`和`%JAVA_HOME%\jre\bin\` 加入Path
 
 
 ## JAVA与c++
