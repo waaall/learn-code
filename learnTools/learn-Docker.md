@@ -202,6 +202,32 @@ sudo usermod -aG docker $USER
 # docker run hello-world
 ```
 
+#### [docker set proxy](https://docs.docker.com/engine/daemon/proxy/#daemon-configuration)
+You may configure proxy behavior for the daemon in the `daemon.json` file, or using CLI flags for the `--http-proxy` or `--https-proxy` flags for the `dockerd` command. Configuration using `daemon.json` is recommended.
+
+```json
+{
+  "proxies": {
+    "http-proxy": "http://proxy.example.com:3128",
+    "https-proxy": "https://proxy.example.com:3129",
+    "no-proxy": "*.test.example.com,.example.org,127.0.0.0/8"
+  }
+}
+```
+
+After changing the configuration file, restart the daemon for the proxy configuration to take effect:
+
+```bash
+ sudo systemctl restart docker
+```
+
+The Docker daemon checks the following environment variables in its start-up environment to configure HTTP or HTTPS proxy behavior:
+
+- `HTTP_PROXY`
+- `http_proxy`
+- `HTTPS_PROXY`
+- `https_proxy`
+
 3. 如果没有小飞机，就用用镜像安装docker
 ```bash
 # 卸载docker
