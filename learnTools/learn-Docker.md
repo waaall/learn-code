@@ -121,3 +121,114 @@
 • **环境管理工具**：无论选择哪种方式，都建议使用环境管理工具（如 requirements.txt、conda env 或 Dockerfile）来记录和管理依赖，以便在需要时重现环境。
 • **镜像大小**：注意 Docker 镜像可能比较大，尤其是包含了深度学习框架和 CUDA 的镜像。在网络传输和存储时需要考虑这一点。
 
+# docker 安装
+
+## mac安装docker
+就用brew安装就可以，但是，有cask和命令行两个。
+### 1. **`brew install docker`**
+
+- **安装内容**:  
+    仅安装 Docker 的 **命令行工具（CLI）**，不包含 Docker 引擎（守护进程）或图形化界面（Docker Desktop）。
+    
+- **用途**:  
+    适用于以下场景：
+    - 你只需要 `docker`、`docker-compose` 等命令（例如连接远程 Docker 主机）。
+    - 你已在 macOS 上通过其他方式（如手动安装）配置了 Docker 引擎。
+        
+- **局限性**:
+    - **无法直接使用**：因为 macOS 不是 Linux 系统，缺少原生 Docker 引擎依赖的 Linux 内核特性（如 cgroups、命名空间等）。
+    - 如果你直接运行 `docker ps`，会报错 `Cannot connect to the Docker daemon`（因为缺少本地守护进程）。
+- **依赖关系**:  
+    安装的二进制文件来自 Homebrew 的 **Formula**（纯命令行工具）。
+
+### 2. **`brew install --cask docker`**
+- **安装内容**:  
+    安装 **Docker Desktop for Mac**（完整的图形化应用），包含：
+    - Docker 引擎（守护进程）
+    - 命令行工具（CLI）
+    - 图形化管理界面
+    - 内置的 Linux 虚拟机（用于运行容器）
+        
+- **用途**:  
+    这是 macOS 上运行 Docker 的 **推荐方式**，因为：
+    - Docker Desktop 会自动处理 macOS 的依赖（如虚拟化、文件共享、网络配置等）。
+    - 开箱即用，无需手动配置守护进程。
+- **安装路径**:  
+    应用会被安装到 `/Applications/Docker.app`，同时命令行工具通过软链接添加到 `PATH`。
+- **依赖关系**:  
+    安装的包来自 Homebrew 的 **Cask**（专为 macOS 图形应用设计）。
+    
+---
+
+## windows安装docker
+- 装wsl，在wsl内就跟ubuntu一样的方法。
+
+## ubuntu安装docker：
+
+1. apt安装
+```bash
+sudo apt install docker.io docker-compose
+```
+这样安装可能版本老一些，可能存在兼容性问题，如果没有，这样最方便，如果有，就按照下面方法。
+
+2. [官网方式安装](https://docs.docker.com/engine/install/ubuntu/)
+```bash
+# 1 卸载老版本
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+# 2 加入docker官方源
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+# 3 安装
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# 用户加入docker组获取权限
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+# 试运行
+# docker run hello-world
+```
+
+3. 如果没有小飞机，就用用镜像安装docker
+```bash
+# 卸载docker
+sudo apt-get remove docker docker-engine docker.io containerd runc
+# 安装依赖
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
+# 阿里云key
+curl -fsSL http://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | sudo apt-key add -
+# 阿里云ppa
+sudo add-apt-repository "deb [arch=amd64] http://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable"
+# 安装docker
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# 用户权限
+sudo usermod -aG docker $USER
+reboot
+```
+
+2. docker pull设置镜像
+国内大部分docker镜像都失效了，但是可以登陆[阿里云账号](https://cr.console.aliyun.com)[设置镜像](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)。
+```bash
+sudo vim /etc/docker/daemon.json
+# 然后添加如下内容
+{
+    "registry-mirrors": ["https://****.mirror.aliyuncs.com"] 
+}
+# 然后重启该服务
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
