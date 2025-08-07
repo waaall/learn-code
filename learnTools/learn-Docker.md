@@ -258,3 +258,64 @@ sudo vim /etc/docker/daemon.json
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
+
+
+## 问题
+
+### DNS问题
+
+1. **`/etc/resolv.conf` 的作用**
+    - 这个文件是 Linux/macOS 系统中 **DNS 解析的配置文件**，指定了系统使用的 DNS 服务器地址。
+    - 默认情况下，系统会使用网络接口（如路由器、ISP）提供的 DNS，但有时这些 DNS 可能不稳定或无法解析某些域名（如 Docker Hub）。
+        
+2. **`nameserver 8.8.8.8` 和 `nameserver 8.8.4.4` 的作用**
+    - `8.8.8.8` 和 `8.8.4.4` 是 **Google 的公共 DNS 服务器**，它们通常比 ISP 提供的 DNS 更稳定、响应更快。
+    - 修改后，系统会优先使用 Google DNS 解析域名，从而可能解决 Docker Hub 连接超时的问题。
+        
+3. **为什么会影响 Docker？**
+    - Docker 在拉取镜像时，需要解析 `registry-1.docker.io` 的 IP 地址。
+    - 如果默认 DNS 无法正确解析或响应慢，就会导致 `i/o timeout` 错误。
+    - 使用更可靠的 DNS（如 `8.8.8.8`）可以避免这个问题。
+        
+这种修改是否影响全局网络？✅ **是的，会影响整个系统的 DNS 解析**
+
+- 修改 `/etc/resolv.conf` 后，**所有网络请求**（不仅仅是 Docker）都会使用新的 DNS 服务器。
+- 但通常不会有负面影响，因为 Google DNS (`8.8.8.8`) 是广泛使用的公共 DNS，稳定性和速度都较好。
+
+⚠️ **注意**：
+
+- 在 macOS 上，`/etc/resolv.conf` 可能是由 `systemd-resolved` 或 `NetworkManager` 动态管理的，手动修改可能会被覆盖。
+- 更推荐的方式是通过 **系统设置** 或 **Docker 配置** 修改 DNS，而不是直接编辑 `/etc/resolv.conf`。
+
+---
+
+#### 更好的解决方案（推荐）
+
+#### 1. **直接修改 Docker 的 DNS 配置（不影响系统全局）**
+
+在 Docker 的配置文件 `daemon.json`（通常位于 `/etc/docker/daemon.json` 或 `~/.docker/daemon.json`）中添加自定义 DNS：
+```json
+{
+  "dns": ["8.8.8.8", "8.8.4.4"]
+}
+```
+
+
+然后重启 Docker：
+```bash
+sudo systemctl restart docker  # Linux
+# 或者在 macOS 上通过 Docker Desktop 重启
+```
+
+#### 2. **在 macOS 上修改全局 DNS（推荐）**
+
+1. 打开 **系统偏好设置 > 网络**。
+2. 选择当前网络（如 Wi-Fi），点击 **高级 > DNS**。
+3. 添加 `8.8.8.8` 和 `8.8.4.4`，并拖到列表顶部。
+4. 点击 **OK** 并应用更改。
+
+#### 为什么会出现默认 DNS 解析失败？
+可能的原因：
+1. **ISP 的 DNS 服务器不稳定**（如某些国内运营商 DNS 污染或拦截）。
+2. **网络代理/VPN 干扰**（如果使用代理，可能需要配置 Docker 使用代理）。
+3. **系统 DNS 缓存问题**（可尝试刷新缓存：`sudo dscacheutil -flushcache`（macOS））。
