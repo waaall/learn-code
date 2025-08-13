@@ -201,8 +201,41 @@ docker run -d -P \
 docker volume rm my-vol
 ```
 
+在 Docker 卷（`volumes`）挂载的配置中，`- /proc:/proc:ro` 的 `ro` 表示 **read-only（只读）**。
+
+1. **`- /proc:/proc:ro` 的含义**
+    - `/proc`（主机路径）挂载到容器内的 `/proc`（容器路径）。
+    - `:ro` 表示容器内对该挂载的目录 **只有读取权限，不能修改**（Read-Only）。
+
+2. **为什么需要 `ro`？**
+    - `/proc` 是 Linux 内核提供的虚拟文件系统，包含系统运行时信息（如进程、CPU、内存等）。
+    - **安全性**：如果容器内的程序意外（或恶意）修改 `/proc` 下的文件，可能影响主机系统稳定性。
+    - **最佳实践**：监控类工具通常只需要读取 `/proc`，不需要写入，因此用 `ro` 更安全。
+
+3. **对比其他选项**
+    - **默认情况**（不加 `:ro`）：挂载的卷是可读写的（`rw`）。
+        volumes:
+          - /proc:/proc   # 读写权限（危险！不推荐用于 /proc）
+    - **只读挂载**（推荐）：
+        volumes:
+          - /proc:/proc:ro  # 只读权限（安全）
+
+4. **你的场景**
+    - 你的 `system-monitor` 是一个系统监控工具，只需从 `/proc` 读取数据（如 CPU 使用率、进程列表等），因此 `:ro` 是合理的选择。
+
+- **只读挂载配置文件**：
+    volumes:
+      - ./config.json:/app/config.json:ro
+
+- **读写挂载数据目录**：
+    volumes:
+      - ./data:/app/data  # 默认 rw
+
+`:ro` 是 Docker 挂载卷时的常用选项，用于限制容器内对主机文件的修改权限。在你的配置中，`- /proc:/proc:ro` 既能满足监控需求，又能提升安全性。
+
 
 ## 从hello-world看docker 分层
+
 ### 1. `hello-world` 镜像的特殊性
 
 这个镜像 **不需要完整的操作系统**，它只包含一个静态编译的二进制文件 `/hello`：
@@ -545,10 +578,14 @@ sudo usermod -aG docker $USER
 ```
 
 
-## 指令
+# 指令
 ```bash
 # 查看本地镜像
 docker image ls
+
+# 
+docker image prune
+
 
 # 查看当前运行的docker container
 docker ps
@@ -581,9 +618,45 @@ docker run -d -P \
 docker volume rm my-vol
 ```
 
-## 问题
+# 问题
 
-### DNS问题
+
+## 多阶段构建
+
+多阶段构建是必不可少的。多阶段构建的想法很简单：“我不想在最终的镜像中包含一堆 C 或 Go 编译器和整个[编译工具链](https://zhida.zhihu.com/search?content_id=122234546&content_type=Article&match_order=1&q=%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7%E9%93%BE&zhida_source=entity)，我只要一个编译好的可执行文件！”
+
+多阶段构建可以由多个 `FROM` 指令识别，每一个 `FROM` 语句表示一个新的构建阶段，阶段名称可以用 `AS` 参数指定，例如：
+
+```dockerfile
+FROM gcc AS buildstage
+COPY hello.c .
+RUN gcc -o hello hello.c
+FROM ubuntu
+COPY --from=buildstage hello .
+CMD ["./hello"]
+```
+
+本例使用基础镜像 `gcc` 来编译程序 `hello.c`，然后启动一个新的构建阶段，它以 `ubuntu`作为基础镜像，将可执行文件 `hello`从上一阶段拷贝到最终的镜像中。最终的镜像大小是 `64 MB`，比之前的 `1.1 GB` 减少了 `95%`：
+
+## 悬空镜像
+这些 `<none>` 镜像（称为 **悬空镜像**），是 Docker 构建过程中的常见产物。
+
+1. **构建过程中的中间层**
+    - 反复构建/更新 `machine-learning-platform` 镜像时（如 `docker build -t machine-learning-platform:1.0.0`），Docker 会为每个构建步骤生成中间层镜像。
+    - 构建完成后，旧版本的镜像会被新版本取代，**失去标签**（变为 `<none>`），但不会自动删除。
+        
+2. **覆盖标签后的旧镜像**
+    - 如果您多次构建同一标签（如 `:1.0.0`），Docker 会将标签从旧镜像转移到新镜像上，导致旧镜像变成无标签的 `<none>`。
+        
+3. **未清理的缓存层**
+    - Docker 会保留构建缓存以加速后续构建，但未使用的缓存层会堆积为 `<none>` 镜像。
+
+```bash
+# 仅删除无标签镜像
+docker image prune
+```
+
+## DNS问题
 
 1. **`/etc/resolv.conf` 的作用**
     - 这个文件是 Linux/macOS 系统中 **DNS 解析的配置文件**，指定了系统使用的 DNS 服务器地址。
@@ -610,14 +683,18 @@ docker volume rm my-vol
 
 ---
 
-#### 更好的解决方案（推荐）
+### 更好的解决方案（推荐）
 
 #### 1. **直接修改 Docker 的 DNS 配置（不影响系统全局）**
 
 在 Docker 的配置文件 `daemon.json`（通常位于 `/etc/docker/daemon.json` 或 `~/.docker/daemon.json`）中添加自定义 DNS：
 ```json
 {
-  "dns": ["8.8.8.8", "8.8.4.4"]
+  "dns": [
+	  "223.5.5.5",
+	  "8.8.8.8",
+	  "8.8.4.4"
+  ]
 }
 ```
 
