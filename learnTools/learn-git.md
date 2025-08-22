@@ -213,7 +213,7 @@ $ git fetch --all; git branch -vv
 
 >[merge 与 rebase 的区别](https://www.zhihu.com/question/36509119/answer/131513261)
 >
->这个回答写的也不如官方文档准确清晰，其中下图中的C4'表示，这个commit并不是移动过来，而是一个新的commit id。
+>这个回答写的也不如官方文档准确清晰，其中下图中的C4'表示，这个commit并不是移动过来，而是一个新的commit id。但这改变了experiment这个分支的
 
 * 下图rebase：
 
@@ -797,3 +797,158 @@ gk	\gitk --all --branches
 ### git commit message 的规范
 
 * [Commit message 和 Change log 编写指南](https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
+
+
+# 常用流程
+
+## remote
+
+```bash
+git remote -v
+
+git remote remove origin
+
+git remote add origin https://github.com/waaall/gd32-template.git
+
+git push -u origin main
+
+
+```
+
+## branch
+```bash
+git branch -a
+
+git branch -d 要删除的分支
+
+# 切换到已有分支
+git switch BareMetal
+```
+
+## checkout
+
+### 1. 切换分支
+```bash
+git checkout main           # 切换到main分支
+git checkout BareMetal      # 切换到BareMetal分支
+git checkout -b new-branch  # 创建并切换到新分支
+```
+
+### 2. 检出特定提交
+```bash
+git checkout 962e657        # 切换到特定提交（detached HEAD状态）
+git checkout HEAD~1         # 切换到上一个提交
+git checkout tags/v1.0      # 切换到特定标签
+```
+
+### 3. 从其他分支获取文件
+```bash
+git checkout main -- scripts/file_encoding_fixer.py    # 从main分支获取特定文件
+git checkout HEAD~1 -- file.txt                        # 从上一个提交获取文件
+git checkout other-branch -- folder/                   # 从其他分支获取整个文件夹
+```
+
+### 4. 恢复工作区文件
+```bash
+git checkout -- file.txt       # 丢弃工作区中file.txt的修改
+git checkout .                  # 丢弃所有工作区修改
+git checkout HEAD -- file.txt  # 从最新提交恢复文件
+```
+
+
+## commit & push
+```bash
+git commit -m "更新信息简要写"
+
+git push <远程主机名> <本地分支名>:<远程分支名>
+
+
+git push --force-with-lease origin BareMetal
+```
+
+
+## fetch & merge (pull)
+```bash
+
+```
+
+
+## pull request
+执行 `git push -u origin BareMetal` 时，GitHub检测到：
+
+1. **新分支创建**：您推送了一个远程仓库中不存在的新分支（BareMetal）
+2. **GitHub的自动提示**：GitHub会自动提示您是否要创建Pull Request，这是GitHub的标准行为
+
+让我查看一下当前的分支情况：
+
+```bash
+➜  gd32-f470-vi-template git:(BareMetal) git log --oneline --graph --all -10
+
+* 50b6c2c (HEAD -> BareMetal, origin/BareMetal) merge main encoding python scripts
+| * aa17d41 (origin/main, main) add a advanced encoding tool！
+| * 9289d19 move to backup dir
+| * 49239e1 backup vscode config file
+| * 0a2ac19 add rtos tips to README
+| * 586e30a remove cmsis_os & fix all bugs & move SysTick_Handler from systick.c to gd32f4xx_it.c
+| * 898efff fix Core codes and makefile
+| * c0276fb add FreeRTOS sources
+|/  
+* 962e657 add a bash script to convert to utf8
+```
+### 什么是Pull Request？
+Pull Request（PR）是一个**合并请求**，用于：
+- 将一个分支的更改合并到另一个分支
+- 进行代码审查
+- 讨论更改内容
+- 确保代码质量
+
+### 为什么会出现PR提示？
+从提交图可以看出：
+1. **BareMetal分支**：当前在 `50b6c2c` 提交（包含了从main合并的encoding脚本）
+2. **main分支**：在 `aa17d41` 提交
+3. **分支分歧**：两个分支从 `962e657` 开始分叉
+
+GitHub检测到：
+- BareMetal分支有main分支没有的提交（`50b6c2c`）
+- 这些更改可能需要合并回main分支
+
+### 为什么说"分支很乱"？
+当您创建PR并合并时，可能发生：
+
+1. **合并提交**：创建额外的merge commit
+2. **历史复杂化**：线性历史变成分叉历史
+3. **重复提交**：相同的更改在不同分支中出现
+
+### 如何避免"分支混乱"？
+
+#### 方案1：不创建PR（如果不需要合并）
+如果BareMetal是独立分支，不需要合并到main：
+```bash
+# 什么都不做，忽略GitHub的PR提示
+```
+
+#### 方案2：线性历史（如果需要同步）
+使用rebase而不是merge：
+```bash
+git checkout main
+git rebase BareMetal  # 将BareMetal的更改应用到main
+```
+
+#### 方案3：选择性合并特定文件
+```bash
+git checkout main
+git checkout BareMetal -- scripts/  # 只合并scripts文件夹
+git commit -m "Update scripts from BareMetal"
+```
+
+
+BareMetal只有一个额外的提交 `50b6c2c`，是合并main分支encoding脚本的提交。
+
+1. **不要创建PR** - 因为这只是您从main合并文件到BareMetal，不需要反向合并
+2. **保持分支独立** - BareMetal作为独立的开发分支
+3. **忽略GitHub的PR提示** - 这只是GitHub的自动建议，您可以忽略
+
+这样可以保持分支历史清晰，避免不必要的复杂性。
+```bash
+
+```
