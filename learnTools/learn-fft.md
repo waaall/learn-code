@@ -1,12 +1,14 @@
-# [快速傅里叶变换（FFT）算法【详解】](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html)
 
-**目录**
+# DFT基本概念
+频率
+
+
+# [快速傅里叶变换（FFT）算法详解](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html)
 
 - [计算离散傅里叶变换](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html#_label0)
 - [离散傅里叶变换中的对称性](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html#_label1)
 - [向量化的NumPy](https://www.cnblogs.com/ECJTUACM-873284962/p/6919424.html#_label2)
 
- 
 
 快速傅里叶变换（Fast Fourier Transform）是信号处理与数据分析领域里最重要的算法之一。我打开一本老旧的算法书，欣赏了JW Cooley 和 John Tukey 在1965年的文章中，以看似简单的计算技巧来讲解这个东西。
 
@@ -275,3 +277,207 @@ http://en.wikipedia.org/wiki/Autocorrelation
 不同的特征相关时间反映的是决定某种运动事件背后的相互作用的大小。比如，分子在某表面扩散的特征时间，必然是由分子与表面，分子与分子之间作用有关的。因此，实验和模拟都要用这个特征时间来表征此体系的这个性质。
 
 还有几个值得注意的问题：如果你的速度数据是以时间为横坐标的，得到的自相关函数就叫速度的时间自相关函数。通常不说时间两个字。此外，单个分子的速度其自身随时间的相关性，这叫自相关。当然，也可以是不同分子之间，即两列速度数据之间的互相关。
+
+
+## GPT解释
+
+信号 x = [1, 2, 3, 4]，点数 N=4。我们手工推一遍 DFT 过程。
+
+1. DFT 定义
+X[k] = \sum_{n=0}^{N-1} x[n] \cdot e^{-j 2\pi kn / N}, \quad k=0,1,2,3
+
+
+2. 逐个计算
+
+(1) k=0
+
+X[0] = \sum_{n=0}^3 x[n] \cdot e^{-j 2\pi \cdot 0 \cdot n / 4} = 1+2+3+4 = 10
+    •    复数形式：10 + j0
+    •    幅度：|X[0]| = 10
+    •    相位：\theta = 0
+
+(2) k=1
+X[1] = \sum_{n=0}^3 x[n] \cdot e^{-j 2\pi (1)n / 4}
+
+展开：
+    •    n=0: 1 \cdot 1 = 1
+    •    n=1: 2 \cdot e^{-j\pi/2} = 2 \cdot (0 - j1) = -2j
+    •    n=2: 3 \cdot e^{-j\pi} = 3 \cdot (-1) = -3
+    •    n=3: 4 \cdot e^{-j3\pi/2} = 4 \cdot (0 + j1) = +4j
+
+相加：
+X[1] = (1 - 3) + (-2j + 4j) = -2 + 2j
+    •    幅度：|X[1]| = \sqrt{(-2)^2 + (2)^2} = \sqrt{8} \approx 2.828
+    •    相位：\theta = \text{atan2}(2, -2) = 135^\circ = 3\pi/4
+  
+
+(3) k=2
+X[2] = \sum_{n=0}^3 x[n] \cdot e^{-j 2\pi (2)n / 4}
+
+展开：
+    •    n=0: 1 \cdot 1 = 1
+    •    n=1: 2 \cdot e^{-j\pi} = -2
+    •    n=2: 3 \cdot e^{-j2\pi} = 3 \cdot 1 = 3
+    •    n=3: 4 \cdot e^{-j3\pi} = 4 \cdot (-1) = -4
+
+相加：
+X[2] = 1 - 2 + 3 - 4 = -2
+    •    幅度：|X[2]| = 2
+    •    相位：\theta = \pi（因为是 -2 + 0j）
+
+(4) k=3
+X[3] = \sum_{n=0}^3 x[n] \cdot e^{-j 2\pi (3)n / 4}
+展开：
+    •    n=0: 1 \cdot 1 = 1
+    •    n=1: 2 \cdot e^{-j3\pi/2} = 2 \cdot (0 + j1) = 2j
+    •    n=2: 3 \cdot e^{-j3\pi} = 3 \cdot (-1) = -3
+    •    n=3: 4 \cdot e^{-j9\pi/2} = 4 \cdot (0 - j1) = -4j
+
+相加：
+X[3] = (1 - 3) + (2j - 4j) = -2 - 2j
+    •    幅度：|X[3]| = \sqrt{(-2)^2 + (-2)^2} = \sqrt{8} \approx 2.828
+    •    相位：\theta = \text{atan2}(-2, -2) = -135^\circ = -3\pi/4
+
+
+3. 结果总结
+X = [10, \; -2+2j, \; -2, \; -2-2j]
+
+k    X[k]    幅度    相位
+0    10+0j    10    0
+1    -2+2j    2.828    +135°
+2    -2+0j    2    180°
+3    -2-2j    2.828    -135°
+
+```python
+import numpy as np
+
+# 信号
+x = [1, 2, 3, 4]
+N = len(x)
+
+
+# 按定义公式计算 DFT
+X = []
+
+for k in range(N):
+    s = 0
+    for n in range(N):
+        s += x[n] * np.exp(-2j * np.pi * k * n / N)  # 逐项累加
+    X.append(s)
+
+X = np.array(X)
+
+# 计算幅度和相位
+
+magnitude = np.abs(X)            # 幅度 = sqrt(Re^2 + Im^2)
+
+phase_rad = np.angle(X)          # 相位 = atan2(Im, Re)，单位弧度
+
+phase_deg = np.degrees(phase_rad) # 转为角度
+
+
+# 打印结果
+for k in range(N):
+    print(f"k={k}: X[k]={X[k]}, |X[k]|={magnitude[k]:.3f}, "
+          f"phase={phase_rad[k]:.3f} rad ({phase_deg[k]:.1f} deg)")
+```
+
+# 窗函数
+
+## [窗函数wikipedia](https://zh.wikipedia.org/zh-sg/窗函数)
+**窗函数**（英语：window function）在[信号处理](https://zh.wikipedia.org/wiki/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86 "信号处理")中是指一种除在给定[区间](https://zh.wikipedia.org/wiki/%E5%8C%BA%E9%97%B4 "区间")之外取值均为0的实[函数](https://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B0 "函数")。譬如：在给定区间内为[常数](https://zh.wikipedia.org/wiki/%E5%B8%B8%E6%95%B0 "常数")而在区间外为0的窗函数被形象地称为**矩形窗**。
+任何函数与窗函数之积仍为窗函数，所以相乘的结果就像透过窗口“看”其他函数一样。窗函数在[频谱](https://zh.wikipedia.org/wiki/%E9%A0%BB%E8%AD%9C "频谱")分析、[滤波器设计](https://zh.wikipedia.org/wiki/%E6%BB%A4%E6%B3%A2%E5%99%A8%E8%AE%BE%E8%AE%A1 "滤波器设计")、波束形成、以及音频数据压缩（如在[Ogg Vorbis](https://zh.wikipedia.org/wiki/Ogg_Vorbis "Ogg Vorbis")音频格式中）等方面有广泛的应用。
+
+### 频谱分析
+
+
+cos⁡(ωt)![{\displaystyle \cos(\omega t)\,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/179776ee8e70715203f4d2850f64a5667456333e) 的[傅立叶变换](https://zh.wikipedia.org/wiki/%E5%82%85%E7%AB%8B%E5%8F%B6%E5%8F%98%E6%8D%A2 "傅立叶变换")除了在频率 ±ω![{\displaystyle \pm \omega \,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/ee8db88622122d4ab38116712e43d7950a7cec32) 之外处处为 0。但是许多其它的函数或者波形数据并没有这样方便的闭式变换，或者是我们只对某一时间范围内的频谱数据感兴趣，在这种情况下，就需要对有限时间范围的波形进行傅立叶变换或者其它类似的变换。通常通过波形与一个窗函数的乘积来表示。但是，包括矩形窗在内的所有窗函数都会对待测频谱产生影响。
+
+#### 离散时间信号
+当输入波形是采样信号而非连续信号时，傅立叶分析通常对信号应用窗函数并用离散傅立叶变换。但是[离散傅里叶变换](https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2 "离散傅里叶变换")得到的频谱只是[离散时间傅里叶变换](https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E6%97%B6%E9%97%B4%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2 "离散时间傅里叶变换")频谱的一个粗糙采样。上图是正弦信号应用矩形窗后傅立叶频谱的一部分。位于横轴0点位置的是正弦信号真实频谱，其余频谱均为谱泄漏。频率单位为“DFT bins”（DFT 量化单位）即这些整数值是DFT采样得到的频率。所以该图显示了这样一种情况，正弦信号的实际频率正好与DFT的采样频率一致，并且频谱的最大值通过采样得到。采样错过最大值时的测量误差被称为“扇形损失”（名称源于顶点的形状）。但是这种状况下最有趣的是那些与实际频谱相一致的即值为零的那些点。这种情况下，DFT创造了没有泄露的假象。尽管不如本例这样，泄露是DFT中人为引入的也是普遍误解。但是既然任何窗函数都有泄露，那些表面上的不存在泄露才是人为造成的。
+
+#### 总泄漏
+概念的分辨率和动态范围往往是有些主观的，这取决于用户的实际意图。但他们也往往是高度相关，与总泄漏，这是量化的。它通常表示为一个等效带宽，B认为它作为再分配DTFT成长方形的高度等于频谱宽度 B的最大和泄漏的，更大的带宽。它有时被称为噪声等效带宽或等效噪声带宽，因为它是成正比的平均功率将每个登记的DFT并当输入信号包含随机噪声组件（或者只是随机噪声）。图的功率谱，平均随着时间的推移，通常显示一个单位的噪声底，造成这种效果。噪声的高度层是成正比的，所以乙两个不同的窗口功能可以产生不同的噪音楼层。
+
+#### 处理增益与损耗
+[![三种不同窗函数造成的处理损耗](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Processing_losses_for_3_window_functions.gif/330px-Processing_losses_for_3_window_functions.gif)](https://zh.wikipedia.org/wiki/File:Processing_losses_for_3_window_functions.gif "三种不同窗函数造成的处理损耗")
+在[信号处理](https://zh.wikipedia.org/wiki/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86 "信号处理")中，透过某些操作，可以利用信号和噪声之间性质的差异，来提高信号某些方面的品质。当某个正弦信号随机地叠加的破坏性噪声，频谱分析能区别的信号与噪声的分量，往往能使检测信号的某些特性更容易，如测量振幅和频率。比如说，若将大多数的正弦信号能量集中于一个频率附近，并将噪声均匀分布，能有效的改善[信噪比](https://zh.wikipedia.org/wiki/%E4%BF%A1%E5%99%AA%E6%AF%94 "信噪比")（signal to noise ratio, SNR）。**处理增益**通常用来描述SNR改善的程度。频谱分析的处理增益取决于窗函数的**噪声带宽（B）**和潜在的**扇形损失**。这些效果可能部分抵消，因为窗函数有最少的扇形自然有最大的渗漏。
+
+右图描述了三种不同的窗函数对相同的数据的影响。此数据包含两个相等强度的正弦信号与外加的噪声。两正弦波的频率被定为其中一个无扇形而另一个有最大扇形。两个正弦信号在Hann Window下都造成比Blackman–Harris window更少的信噪比损耗。 一般情况下，这防止我们在低动态范围的应用采用高动态范围的窗。
+
+#### 不应使用窗函数的应用
+在一些应用中，最好不使用窗函数。例如：
+- 在冲击模型测试中，当分析[暂态](https://zh.wikipedia.org/wiki/%E6%9A%AB%E6%85%8B "暂态")信号，如重锤打击产生的激发信号（**脉冲激发技术**）时，大部分能量位于记录的开头。若使用非矩形的窗，会无谓的减弱大部分能量和传播[频率响应](https://zh.wikipedia.org/wiki/%E9%A0%BB%E7%8E%87%E9%9F%BF%E6%87%89 "频率响应")。
+- 上述的一种推广，当测量[自窗口信号](https://zh.wikipedia.org/w/index.php?title=%E8%87%AA%E7%AA%97%E5%8F%A3%E4%BF%A1%E8%99%9F&action=edit&redlink=1 "自窗口信号（页面不存在）")，如[脉冲](https://zh.wikipedia.org/wiki/%E8%84%89%E5%86%B2 "脉冲")，[冲击响应](https://zh.wikipedia.org/w/index.php?title=%E8%A1%9D%E6%93%8A%E9%9F%BF%E6%87%89&action=edit&redlink=1 "冲击响应（页面不存在）")，正弦[丛发](https://zh.wikipedia.org/w/index.php?title=%E5%8F%A2%E7%99%BC&action=edit&redlink=1 "丛发（页面不存在）")，连续变频丛发，噪声丛发时，这样的信号使用模态分析。在这种情况下应用窗函数只会恶化信噪比。
+- 测量一个周期T的[虚拟随机噪声](https://zh.wikipedia.org/w/index.php?title=%E8%99%9B%E6%93%AC%E9%9A%A8%E6%A9%9F%E5%99%AA%E8%81%B2&action=edit&redlink=1 "虚拟随机噪声（页面不存在）")（PRN）激发信号，​​并使用相同的记录周期T时。PRN信号是周期性的，因此，该信号的所有频谱分量将会与FFT区间中心重合而无泄漏。
+- 当测量被锁定于采样频率的重复信号，例如在测量的振动频谱分析的轴对准，轴承，发动机，变速器等的故障诊断。由于信号是重复的，所有的频谱能量被限制到基本的重复频率的整数倍。
+- 在[正交分频多工](https://zh.wikipedia.org/wiki/%E6%AD%A3%E4%BA%A4%E5%88%86%E9%A0%BB%E5%A4%9A%E5%B7%A5 "正交分频多工")(OFDM)接收器中，输入信号不经窗函数，被直接乘以FFT。的频率子载波（也称为符号）被设计为恰好对齐FFT频率区间。一个Cyclic prefix通常添加到所传输的信号，使得肇因于[多径](https://zh.wikipedia.org/wiki/%E5%A4%9A%E5%BE%84 "多径")的[频率](https://zh.wikipedia.org/wiki/%E9%A0%BB%E7%8E%87_\(%E7%89%A9%E7%90%86%E5%AD%B8\) "频率 (物理学)")[选择性衰落](https://zh.wikipedia.org/wiki/%E9%80%89%E6%8B%A9%E6%80%A7%E8%A1%B0%E8%90%BD "选择性衰落")可用[圆周折积](https://zh.wikipedia.org/wiki/%E5%9C%93%E5%91%A8%E6%91%BA%E7%A9%8D "圆周折积")模拟，从而避免了在OFDM中相当于[频谱泄漏](https://zh.wikipedia.org/w/index.php?title=%E9%A0%BB%E8%AD%9C%E6%B4%A9%E6%BC%8F&action=edit&redlink=1 "频谱泄漏（页面不存在）")的[符号间干扰](https://zh.wikipedia.org/w/index.php?title=%E7%AC%A6%E8%99%9F%E9%96%93%E5%B9%B2%E6%93%BE&action=edit&redlink=1 "符号间干扰（页面不存在）")。
+
+### 典型的窗函数
+
+#### 矩形窗(Rectangular)
+每个DFT过程都被窗所修饰限制，因为一个有限时间序列等效上是由无限长时间序列乘上一长度与资料区块长度相同(NΔt)的矩形窗。在矩形窗的例子中，其DFT是由讯号本身的DFT及一矩形的DFT做回旋所产生，然而矩形窗属于时间变量的零次幂窗。矩形窗使用最多， 习惯上不加窗就是使信号通过了矩形窗。这种窗的优点是主瓣比较集中，缺点是旁瓣较高，并有负旁瓣，导致变换中带进了高频干扰和泄漏，甚至出现负谱现象。
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Window_function_%28rectangular%29.svg/250px-Window_function_%28rectangular%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_\(rectangular\).svg)
+
+矩形窗; B=1.00
+
+w(n)=1![{\displaystyle w(n)=1\,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/8ce9f68706e0f2398b03011252fdfc0d2d2a1108)
+
+#### 高斯窗
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Window_function_%28gauss%29.svg/250px-Window_function_%28gauss%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_\(gauss\).svg)
+
+高斯窗, σ=0.4; B=1.45
+w(n)=e−12(n−(N−1)/2σ(N−1)/2)2![{\displaystyle w(n)=e^{-{\frac {1}{2}}\left({\frac {n-(N-1)/2}{\sigma (N-1)/2}}\right)^{2}}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/3ad715a565e0f59905baff5b2f69a74e01f51a97)
+
+σ≤0.5![{\displaystyle \sigma \leq \;0.5\,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/3e43f6fb554bba3e615f0c3cdbb425c8f0149c19)
+
+高斯函数经由傅立叶转换得到的结果，仍然是高斯函数。由于高斯函数会向无限大与负无限大处无限延伸，因此一般都会设定一个截断高斯函数的阈值，或是将高斯函数搭配其他两端数值为零的函数。
+
+另外，由于取高斯函数的对数会产生抛物曲线，此性质可用于频率估测的近二次内插中。
+
+#### 受限高斯窗
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Window_function_and_frequency_response_-_Confined_Gaussian_%28sigma_t_%3D_0.1%29.svg/250px-Window_function_and_frequency_response_-_Confined_Gaussian_%28sigma_t_%3D_0.1%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_and_frequency_response_-_Confined_Gaussian_\(sigma_t_%3D_0.1\).svg)
+
+Confined Gaussian window, _σ__t_ = 0.1; _B_ = 1.9982.
+
+受限高斯窗在给定时间宽度 N_σ__t_ 下，将产生最小可能的方均根频率宽度 _σ__ω_，并最佳化方均根时频带宽的乘积。
+
+#### 近似受限高斯窗
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Window_function_and_frequency_response_-_Approximate_confined_Gaussian_%28sigma_t_%3D_0.1%29.svg/250px-Window_function_and_frequency_response_-_Approximate_confined_Gaussian_%28sigma_t_%3D_0.1%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_and_frequency_response_-_Approximate_confined_Gaussian_\(sigma_t_%3D_0.1\).svg)
+
+Approximate confined Gaussian window, _σ__t_ = 0.1; _B_ = 1.9979.
+
+近似受限高斯窗，在给定时间宽度 N_σ__t_ 下，可由下方的式子进一步近似：
+
+w(n)=G(n)−G(−12)[G(n+N)+G(n−N)]G(−12+N)+G(−12−N)![{\displaystyle w(n)=G(n)-{\frac {G(-{\tfrac {1}{2}})[G(n+N)+G(n-N)]}{G(-{\tfrac {1}{2}}+N)+G(-{\tfrac {1}{2}}-N)}}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/6c40355672e7157d120b21eb0bb483e2a764f957)
+
+其中 Gaussian 定义为:
+G(x)=e−(x−N−122Nσt)2![{\displaystyle G(x)=e^{-\left({\cfrac {x-{\frac {N-1}{2}}}{2N\sigma _{t}}}\right)^{2}}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/9b051d6d98473254ba9c32f115d24bc09bab6b0f)
+
+#### Hamming窗与Hann窗
+
+w(n)=a0−(1−a0)⏟a1⋅cos⁡(2πnN−1),0≤n≤N−1,![{\displaystyle w(n)=a_{0}-\underbrace {(1-a_{0})} _{a_{1}}\cdot \cos \left({\tfrac {2\pi n}{N-1}}\right),\quad 0\leq n\leq N-1,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/cff1a2374720284d548f6a59693cd58a297241ec)
+当  a0=0.53836![{\displaystyle a_{0}=0.53836}](https://wikimedia.org/api/rest_v1/media/math/render/svg/e92d6e5b6e38296969a6595a76d41acd93a740f3) ，称作 **Hamming窗**；当  a0=0.5![{\displaystyle a_{0}=0.5}](https://wikimedia.org/api/rest_v1/media/math/render/svg/c11c334097d4b793c1474c43f669849d0fedd2c7)  则叫作 **Hann窗**。
+
+##### Hann窗
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Window_function_%28hann%29.svg/250px-Window_function_%28hann%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_\(hann\).svg)
+
+Hann窗; B=1.50
+w(n)=0.5(1−cos⁡(2πnN−1))![{\displaystyle w(n)=0.5\;\left(1-\cos \left({\frac {2\pi n}{N-1}}\right)\right)}](https://wikimedia.org/api/rest_v1/media/math/render/svg/222fdf0db36de2b69fd6a627da9e38eeb081500d)
+
+[Hann窗](https://zh.wikipedia.org/w/index.php?title=Hann%E7%AA%97&action=edit&redlink=1 "Hann窗（页面不存在）")有时也称为 "Hanning" 窗（“汉宁窗”），以与 Hamming 窗的名称类似。但是这是不对的，因为这两个窗是分别根据 [Julius von Hann](https://zh.wikipedia.org/w/index.php?title=Julius_von_Hann&action=edit&redlink=1 "Julius von Hann（页面不存在）") 和 [Richard Hamming](https://zh.wikipedia.org/wiki/Richard_Hamming "Richard Hamming") 的名字命名的。
+Hann窗又称升余弦窗。Hann窗可以看作是3个矩形时间窗的频谱之和，或者说是 3个 sinc(t) 型函数之和，而括号中的两项相对于第一个谱窗向左、右各移动了π/T，从而使旁瓣互相抵消，消去高频干扰和漏能。
+从减小泄漏观点出发，Hann窗优于矩形窗。但Hann窗主瓣加宽，相当于分析带宽加宽，频率分辨力下降。
+
+##### Hamming窗
+
+[![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Window_function_%28hamming%29.svg/250px-Window_function_%28hamming%29.svg.png)](https://zh.wikipedia.org/wiki/File:Window_function_\(hamming\).svg)
+Hamming窗; B=1.37
+w(n)=0.53836−0.46164cos⁡(2πnN−1)![{\displaystyle w(n)=0.53836-0.46164\;\cos \left({\frac {2\pi n}{N-1}}\right)}](https://wikimedia.org/api/rest_v1/media/math/render/svg/0ad314fef487c2221f7842147ff92ec81c4f32b3)
+如果我们将  a0![{\displaystyle a_{0}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/693ad9f934775838bd72406b41ada4a59785d7ba)  设为接近 0.53836 的数值，或是更精确来说是 25/46，便会得到Hamming窗，而设定这个数值的用意，是在频率为 5π/(_N_ − 1) 处产生零交会处(zero-crossing)，使原先Hann窗的第一个旁瓣(sidelobe)可以被大幅消除，产生只有Hann窗 1/5 高度的旁瓣。
+
+## 
