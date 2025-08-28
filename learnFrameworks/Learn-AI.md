@@ -145,7 +145,7 @@
 
 ## 时序预测
 - [Time-Series-Library](https://github.com/thuml/Time-Series-Library)
-
+- [深度学习-时间序列分析工具TSLiB库使用指北](https://blog.csdn.net/LuohenYJ/article/details/141651215)
 
 
 
