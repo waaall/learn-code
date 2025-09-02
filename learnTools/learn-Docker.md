@@ -818,6 +818,41 @@ CMD ["./hello"]
 
 本例使用基础镜像 `gcc` 来编译程序 `hello.c`，然后启动一个新的构建阶段，它以 `ubuntu`作为基础镜像，将可执行文件 `hello`从上一阶段拷贝到最终的镜像中。最终的镜像大小是 `64 MB`，比之前的 `1.1 GB` 减少了 `95%`：
 
+```dockerfile
+# ========== 第一阶段：构建阶段 ==========
+FROM python:3.10-slim AS builder
+
+# 安装构建工具
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安装依赖
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 安装 PyInstaller
+RUN pip install pyinstaller
+
+# 拷贝源码
+COPY ./app ./app
+
+# 使用 PyInstaller 打包
+RUN pyinstaller --onefile app/main.py --name myapp
+
+# ========== 第二阶段：运行阶段 ==========
+FROM debian:bullseye-slim
+
+# 拷贝打包后的可执行文件
+COPY --from=builder /app/dist/myapp /usr/local/bin/myapp
+
+# 设置运行命令
+ENTRYPOINT ["myapp"]
+```
+
+
 ## 悬空镜像
 这些 `<none>` 镜像（称为 **悬空镜像**），是 Docker 构建过程中的常见产物。
 
@@ -834,6 +869,24 @@ CMD ["./hello"]
 ```bash
 # 仅删除无标签镜像
 docker image prune
+```
+
+## 手动安装buildx
+提示没有安装buildx，那就手动安装。
+- [buildx/releases](https://github.com/docker/buildx/releases)找到你docker version相对应的版本，wget 这个地址，然后移动到`/usr/local/lib/docker/cli-plugins/docker-buildx`
+```bash
+# 1. 下载安装包
+wget https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-${ARCH}
+
+# 2. 安装到Docker插件目录
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+sudo mv buildx-${BUILDX_VERSION}.linux-${ARCH} /usr/local/lib/docker/cli-plugins/docker-buildx
+
+# 3. 赋予执行权限
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
+
+# 4. 确认下
+docker buildx version
 ```
 
 ## DNS问题
@@ -896,6 +949,19 @@ sudo systemctl restart docker  # Linux
 1. **ISP 的 DNS 服务器不稳定**（如某些国内运营商 DNS 污染或拦截）。
 2. **网络代理/VPN 干扰**（如果使用代理，可能需要配置 Docker 使用代理）。
 3. **系统 DNS 缓存问题**（可尝试刷新缓存：`sudo dscacheutil -flushcache`（macOS））。
+
+
+## docker 外部连接
+有两种连接，一个是docker服务对外开放的端口（一般是tcp:2375或者tls:2376），另一个是docker容器运行时监听的端口。前者是让你可以外部使用docker，后者是让你外部访问某个docker容器的服务。
+这都需要系统防火墙开放对应的端口权限，linux和mac都有对应的指令，windows也有。
+```powershell
+New-NetFirewallRule -DisplayName 'Docker SSL Inbound' -Profile @('Domain', 'Public', 'Private') -Direction Inbound -Action Allow -Protocol TCP -LocalPort 2376
+
+New-NetFirewallRule -DisplayName 'Docker ML container' -Profile @('Domain', 'Public', 'Private') -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5003
+```
+上述指令等同于在控制面板-系统安全-防火墙-允许应用或功能通过防火墙-查看（名称、协议、端口号、私有/共有网络访问）
+
+这种是允许所有进入本机的 TCP 连接，只要它们的目标端口是 5003。” 无论背后是 Docker、Python 还是其他任何程序在监听，防火墙都会放行。而之所以python直接运行没有问题，是因为python程序的所有流量都被放行了（python安装或者第一次运行时会申请网络权限，一般就被允许了）
 
 ## Kubernetes & docker
 - [Docker Swarm 还是 K8？](https://www.reddit.com/r/devops/comments/t204vt/to_docker_swarm_or_to_k8/?tl=zh-hans)- K8
