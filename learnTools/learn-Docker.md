@@ -760,24 +760,35 @@ sudo usermod -aG docker $USER
 
 
 # 指令
+
+注意，镜像和容器不是一个东西。容器是运行时的，依赖镜像。
+
+## 查看信息指令
 ```bash
 # 查看本地镜像
 docker image ls
 
-# 
-docker image prune
-
-
-# 查看当前运行的docker container
-docker ps
+# 查看当前运行的docker container -a 可查看停止的
+docker ps -a
 
 # 查看存储使用情况
 docker system df
 
-# 
-docker inspect gcc:11
+# docker 统计信息
+docker stats
 
-# docker 卷
+# docker 进入容器
+docker exec -it my_container bash
+
+# docker 查看 log
+docker logs -f my_container
+
+# 查看镜像信息
+docker inspect gcc:11
+```
+
+## docker 卷指令
+```bash
 docker volume ls
 docker volume create my-vol
 docker volume inspect my-vol
@@ -798,6 +809,32 @@ docker run -d -P \
 
 docker volume rm my-vol
 ```
+
+
+## 镜像&容器删除
+```bash
+# 删除无效镜像
+docker image prune
+
+# 删除所有已停止的容器
+docker container prune
+
+# docker rm -f 是强制删除容器
+docker rm my_container
+
+# 删除镜像
+docker rmi my_image
+```
+
+## 打包指令
+```bash
+# image 输出压缩包
+docker save -o /home/rcny-mlp-v1.0.0.tar rcny-mlp:v1.0.0
+
+# image 导入
+docker load -i /yourpath/to/rcny-mlp-v1.0.0.tar
+```
+
 
 # 问题
 
@@ -850,6 +887,94 @@ COPY --from=builder /app/dist/myapp /usr/local/bin/myapp
 
 # 设置运行命令
 ENTRYPOINT ["myapp"]
+```
+
+
+## 多平台构建
+跨平台部署容易混淆 容器内交叉编译 和 qemu 模拟，我帮你把这两个对比一下：
+
+
+### QEMU
+
+- 在 x86 主机上，利用 qemu-user 模拟 ARM CPU 指令集，让 ARM 程序能“假装”在 x86 跑。
+- Docker 的 buildx 就是用 qemu 来运行 ARM 容器镜像。
+ 
+优点：
+- 透明度高：你写的 Dockerfile 不变，只要加上 --platform=linux/arm64 就能构建 ARM 镜像。
+- 不需要配置交叉工具链、sysroot。
+- 对 Python 这类解释型语言特别方便。
+  
+缺点：
+- 编译速度慢（因为模拟 ARM 指令）。
+- 大规模构建会明显拖慢 CI/CD。
+
+#### build和buildx
+| 功能       | `docker build`                             | `docker buildx build`                                  |
+| -------- | ------------------------------------------ | ------------------------------------------------------ |
+| 平台支持     | 只能构建 **一个平台**（比如 `--platform linux/arm64`） | 可以一次构建 **多个平台** (`--platform linux/amd64,linux/arm64`) |
+| 输出方式     | 默认把镜像导入到本地 `docker images`                 | 默认 **不会导入本地**，除非加 `--load` 或 `--output`                |
+| 多架构镜像    | 不支持                                        | 支持，能直接 push 到 registry 作为 **multi-arch manifest**      |
+| CLI 命令范围 | docker 内置                                  | `buildx` 是一个扩展子命令，功能更全（cache、driver、分布式构建）             |
+| 生态扩展     | 比较传统                                       | 更现代，支持远程 builder、缓存导出、registry 导出等                     |
+
+- **只构建单平台镜像（amd64 或 arm64），`docker build --platform` 和 `docker buildx build --platform ... --load` 没啥区别。**
+- **要多平台 / 发布到仓库 → 必须用 `buildx`。**
+
+```bash
+# 开发阶段（单平台，导入本地）下面的buildx是一样的
+docker build --platform linux/arm64 -f Dockerfile -t yourcontainername:1.0 .
+# docker buildx build --platform linux/arm64 -t yourcontainername:1.0 -f Dockerfile . --load
+
+# CI/CD 阶段（多平台，推送到仓库）
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t your-registry/rcny-mlp-base:1.0.0 \
+  -f Dockerfile-rcny-mlp \
+  --push .
+```
+
+#### 搭建本地仓库
+```bash
+# 启动本地注册表容器（registry是官方的Docker镜像仓库）
+docker run -d -p 55000:5000 --name local-registry registry:2
+```
+
+```dockerfile
+FROM localhost:55000/yourcontainername:1.0
+```
+
+### 容器内交叉编译
+
+- 在 x86 主机 上用 ARM 的编译器工具链（如 aarch64-linux-gnu-gcc）编译代码。
+- 最终产物是 ARM ELF 文件，可以直接在 ARM 设备上运行。
+- 编译过程发生在 x86 上，但不执行 ARM 代码。
+
+优点：
+- 编译速度快（因为全程跑在 x86，不涉及模拟）。
+- 常见于嵌入式开发（STM32/Linux 驱动等）。
+
+缺点：
+- 需要完整的 ARM sysroot（头文件 + 库 + ABI 一致）。
+- 配置复杂，要保证交叉工具链版本和目标设备系统完全兼容。
+- 对 Python 项目不太友好（Python ABI、第三方依赖复杂）。
+
+
+| 特性       | 交叉编译                  | QEMU 模拟（buildx）    |
+| -------- | --------------------- | ------------------ |
+| 速度       | 快（原生编译速度）             | 慢（指令模拟开销大）         |
+| 兼容性      | 要配 sysroot/ABI，容易踩坑   | 高，几乎不用改配置          |
+| 难度       | 高，需要工具链 & 环境匹配        | 低，开箱即用             |
+| 适用场景     | 嵌入式、纯 C/C++ 项目        | Python、Java、混合项目   |
+| Docker 里 | 要自己准备 cross toolchain | docker buildx 自动完成 |
+
+- 如果是 Python/java 项目（PyInstaller/Cython），推荐 QEMU（buildx），最省心。
+- 如果是 性能敏感的 C/C++ 项目（比如驱动、底层库），推荐 交叉编译，构建快，产物小。
+
+
+### 多平台分阶段构建实战
+
+```bash
+
 ```
 
 

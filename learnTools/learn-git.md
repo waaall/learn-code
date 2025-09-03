@@ -960,4 +960,10 @@ git rm --cached 文件名
 
 # 慎用！ 强制回到之前这个commit状态。
 git reset --hard 962e657-commitid
+
+# 删除远程的 test 分支
+git push origin --delete test
+
+# 清理本地的远程分支引用
+git remote prune origin
 ```
