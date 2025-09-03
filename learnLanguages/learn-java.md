@@ -33,4 +33,67 @@
 
 
 ## JAVA与c++
+- [我的java调用c++示例代码](https://github.com/waaall/cpp-template/tree/dynamic-lib/java)
+- [Java使用jna调用c++动态库Linux](https://zhuanlan.zhihu.com/p/466863639)
 
+```java
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import java.io.File;
+
+/**
+* JNA接口定义，用于调用C++动态库
+*/
+
+public interface AddLibJNA extends Library {
+/**
+* 获取动态库实例
+* 使用相对路径加载动态库
+*/
+
+AddLibJNA INSTANCE = (AddLibJNA) Native.load(getLibraryPath(), AddLibJNA.class);
+
+/**
+* 获取动态库的相对路径
+* @return 动态库路径
+*/
+
+static String getLibraryPath() {
+
+// 获取当前工作目录
+String currentDir = System.getProperty("user.dir");
+String libPath;
+
+if (Platform.isMac()) {
+// macOS使用.dylib扩展名
+libPath = currentDir + File.separator + "build" + File.separator + "libadd.dylib";
+} else if (Platform.isLinux()) {
+
+// Linux使用.so扩展名
+libPath = currentDir + File.separator + "build" + File.separator + "libadd.so";
+} else if (Platform.isWindows()) {
+
+// Windows使用.dll扩展名
+libPath = currentDir + File.separator + "build" + File.separator + "libadd.dll";
+} else {
+throw new UnsupportedOperationException("不支持的操作系统平台");
+}
+
+// 验证文件是否存在
+File libFile = new File(libPath);
+if (!libFile.exists()) {
+throw new RuntimeException("动态库文件不存在: " + libPath);
+}
+return libPath;
+}
+
+/**
+* 调用C++库中的add_int函数
+* @param a 第一个整数
+* @param b 第二个整数
+* @return 两个整数的和
+*/
+int add_int(int a, int b);
+}
+```
