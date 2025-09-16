@@ -197,7 +197,7 @@ cuDNN（CUDA Deep Neural Network Library）：专门为深度神经网络优化�
     - 高效实现卷积、池化、归一化等神经网络层
     - 支持 FP16/FP32 精度自动混合计算
     - 提供 Winograd 等加速算法
-
+- [cudnn-support-matrix](https://docs.nvidia.com/deeplearning/cudnn/frontend/v1.14.0/reference/support-matrix.html#support-matrix)（和cuda、nvidia driver的兼容性）
 - [What is the CUDA Software Platform?](https://modal.com/gpu-glossary/host-software/cuda-software-platform)
 ![/light-cuda-toolkit](learn-AI.assets/light-cuda-toolkit.svg)
 - [# 显卡，显卡驱动,nvcc, cuda driver,cudatoolkit,cudnn到底是什么？](https://www.cnblogs.com/marsggbo/p/11838823.html)
@@ -386,6 +386,34 @@ MCP其实就是各家function call函数的统一接口标准，但截至25年�
 - [microsoft-onnxruntime](https://github.com/microsoft/onnxruntime)
 - [onnxruntime-doc](https://onnxruntime.ai/docs/)
 
+### onnxruntime-gpu和cuda的版本关系
+- [onnx-CUDA-ExecutionProvider](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html)
+#### CUDA 12.x 
+
+|ONNX Runtime|CUDA|cuDNN|Notes|
+|---|---|---|---|
+|1.20.x|12.x|9.x|Avaiable in PyPI. Compatible with PyTorch >= 2.4.0 for CUDA 12.x.|
+|1.19.x|12.x|9.x|Avaiable in PyPI. Compatible with PyTorch >= 2.4.0 for CUDA 12.x.|
+|1.18.1|12.x|9.x|cuDNN 9 is required. No Java package.|
+|1.18.0|12.x|8.x|Java package is added.|
+|1.17.x|12.x|8.x|Only C++/C# Nuget and Python packages are released. No Java package.|
+
+#### CUDA 11.x 
+
+|ONNX Runtime|CUDA|cuDNN|Notes|
+|---|---|---|---|
+|1.20.x|11.8|8.x|Not available in PyPI. See [Install ORT](https://onnxruntime.ai/docs/install) for details. Compatible with PyTorch <= 2.3.1 for CUDA 11.8.|
+|1.19.x|11.8|8.x|Not available in PyPI. See [Install ORT](https://onnxruntime.ai/docs/install) for details. Compatible with PyTorch <= 2.3.1 for CUDA 11.8.|
+|1.18.x|11.8|8.x|Available in PyPI.|
+|1.17  <br>1.16  <br>1.15|11.8|8.2.4 (Linux)  <br>8.5.0.96 (Windows)|Tested with CUDA versions from 11.6 up to 11.8, and cuDNN from 8.2 up to 8.9|
+|1.14  <br>1.13|11.6|8.2.4 (Linux)  <br>8.5.0.96 (Windows)|libcudart 11.4.43  <br>libcufft 10.5.2.100  <br>libcurand 10.2.5.120  <br>libcublasLt 11.6.5.2  <br>libcublas 11.6.5.2  <br>libcudnn 8.2.4|
+|1.12  <br>1.11|11.4|8.2.4 (Linux)  <br>8.2.2.26 (Windows)|libcudart 11.4.43  <br>libcufft 10.5.2.100  <br>libcurand 10.2.5.120  <br>libcublasLt 11.6.5.2  <br>libcublas 11.6.5.2  <br>libcudnn 8.2.4|
+|1.10|11.4|8.2.4 (Linux)  <br>8.2.2.26 (Windows)|libcudart 11.4.43  <br>libcufft 10.5.2.100  <br>libcurand 10.2.5.120  <br>libcublasLt 11.6.1.51  <br>libcublas 11.6.1.51  <br>libcudnn 8.2.4|
+|1.9|11.4|8.2.4 (Linux)  <br>8.2.2.26 (Windows)|libcudart 11.4.43  <br>libcufft 10.5.2.100  <br>libcurand 10.2.5.120  <br>libcublasLt 11.6.1.51  <br>libcublas 11.6.1.51  <br>libcudnn 8.2.4|
+|1.8|11.0.3|8.0.4 (Linux)  <br>8.0.2.39 (Windows)|libcudart 11.0.221  <br>libcufft 10.2.1.245  <br>libcurand 10.2.1.245  <br>libcublasLt 11.2.0.252  <br>libcublas 11.2.0.252  <br>libcudnn 8.0.4|
+|1.7|11.0.3|8.0.4 (Linux)  <br>8.0.2.39 (Windows)|libcudart 11.0.221  <br>libcufft 10.2.1.245  <br>libcurand 10.2.1.245  <br>libcublasLt 11.2.0.252  <br>libcublas 11.2.0.252  <br>libcudnn 8.0.4|
+
+
 ## 国产GPU
 
 ### 华为NPU-CANN框架
@@ -510,6 +538,22 @@ sess.run_with_iobinding(io_binding)
 
 return io_binding.get_outputs()[0].numpy()
 ```
+
+
+
+## docker 部署onnx-cuda
+
+docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动，显卡驱动可以向下兼容cuda版本，所以宿主机的显卡驱动要比较新，然后接下来基础镜像有四种方案：
+- 拉一个python，然后容器内装cuda和pip的onnxruntime
+- 拉一个[cuda](https://hub.docker.com/r/nvidia/cuda/tags)，然后容器内装python
+- 拉一个[PyTorch-cuda-runtime](https://hub.docker.com/r/pytorch/pytorch/tags)，然后里面装onnxruntime
+- 拉一个[python-cuda-onnx](https://hub.docker.com/r/microsoft/azureml-onnxruntimefamily)，只需要自己w装库[onnx-cuda-docker博客（已过时）](https://blog.csdn.net/weixin_42939529/article/details/122006947)。
+
+虽然看似最后一种方案最好，但是这个镜像是微软做的，只很少几个版本的组合，现在也不再支持，如果不符合自己的版本，可能自己的软件出现兼容性问题，它现在提供[onnx-github-Dockerfile.cuda](https://github.com/microsoft/onnxruntime/blob/main/dockerfiles)可以自行构建（网络问题……构建也很慢）。
+
+坑最少的还是第三种方案，但是也需要注意两点：
+1. onnxruntime的版本所需要的一定要和pytorch所带的cuda和cudnn版本一致。
+2. 代码中的导入方式不太一样，具体见onnx官网doc
 
 
 # 问题
