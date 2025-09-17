@@ -841,14 +841,23 @@ git checkout HEAD~1         # 切换到上一个提交
 git checkout tags/v1.0      # 切换到特定标签
 ```
 
-### 3. 从其他分支获取文件
+### 3. diff
+```bash
+# 查看main和feature分支的不同
+git diff main..feature
+
+# 查看main和feature分支的不同（只看文件名）
+git diff --name-only main..feature
+```
+
+### 4. 从其他分支获取文件
 ```bash
 git checkout main -- scripts/file_encoding_fixer.py    # 从main分支获取特定文件
 git checkout HEAD~1 -- file.txt                        # 从上一个提交获取文件
 git checkout other-branch -- folder/                   # 从其他分支获取整个文件夹
 ```
 
-### 4. 恢复工作区文件
+### 5. 恢复工作区文件
 ```bash
 git checkout -- file.txt       # 丢弃工作区中file.txt的修改
 git checkout .                  # 丢弃所有工作区修改
