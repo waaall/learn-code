@@ -547,7 +547,7 @@ return io_binding.get_outputs()[0].numpy()
 
 docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动。另外，docker 运行还需要安装[Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)(win需要wsl2安装后额外配置，下文介绍)；且docker run 指定gpu。
 
-
+![wsl-cuda](learn-AI.assets/wsl-cuda.png)
 ### docker cuda 支持
 
 #### 1. [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
@@ -568,18 +568,40 @@ docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动。另外�
 
 - 这是 **NVIDIA + Microsoft** 合作的方案，让 WSL2 (Linux 子系统) 可以调用 Windows 驱动里的 GPU。
 - 本质上：**让 WSL2 里的 Linux 看见显卡**。
-- 如果你不用 WSL，而是直接在 Windows Docker Desktop 里跑容器，这一层就没关系。
+
+一般这个默认自动安装的（windows装了比较新版本的显卡驱动）；可以用指令来验证：
+```bash
+wsl -- nvidia-smi
+```
+
 #### 3. [GPU support in Docker Desktop for Windows](https://docs.docker.com/desktop/features/gpu/)
 
-- 这是 **Docker Desktop** 官方提供的 GPU 集成功能。
-- 在 Windows 上的 Docker Desktop **自带对 GPU 的支持**，不需要你在 Windows 上额外装 NVIDIA Container Toolkit。
+- 在 Windows 上的 Docker Desktop **自带对 GPU 的支持**，不需要在 Windows 上额外装 NVIDIA Container Toolkit。(using wsl2 backend)
 - 它会自动对接 WSL2 里的 GPU (上面第 1 步)，然后让容器里可以看到 GPU。
 - 所以在 Windows Docker Desktop 上跑 GPU 容器，流程是：
     1. Windows 装好 NVIDIA 驱动 (>= 470)。
-    2. Docker Desktop 打开 GPU 支持。
-    3. 直接在容器里 --gpus all 就能用 GPU。
+    2. 直接在容器run的时候加上 `--gpus all` 就能用 GPU。
 
+#### 4. [docker compose cuda](https://docs.docker.com/compose/how-tos/gpu-support/)
+下面是官方推荐：
+```dockerfile
+# swarm 的 docker-compose.yml
+services:
+  myservice-add-name:
+		巴拉巴拉
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
 
+```bash
+# 正常运行
+docker compose up -d
+```
 
 
 
