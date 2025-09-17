@@ -7,26 +7,26 @@
 > * [一个不错的博客](https://elloop.github.io/categories.html#c++-ref)
 
 ### 开源项目
+- [poco-网络服务器](https://github.com/pocoproject/poco)
+- [drogon-网络服务器](https://github.com/drogonframework/drogon)
 
-> 1. 写一个Json库：
+> 1. 写一个Json库！
 > https://github.com/miloyip/json-tutorial/blob/master/tutorial01/tutorial01.md
-> 2. 写一个红黑树：
+> 2. 写一个红黑树：（不再更新）
 > https://github.com/william-zk/RB_Tree
-> 3. 写一个STL：
+> 3. 写一个STL！
 > https://github.com/Alinshans/MyTinySTL
 > 4. 写一个NoSQL:
 > https://www.lanqiao.cn/courses/1341
 > 5. 写一个高并发内存池：
 > https://blog.csdn.net/qq_41562665/article/details/90546750
-> 6. 写一个线程库：
+> 6. 写一个线程库：（不再更新）
 > https://github.com/Winnerhust/uthread
-> 7. 写一个网络库：
-> https://github.com/chenshuaihao/NetServer
-> 8. 写一个服务器框架：
+> 7. **[写一个服务器框架](https://github.com/sylar-yin/sylar)！**
 > https://www.bilibili.com/video/av53602631?from=search&seid=9029288577396826503
-> 9. 写一个WebServer可以参考一些书:《Linux高性能服务器编程》还有陈硕的那本书
+> 8. 写一个WebServer可以参考一些书:《Linux高性能服务器编程》还有陈硕的那本书
 > https://github.com/linyacool/WebServer
-> 10. 写一个操作系统内核搜一下 “MIT 6.828”感觉课程里的一个作业都可以拿来当做一个项目了: 
+> 9. 写一个操作系统内核搜一下 “MIT 6.828”感觉课程里的一个作业都可以拿来当做一个项目了: 
 > https://github.com/woai3c/MIT6.828
 
 
@@ -725,37 +725,53 @@ sudo apt install autoconf automake libtool #额外不在build-essential里的GNU
    #endif // FOO_BAR_BAZ_H_
    ```
 
-### sublime写c++小技巧
-
-* #Inc  --- include <>
-* tp     --- template <typename T>
-* for    --- for loop
-* main --- int main(){}
-* Class--- class {public ...}
-* td     --- typedefine
 
 ### c++运算符的优先级
 
----
+当然，这是根据您提供的原始内容恢复和整理后的C++操作符优先级表格。我对格式进行了优化，并修正了一些描述和例子，使其更准确、清晰和易于理解。
 
-| 优先级 | 操作符                                                       | 描述                                                         | 例子                                                         | 结合性   |
-| :----- | :----------------------------------------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- | :------- |
-| 1      | **()   []  -> . :: ++ --**                                   | 调节优先级的括号操作符 / 数组下标访问操作符 / 通过指向对象的指针访问成员的操作符 / 通过对象本身访问成员的操作符 / 作用域操作符 / 后置自增操作符 / 后置自减操作符 | (a + b) / 4; array[4] = 2; ptr->age = 34; obj.age = 34; Class::age = 2; for( i = 0; i < 10; i++ ) ... for( i = 10; i > 0; i-- ) ... | 从左到右 |
-| 2      | **!  ~ ++ -- -   +   *   & (type) [sizeof](http://www.cppreference.com/keywords/sizeof.html)** | 逻辑取反操作符 / 按位取反(按位取补)  前置自增操作符 / 前置自减操作符 一元取负操作符 / 一元取正操作符 / 解引用操作符 / 取地址操作符 类型转换操作符 / 返回对象占用的字节数操作符 | if( !done ) ... flags = ~flags; for( i = 0; i < 10; ++i ) ... for( i = 10; i > 0; --i ) ... int i = -1; int i = +1; data = *ptr; address = &obj; int i = (int) floatNum; int size = sizeof(floatNum); | 从右到左 |
-| 3      | **->* / .***                                                 | 在指针上通过指向成员的指针访问成员的操作符 在对象上通过指向成员的指针访问成员的操作符 | ptr->*var = 24; obj.*var = 24;                               | 从左到右 |
-| 4      | *** % /这是除法符号**                                        | 乘法操作符 除法操作符 取余数操作符                           | int i = 2 * 4; float f = 10 / 3; int rem = 4 % 3;            | 从左到右 |
-| 5      | **+ -**                                                      | 加法操作符 减法操作符                                        | int i = 2 + 3; int i = 5 - 1;                                | 从左到右 |
-| 6      | **<< >>**                                                    | 按位左移操作符 按位右移操作符                                | int flags = 33 << 1; int flags = 33 >> 1;                    | 从左到右 |
-| 7      | **< <= > >=**                                                | 小于比较操作符 小于或等于比较操作符 大于比较操作符 大于或等于比较操作符 | if( i < 42 ) ... if( i <= 42 ) ... if( i > 42 ) ... if( i >= 42 ) ... | 从左到右 |
-| 8      | **== !=**                                                    | 等于比较操作符 不等于比较操作符                              | if( i == 42 ) ... if( i != 42 ) ...                          | 从左到右 |
-| 9      | **&**                                                        | 按位与操作符                                                 | flags = flags & 42;                                          | 从左到右 |
-| 10     | **^**                                                        | 按位异或操作符                                               | flags = flags ^ 42;                                          | 从左到右 |
-| 11     | **\|**                                                       | 按位或操作符                                                 | flags = flags \| 42;                                         | 从左到右 |
-| 12     | **&&**                                                       | 逻辑与操作符                                                 | if( conditionA && conditionB ) ...                           | 从左到右 |
-| 13     | **\|\|**                                                     | 逻辑或操作符                                                 | if( conditionA \|\| conditionB ) ...                         | 从左到右 |
-| 14     | **? :**                                                      | 三元条件操作符                                               | int i = (a > b) ? a : b;                                     | 从右到左 |
-| 15     | **= += -= *= /= %= &= ^= \|= <<= >>=**                       | 赋值操作符 复合赋值操作符(加法) 复合赋值操作符(减法) 复合赋值操作符(乘法) 复合赋值操作符(除法) 复合赋值操作符(取余) 复合赋值操作符(按位与) 复合赋值操作符(按位异或) 复合赋值操作符(按位或) 复合赋值操作符(按位左移) 复合赋值操作符(按位右移) | int a = b; a += 3; b -= 4; a *= 5; a /= 2; a %= 3; flags &= new_flags; flags ^= new_flags; flags \|= new_flags; flags <<= 2; flags >>= 2; | 从右到左 |
-| 16     | **,**                                                        | 逗号操作符                                                   | for( i = 0, j = 0; i < 10; i++, j++ ) ...                    | 从左到右 |
+### C++ 操作符优先级与结合性
+
+| 优先级 | 操作符                                                                                             | 描述                                           | 例子                                                                                             | 结合性   |
+| :----- | :------------------------------------------------------------------------------------------------- | :--------------------------------------------- | :----------------------------------------------------------------------------------------------- | :------- |
+| **1**  | `::`                                                                                               | 作用域解析                                     | `std::cout`                                                                                      | 从左到右 |
+|        | **`()`**                                                                                           | 函数调用、初始化、类型转换                     | `func(), int(x), T(x)`                                                                           |          |
+|        | **`[]`**                                                                                           | 数组下标                                       | `array[5]`                                                                                       |          |
+|        | **`.`**                                                                                            | 通过对象访问成员                               | `obj.member`                                                                                     |          |
+|        | **`->`**                                                                                           | 通过指针访问成员                               | `ptr->member`                                                                                    |          |
+|        | **`++`** **`--`**                                                                                  | 后置自增与自减                                 | `i++, i--`                                                                                       |          |
+| **2**  | **`++`** **`--`**                                                                                  | 前置自增与自减                                 | `++i, --i`                                                                                       | 从右到左 |
+|        | **`+`** **`-`**                                                                                    | 一元正号、一元负号                             | `+5, -value`                                                                                     |          |
+|        | **`!`** **`~`**                                                                                    | 逻辑非、按位取反                               | `!done, ~flags`                                                                                  |          |
+|        | **`(type)`**                                                                                       | C风格类型转换                                  | `(int) floatNum`                                                                                 |          |
+|        | **`*`**                                                                                            | 解引用（取指针指向的值）                       | `*ptr`                                                                                           |          |
+|        | **`&`**                                                                                            | 取地址                                         | `&obj`                                                                                           |          |
+|        | **`sizeof`**                                                                                       | 获取类型或对象的大小                           | `sizeof(int), sizeof x`                                                                          |          |
+|        | **`new`** **`new[]`** **`delete`** **`delete[]`**                                                  | 动态内存分配与释放                             | `new T, delete ptr`                                                                              |          |
+|        | **`co_await`**                                                                                     | await表达式 (C++20)                            | `co_await promise`                                                                               |          |
+| **3**  | **`.*`** **`->*`**                                                                                 | 成员指针访问                                   | `obj.*ptr, pmember->*ptr`                                                                        | 从左到右 |
+| **4**  | **`*`** **`/`** **`%`**                                                                            | 乘法、除法、取模（取余）                       | `2 * 4, 10 / 3, 4 % 3`                                                                           | 从左到右 |
+| **5**  | **`+`** **`-`**                                                                                    | 加法、减法                                     | `2 + 3, 5 - 1`                                                                                   | 从左到右 |
+| **6**  | **`<<`** **`>>`**                                                                                  | 按位左移、按位右移                             | `flags << 2, flags >> 1`                                                                         | 从左到右 |
+| **7**  | **`<=>`**                                                                                          | 三路比较 (C++20)                               | `a <=> b`                                                                                        | 从左到右 |
+| **8**  | **`<`** **`<=`** **`>`** **`>=`**                                                                  | 小于、小于等于、大于、大于等于                 | `i < 42, i >= 0`                                                                                 | 从左到右 |
+| **9**  | **`==`** **`!=`**                                                                                  | 等于、不等于                                   | `i == 42, i != 0`                                                                                | 从左到右 |
+| **10** | **`&`**                                                                                            | 按位与                                         | `flags & new_flags`                                                                              | 从左到右 |
+| **11** | **`^`**                                                                                            | 按位异或                                       | `flags ^ new_flags`                                                                              | 从左到右 |
+| **12** | **`\|`**                                                                                           | 按位或                                         | `flags \| new_flags`                                                                             | 从左到右 |
+| **13** | **`&&`**                                                                                           | 逻辑与                                         | `conditionA && conditionB`                                                                       | 从左到右 |
+| **14** | **`\|\|`**                                                                                         | 逻辑或                                         | `conditionA \|\| conditionB`                                                                     | 从左到右 |
+| **15** | **`? :`**                                                                                          | 条件（三元）运算符                             | `int max = (a > b) ? a : b;`                                                                     | **从右到左** |
+|        | **`=`** **`+=`** **`-=`** **`*=`** **`/=`** **`%=`** **`<<=`** **`>>=`** **`&=`** **`^=`** **`\|=`** | 赋值、复合赋值                                 | `a = b; a += 3; a <<= 2;`                                                                        | **从右到左** |
+|        | **`throw`**                                                                                        | 抛出异常                                       | `throw std::runtime_error("Error");`                                                             |          |
+| **16** | **`,`**                                                                                            | 逗号运算符                                     | `for(i=0, j=0; ...; i++, j++)`                                                                   | 从左到右 |
+
+*   **优先级数字 (1为最高)**：数字越小，优先级越高。例如，乘法(`4`)优先于加法(`5`)。
+*   **结合性**：当多个相同优先级的操作符相邻时，计算的方向。
+    *   **从左到右**：表达式从左向右分组求值。例如，`a - b - c` 等价于 `(a - b) - c`。
+    *   **从右到左**：表达式从右向左分组求值。例如，`a = b = c` 等价于 `a = (b = c)`。
+*   **注意**：操作符优先级决定了表达式的**组合方式**，但并不完全决定其**求值顺序**。例如，在 `f() + g() * h()` 中，`g() * h()` 确定在 `f()` 之后计算，但 `f()`, `g()`, `h()` 三个函数的具体调用顺序是未指定的。
+
 
 ### 名称空间
 
@@ -1121,100 +1137,102 @@ int main()
 > 输出m[1]的值:kskr2
 > 输出m[2]的值:kskr3
 > 
-> 4. getline()
-> getline() ：接受一个字符串，可以接收空格并输出，需包含 #include<string>。
-> ```c
-> #include<iostream>
-> #include<string>
-> using namespace std;
-> int main ()
-> {
->     string str;
->     getline(cin,str);
->     cout<<str<<endl;
-> }
-> ```
-> 测试：
-> 输入：jkljkljkl //VC6中有个bug,需要输入两次回车。
-> 输出：jkljkljkl
-> 
-> 输入：jkl jfksldfj jklsjfl
-> 输出：jkl jfksldfj jklsjfl
-> 
-> 和cin.getline()类似，但是cin.getline()属于istream流，而getline()属于strin> g流，是不一样的两个函数
-> 
-> 5. gets()
-> gets()： 接受一个字符串，可以接收空格并输出，需包含 #include string> 。
-> ```c
-> #include<iostream>
-> #include<string>
-> using namespace std;
-> int main ()
-> {
->     char m[20];
->     gets(m); //不能写成m=gets();
->     cout<<m<<endl;
-> }
-> ```
-> 测试：
-> 输入：jkljkljkl
-> 输出：jkljkljkl
-> 
-> 输入：jkl jkl jkl
-> 输出：jkl jkl jkl
-> 
-> 类似cin.getline()里面的一个例子，gets()同样可以用在多维数组里面： 
-> ```c
-> #include<iostream>
-> #include<string>
-> using namespace std;
-> 
-> int main ()
-> {
->     char m[3][20];
->     for(int i=0;i<3;i++)
->     {
->         cout<<"\n请输入第"<<i+1<<"个字符串："<<endl;
->         gets(m[i]);
->     }
-> 
->     cout<<endl;
->     for(int j=0;j<3;j++)
->         cout<<"输出m["<<j<<"]的值:"<<m[j]<<endl;
-> }
-> ```
-> 测试：
-> 请输入第1个字符串：
-> kskr1
-> 
-> 请输入第2个字符串：
-> kskr2
-> 
-> 请输入第3个字符串：
-> kskr3
-> 
-> 输出m[0]的值:kskr1
-> 输出m[1]的值:kskr2
-> 输出m[2]的值:kskr3
-> 
-> 自我感觉gets()和cin.getline()的用法很类似，只不过cin.getline()多一个参数罢了> ； 
-> 这里顺带说明一下，对于本文中的这个kskr1,kskr2,kskr3的例子，对于cin>>也可以适用> ，原因是这里输入的没有空格，如果输入了空格，比如“ks kr jkl[回车]> ”那么cin就会已经接收到3个字符串，“ks,kr,jkl”；再如“kskr 1[回车]kskr 2[回车]> ”，那么则接收“kskr,1,kskr”；这不是我们所要的结果！而cin.getline()和gets()因> 为可以接收空格，所以不会产生这个错误；
-> 6.getchar()
-> getchar() ：接受一个字符，需包含 #include<string>。
-> ```c
-> #include<iostream>
-> using namespace std;
-> int main ()
-> {
->     char ch;
->     ch=getchar(); //不能写成getchar(ch);
->     cout<<ch<<endl;
-> }
-> ```
-> 
-> 测试：
-> 输入：jkljkljkl
-> 输出：j
+
+1. getline()
+getline() ：接受一个字符串，可以接收空格并输出，需包含 `#include<string>`
+
+```c
+#include<iostream>
+#include<string>
+using namespace std;
+int main ()
+{
+    string str;
+    getline(cin,str);
+    cout<<str<<endl;
+}
+```
+测试：
+输入：jkljkljkl //VC6中有个bug,需要输入两次回车。
+输出：jkljkljkl
+
+输入：jkl jfksldfj jklsjfl
+输出：jkl jfksldfj jklsjfl
+
+和cin.getline()类似，但是cin.getline()属于istream流，而getline()属于strin> g流，是不一样的两个函数
+
+1. gets()
+gets()： 接受一个字符串，可以接收空格并输出，需包含 #include string> 。
+```c
+#include<iostream>
+#include<string>
+using namespace std;
+int main ()
+{
+    char m[20];
+    gets(m); //不能写成m=gets();
+    cout<<m<<endl;
+}
+```
+测试：
+输入：jkljkljkl
+输出：jkljkljkl
+
+输入：jkl jkl jkl
+输出：jkl jkl jkl
+
+类似cin.getline()里面的一个例子，gets()同样可以用在多维数组里面： 
+```c
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main ()
+{
+    char m[3][20];
+    for(int i=0;i<3;i++)
+    {
+        cout<<"\n请输入第"<<i+1<<"个字符串："<<endl;
+        gets(m[i]);
+    }
+
+    cout<<endl;
+    for(int j=0;j<3;j++)
+        cout<<"输出m["<<j<<"]的值:"<<m[j]<<endl;
+}
+```
+测试：
+请输入第1个字符串：
+kskr1
+
+请输入第2个字符串：
+kskr2
+
+请输入第3个字符串：
+kskr3
+
+输出m[0]的值:kskr1
+输出m[1]的值:kskr2
+输出m[2]的值:kskr3
+
+自我感觉gets()和cin.getline()的用法很类似，只不过cin.getline()多一个参数罢了> ； 
+这里顺带说明一下，对于本文中的这个kskr1,kskr2,kskr3的例子，对于cin>>也可以适用> ，原因是这里输入的没有空格，如果输入了空格，比如“ks kr jkl[回车]> ”那么cin就会已经接收到3个字符串，“ks,kr,jkl”；再如“kskr 1[回车]kskr 2[回车]> ”，那么则接收“kskr,1,kskr”；这不是我们所要的结果！而cin.getline()和gets()因> 为可以接收空格，所以不会产生这个错误；
+6.getchar()
+getchar() ：接受一个字符，需包含 `#include<string>`。
+```c
+#include<iostream>
+using namespace std;
+int main ()
+{
+    char ch;
+    ch=getchar(); //不能写成getchar(ch);
+    cout<<ch<<endl;
+}
+```
+
+测试：
+输入：jkljkljkl
+输出：j
 
 
 ### 结构
@@ -1478,14 +1496,14 @@ int main()
 > * 指向函数指针的数组，看后面两个字，它是一个数组，数组元素是指向函数的指针，即函数指针。
 >
 > 再来看看代码吧。比如 int* p[10] 和 int (*p)[10] ，哪个是指针数组，哪个是数组指针呢？其实很容易区分，可以按照运算优先级从低到高的顺序依次说出来就得到了其名字（PS：从高到低的顺序也可以，那样的话名字要倒过来念）。
->
-> ```c++
-> int* p[10] // 指针运算的优先级比下标低，所以排列结果是 指针<数组，所以这是一个指针数组
-> int (*p)[10] // 加了括号后指针的优先级更高，所以 数组<指针，这是一个数组指针
-> int* pfun(int a, int b) // 优先级 指针<函数，所以这是一个指针函数
-> int (*pfun)(int a, int b) // 函数<指针，所以这是一个函数指针
-> int (*pfun[3])(int a, int b) // 函数<指针<数组，所以这是一个数组，数组元素是指针，指针是指向函数的指针，函数的返回值是int类型，参数也是两个int类型，所以这是一个函数指针数组
-> ```
+
+```c++
+int* p[10] // 指针运算的优先级比下标低，所以排列结果是 指针<数组，所以这是一个指针数组
+int (*p)[10] // 加了括号后指针的优先级更高，所以 数组<指针，这是一个数组指针
+int* pfun(int a, int b) // 优先级 指针<函数，所以这是一个指针函数
+int (*pfun)(int a, int b) // 函数<指针，所以这是一个函数指针
+int (*pfun[3])(int a, int b) // 函数<指针<数组，所以这是一个数组，数组元素是指针，指针是指向函数的指针，函数的返回值是int类型，参数也是两个int类型，所以这是一个函数指针数组
+```
 
 ##### 函数指针的作用？传递函数的使用场景？
 
@@ -1520,10 +1538,6 @@ int main(){
     cout << bala(w, q, minus) << endl;
 }
 ```
-
-
-
-
 
 
 
@@ -1562,8 +1576,6 @@ int main()
 typedef const double* (*p1)(const double* ,int);
 p1 = f1;
 ```
-
-
 
 
 #### 指针与内存空间的利用与处理：
@@ -2177,7 +2189,7 @@ int main()
 }
 ```
 
-思考：vector对象？这应该就是一个类的应用吧！还要include，说明也是一个库文件，这个库文件定义了vector类模版？然后vector<int>就是vector类模版的具体化，然后我们就创建了这个实例vi。
+思考：vector对象？这应该就是一个类的应用吧！还要include，说明也是一个库文件，这个库文件定义了vector类模版？然后`vector<int>`就是vector类模版的具体化，然后我们就创建了这个实例vi。
 
 #### vector类的常用函数
 
@@ -2729,9 +2741,6 @@ int main()
 > emplace 和 insert 的区别：
 > emplace 最大的作用是避免产生不必要的临时变量，因为它可以完成in place的构造。没啥卵用目前。
 
-```c
-
-```
 
 ### 多线程与锁
 
@@ -2785,6 +2794,52 @@ int main(int argc, char** argv) {
 }
 ```
 
+
+## 启动一个综合性 C++ 项目常用库
+
+### 标准版本
+| 标准         | 时间        | 主要语言特性                                       | 主要库特性                                      | 示例关键字                                  |
+| ---------- | --------- | -------------------------------------------- | ------------------------------------------ | -------------------------------------- |
+| C++98/03   | 1998/2003 | 类、模板、异常、RAII                                 | STL                                        | `class`, `template`                    |
+| C++11      | 2011      | auto, lambda, move 语义, 并发, range-for         | 智能指针, unordered_map                        | `auto`, `[](){}`, `thread`             |
+| C++14      | 2014      | 泛型 lambda, 二进制字面量, 数字分隔符                     | make_unique                                | `auto` 参数                              |
+| C++17      | 2017      | 结构化绑定, if constexpr, fold expr               | optional, variant, filesystem, string_view | `if constexpr`, `[[nodiscard]]`        |
+| C++20      | 2020      | Concepts, Ranges, Coroutines, Modules, `<=>` | 扩展 constexpr, 协程支持                         | `concept`, `co_await`, `views::filter` |
+| C++23      | 2023      | if consteval, 显式对象参数, 扩展 constexpr           | expected, print, mdspan                    | `std::expected`, `std::print`          |
+| C++26 (草案) | ~2026     | Reflection, Pattern Matching, 执行器模型          | 并发改进                                       | `match`, `reflect`                     |
+
+### 基础设施类
+- **Boost**（Asio、Beast、SmartPtr、JSON…）
+- **Abseil**（现代工具）
+- **Folly**（高性能并发）
+
+### 网络与通信
+- **Boost.Asio / Boost.Beast**
+- **Drogon / cpp-httplib / CrowCpp**
+- **gRPC / Protobuf**（RPC & 序列化）
+
+### 数据处理 & 存储
+- **SQLite / MySQL / PostgreSQL client libs**
+- **ClickHouse client**（如果做大数据）
+- **Eigen / Armadillo / Blaze**（矩阵计算）
+- **nlohmann/json / RapidJSON / Boost.JSON**
+
+### 系统与工具
+- **spdlog / fmt**（日志 & 格式化）
+- **cxxopts / CLI11**（命令行解析）
+- **Catch2 / GoogleTest**（单元测试）
+- **OpenSSL / Botan**（加密安全）
+
+### GUI / 跨平台框架（可选）
+- **Qt**（最全能）
+- **ImGui**（轻量级、游戏/工具界常用）
+- **wxWidgets**（跨平台 GUI）
+
+## 网络服务器
+- [写一个服务器框架](https://github.com/sylar-yin/sylar)：[B站教程]( https://www.bilibili.com/video/av53602631?from=search&seid=9029288577396826503)
+- [**poco-网络服务器**](https://github.com/pocoproject/poco)
+- [**boost-asio**](https://github.com/boostorg/asio/tree/develop)
+- [drogon-网络服务器（基于boost）](https://github.com/drogonframework/drogon)
 
 
 ## C++面试题
@@ -3309,16 +3364,40 @@ public:
 
 
 
-
-
-
-
-
-
-
-
-
 ## 第三方库
+
+
+### BOOST
+
+- **Boost** 不是单一的库，而是一个 **大型库集合**（umbrella project）。
+- 里面包含了 100+ 个高质量 C++ 库，涵盖：
+    - **数据结构与算法**（Graph、Multi-Index、Spirit 解析器…）
+    - **并发与异步**（Thread、Asio…）
+    - **序列化与持久化**（Serialization、Boost.JSON…）
+    - **数学与科学计算**（Math、uBLAS、Multiprecision…）
+    - **工具类**（Filesystem、Regex、SmartPtr、DateTime…）
+
+- 它是 **C++ 标准库的孵化器**：很多后来进入 C++11/14/17/20 标准的功能（如 `std::shared_ptr`, `std::thread`, `std::filesystem`, `std::regex` 等）都先出现在 Boost 中。
+
+- Boost 仍然在 **活跃维护**（最新版本是 **Boost 1.86.0，2025年8月发布**）。
+- 每 3 个月发布一个新版本（类似 Python 的季度 release 节奏）。
+- 大部分库都很稳定（比如 SmartPtr、Filesystem 基本不会大改），新的实验性库也还在不断增加（如 Boost.JSON、Boost.URL）。
+- Boost.Asio 在 C++ 网络编程里依然是事实标准，很多框架（包括 **Drogon, Boost.Beast, websocketpp** 等）都基于它。
+    
+
+#### 适合用 Boost 吗？
+
+- **适合用**：
+    - 如果你需要跨平台、成熟、稳定的解决方案（尤其是网络、异步 I/O、序列化、数学函数库）。
+    - 如果重视“工业级可靠性”，Boost 的库质量和测试覆盖度非常高。
+
+- **不一定要用**：
+    - 一些已经进入 C++17/20/23 标准的功能，完全可以直接用标准库（如 `std::filesystem` 替代 Boost.Filesystem）。
+    - 有些 Boost 库比较庞大/复杂，学习曲线陡峭（比如 Boost.Spirit 解析器）。
+
+Boost 可以作为 **工具箱**，选用其中最需要的部分，而不是“一股脑全引入”。
+
+
 
 ### Qt库
 
@@ -3347,10 +3426,7 @@ double* eigMatptrnew = new double[eigMat.size()];
 Map<MatrixXd>(eigMatptrnew, eigMat.rows(), eigMat.cols()) = eigMat;
 ```
 
-
-
 #### new 申请堆
-
 ```c++
 MatrixXd *XN = new MatrixXd(3,N); //大矩阵用堆内存
 for (int i = 0; i < 3; ++i){

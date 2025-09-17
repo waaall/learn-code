@@ -238,6 +238,8 @@ sudo apt-get -y install cudnn-cuda-12
 ### 无法调用？
 pytorch显示没有GPU占用---nvidia-smi和windows10的任务管理器都有统计问题，CUDA是默认不在统计范围。在windows10的任务管理器-性能-GPU中可以把默认的copy换成Cuda就可以看到CUDA是可以被调用的。
 
+### tensorflow和cuda的兼容性
+- [tensorflow和cuda的兼容性](https://www.tensorflow.org/install/source#gpu)
 
 
 # 外围框架
@@ -543,11 +545,51 @@ return io_binding.get_outputs()[0].numpy()
 
 ## docker 部署onnx-cuda
 
-docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动，显卡驱动可以向下兼容cuda版本，所以宿主机的显卡驱动要比较新，然后接下来基础镜像有四种方案：
+docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动。另外，docker 运行还需要安装[Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)(win需要wsl2安装后额外配置，下文介绍)；且docker run 指定gpu。
+
+
+### docker cuda 支持
+
+#### 1. [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+- 这是 **Linux 上的通用方案**。
+- 如果你在 **裸机 Linux**（比如 Ubuntu server）上跑 Docker，要让容器访问 GPU，就必须装 nvidia-container-toolkit。
+- 它负责把宿主机上的 GPU 驱动、CUDA 库 mount 到容器里。
+- 没有它，Linux 上的 Docker 就看不到 GPU。
+##### 1.1 安装
+
+
+##### 1.2 配置
+
+
+
+#### 2. [CUDA on WSL](https://developer.nvidia.com/cuda/wsl)
+
+要注意的是：wsl2和里面的ubuntu发行版是不同的，wsl2是虚拟机(特殊的)，docker和ubuntu都可以运行在上面。
+
+- 这是 **NVIDIA + Microsoft** 合作的方案，让 WSL2 (Linux 子系统) 可以调用 Windows 驱动里的 GPU。
+- 本质上：**让 WSL2 里的 Linux 看见显卡**。
+- 如果你不用 WSL，而是直接在 Windows Docker Desktop 里跑容器，这一层就没关系。
+#### 3. [GPU support in Docker Desktop for Windows](https://docs.docker.com/desktop/features/gpu/)
+
+- 这是 **Docker Desktop** 官方提供的 GPU 集成功能。
+- 在 Windows 上的 Docker Desktop **自带对 GPU 的支持**，不需要你在 Windows 上额外装 NVIDIA Container Toolkit。
+- 它会自动对接 WSL2 里的 GPU (上面第 1 步)，然后让容器里可以看到 GPU。
+- 所以在 Windows Docker Desktop 上跑 GPU 容器，流程是：
+    1. Windows 装好 NVIDIA 驱动 (>= 470)。
+    2. Docker Desktop 打开 GPU 支持。
+    3. 直接在容器里 --gpus all 就能用 GPU。
+
+
+
+
+
+### docker pytorch cuda
+
+显卡驱动可以向下兼容cuda版本，所以宿主机的显卡驱动要比较新，然后接下来基础镜像有四种方案：
 - 拉一个python，然后容器内装cuda和pip的onnxruntime
 - 拉一个[cuda](https://hub.docker.com/r/nvidia/cuda/tags)，然后容器内装python
 - 拉一个[PyTorch-cuda-runtime](https://hub.docker.com/r/pytorch/pytorch/tags)，然后里面装onnxruntime
-- 拉一个[python-cuda-onnx](https://hub.docker.com/r/microsoft/azureml-onnxruntimefamily)，只需要自己w装库[onnx-cuda-docker博客（已过时）](https://blog.csdn.net/weixin_42939529/article/details/122006947)。
+- 拉一个[python-cuda-onnx](https://hub.docker.com/r/microsoft/azureml-onnxruntimefamily)，只需要自己w装库[onnx-cuda-docker博客（已过时）](https://blog.csdn.net/weixin_42939529/article/details/122006947)
 
 虽然看似最后一种方案最好，但是这个镜像是微软做的，只很少几个版本的组合，现在也不再支持，如果不符合自己的版本，可能自己的软件出现兼容性问题，它现在提供[onnx-github-Dockerfile.cuda](https://github.com/microsoft/onnxruntime/blob/main/dockerfiles)可以自行构建（网络问题……构建也很慢）。
 
@@ -555,28 +597,22 @@ docker不依赖宿主机的cuda，但却依赖宿主机的显卡驱动，显卡�
 1. onnxruntime的版本所需要的一定要和pytorch所带的cuda和cudnn版本一致。
 2. 代码中的导入方式不太一样，具体见onnx官网doc
 
+### [tensorflow-docker-gpu](https://hub.docker.com/r/tensorflow/tensorflow/tags)
+
+
 
 # 问题
 
 ## 框架
 
 - 机器学习/深度学习整个架构是什么样的？
-
 - 什么是正则防止过拟合？Dropout？为什么现在重点不在这了，更关注模型的设计？
-
 - CNN 是架构吗？卷积层和全连接层是属于CNN的特有模式吗？属于机器学习架构中的哪部分？和其他替代的区别是什么？
-
 - 激活函数是什么？属于机器学习架构中的哪部分？ReLU为什么效果会好一些？还有别的吗？
-
 - 归一化 属于机器学习架构中的哪部分？
-
 - softmax 是什么？  属于机器学习架构中的哪部分？
-
 - 数据增强？模型融合？还在做吗？属于机器学习架构中的哪部分？
-
 - SGD（随即梯度下降）和反向传播算法的关系是什么？替代关系还是互补？属于机器学习架构中的哪部分？ 什么叫学习率？
-
-- 
 - 模型切开多GPU训练如何实现？如何通信？ 
 
 ## 细节

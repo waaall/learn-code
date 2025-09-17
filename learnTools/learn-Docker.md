@@ -737,7 +737,10 @@ reboot
 sudo vim /etc/docker/daemon.json
 # 然后添加如下内容
 {
-    "registry-mirrors": ["https://docker.m.daocloud.io"] 
+    "registry-mirrors": [
+	    "https://docker.m.daocloud.io",
+	    "https://docker.xuanyuan.me"
+    ] 
 }
 # 然后重启该服务
 sudo systemctl daemon-reload

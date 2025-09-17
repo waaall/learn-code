@@ -51,7 +51,7 @@ E305：预期在语句或定义之后有两个空行。这个错误与E302类似
 ```
 
 
-## 1. python基础
+# 1. python基础
 
 
 ## 1.1 框架
@@ -1073,3 +1073,11 @@ def function(*numbers):  # *代表可变参数
 ### 3.2.2 logging
 
 - [logging-advanced-tutorial](https://docs.python.org/zh-cn/3/howto/logging.html#logging-advanced-tutorial)
+
+##  3.3 异步
+
+### 网络异步
+- [gunicorn + flask](https://github.com/benoitc/gunicorn)
+- [fastapi + ](https://github.com/fastapi/fastapi)
+
+### 硬盘异步
