@@ -780,6 +780,9 @@ docker system df
 # docker 统计信息
 docker stats
 
+# 试运行(运行并进入容器，执行完删除容器)
+docker run -it --rm my_image bash
+
 # docker 进入容器
 docker exec -it my_container bash
 
