@@ -193,8 +193,29 @@ sequenceDiagram
     Daemon->>Client: 流式传输容器日志 (HTTP chunked)
 ```
 
-### Docker 网络机制与配置
-#### Docker 网络机制
+### Docker 网络机制
+
+```
+宿主机 (HOST)
+┌───────────────────────────────────────────┐
+│                                           │
+│  Docker networks:                         │
+│  ┌──────────────┐   ┌──────────────┐      │
+│  │ rcny_default │   │ shared-net   │      │
+│  │              │   │ (external)   │      │
+│  │ web (A)      │←──│ api (B)      │      │
+│  │ db (A)       │   │              │      │
+│  └──────────────┘   └──────────────┘      │
+│                                           │
+│                                           │
+└───────────────────────────────────────────┘
+```
+- web(A) 与 db(A) 在 rcny_default（同一 project）   │
+- api(B) 在 shared-net（external），web(A) 若join shared-net可直连 │
+访问方式：
+- 宿主机 -> web(A)：http://localhost:8000（通过 ports 映射）
+- web(A) -> api(B)：http://api:5000 （仅当二者在同一 user-defined network）
+
 
 Docker 的网络是其核心功能之一，它允许容器之间以及容器与外部世界（包括主机和外部网络）进行通信。Docker 提供了灵活的网络模型，主要包含以下几个关键概念和网络驱动：
 
@@ -250,7 +271,182 @@ Docker 使用不同的网络驱动程序来实现不同类型的网络连接：
     *   `-p 8080-8090:80-90`: 映射端口范围（较少用）。
 *   **底层实现：** Docker 利用主机的 `iptables` 规则实现 DNAT (Destination Network Address Translation) 来完成端口转发。
 
-#### Dockerfile `EXPOSE` & compose.yml `ports`
+#### 容器间的默认网络配置
+
+- **Compose 自动为每个 project（默认 = 当前文件夹名）创建专属网络**，名字通常是：project-name_default。
+
+- **容器能互相 DNS 解析/通信的前提**：查询方和目标必须**处在同一个用户自定义网络**（user-defined bridge / overlay）。
+
+- **-p name 改变 project 名**，从而改变容器名和默认网络名（避免不同目录冲突）。
+
+- **在 Compose 文件里显式定义 networks: 可以控制网络拓扑**（多个服务共享同一 network / 使用外部已存在 network / 指定别名等）。
+
+- **端口映射（ports:）只影响宿主机访问**，不改变容器间是否可见（容器间走的是 network 内部 IP + DNS）。
+
+- **network_mode: host 使容器直接用宿主机网络（没有内部 DNS 隔离）**，适合需要低延迟或访问宿主真实 IP 的场景，但要注意端口冲突与安全。
+  
+- Docker 为 **每个用户自定义 bridge / overlay network** 提供了**嵌入式 DNS**。
+
+- 在同一个网络内，服务名（Compose 的 service 名）会自动变为 DNS 名，例如 db、web。可以直接 `curl http://db:3306`。
+
+- 不同网络**彼此隔离**：A 在 net-a，B 在 net-b，二者若没有共同网络，则互相看不到（除非使用已暴露的宿主端口或把容器同时 attach 到某公共网络）。
+
+
+### docker 网络实践
+
+####  docker net 常用命令
+
+- 列网络：docker network ls
+
+- 看网络详情（包含哪些容器、子网）：docker network inspect rcny-predict_default
+
+- 把已运行容器加入网络：docker network connect my-net container
+
+- 把容器从网络移除：docker network disconnect my-net container
+
+
+#### 例子1. 未指定(默认)
+未指定 -p、也未指定 networks（默认行为）
+
+`docker-compose.yml` 在目录 `rcny-ml-docker-volume` 中：
+```yml
+version: "3.8"
+services:
+  web:
+    image: my-web
+    ports:
+      - "8000:8000"
+  db:
+    image: postgres
+```
+
+执行：
+```bash
+cd rcny-ml-docker-volume
+docker-compose -f docker-compose.yml up -d
+```
+
+结果：
+
+- 自动创建网络：rcny-ml-docker-volume_default
+- 容器名、服务名默认：rcny-ml-docker-volume_web_1、rcny-ml-docker-volume_db_1
+- **容器内访问**：web 能通过 db:5432 访问数据库（因为两者在同一 network）
+- **宿主机访问**：访问 web 用 `http://localhost:8000`（因为 ports 映射了宿主端口）
+
+
+#### 例子2: -p 指定网络
+
+相同 compose 文件，但启动时：
+```bash
+docker-compose -p rcny-predict -f docker-compose.yml up -d
+```
+
+结果：
+
+- 网络名变为：`rcny-predict_default`
+- 容器名变为：`rcny-predict_web_1`、`rcny-predict_db_1`
+- 行为不变，但**命名空间隔离**，避免与其他目录的同名 Compose 冲突（也避免 orphan 提示）。
+  
+
+**小结**：-p 只影响 **项目命名空间（容器名、网络名等）**，不改变服务间通信规则本质。
+
+#### 例子3: Compose 显式声明 networks
+
+```yml
+version: "3.8"
+services:
+  web:
+    image: my-web
+    networks:
+      - frontend
+      - shared
+  api:
+    image: my-api
+    networks:
+      - backend
+      - shared
+  db:
+    image: postgres
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+  shared:
+    external: true
+    # 如果外部网络名不是 "shared" 可以用：
+    # external:
+    #   name: my-precreated-shared-net
+```
+
+- web 在 frontend 和 shared 两个网络上，api 在 backend 与 shared 上，db 仅在 backend。
+- web 与 api 可以互通（因为都在 shared 上）。
+- api 与 db 可以互通（因为都在 backend）。
+- web 与 db **不能直接通过名字互通**（二者不同网络且没有共同网络），除非 web 去 backend（或 db 去 frontend），或通过 shared 做中介。
+- shared 标记 external: true 表示这个网络不是由当前 compose 创建，而是**事先在宿主机上由你创建**（docker network create shared），多个独立项目可以挂到同一个外部网络以实现连通。
+
+
+#### 例子4: network aliases
+- **network aliases（别名）**：在 Compose 中可为服务在某个网络上设置 alias：
+
+```
+services:
+  web:
+    networks:
+      mynet:
+        aliases:
+          - my-web
+```
+
+这样在 mynet 网络上，my-web 可以解析到 web 的 IP。
+
+- **静态 IP / IPAM**：可以在 networks 下配置 ipam（子网）并在 service 指定静态 IP —— 但通常不推荐，除非你确有固定 IP 的需求（更复杂、易错）。
+    
+- **container_name**：你可以显式设置 container_name: foo，但**不要在需要扩缩容（scale）或多实例的服务上使用**，而且会破坏 Compose 的自动命名空间（不同 project 下可能冲突）。优先用 service 名 + network alias。
+
+- network_mode: host：容器直接使用宿主机网络栈（Linux 下有效）。优点：无 NAT、低延迟；缺点：端口冲突、容器间隔离丧失、不同宿主机间无法直接用该方式通信。
+
+- **overlay**：用于 Docker Swarm / 多主机场景，跨主机的容器连通（这是 Swarm/k8s 等编排的网络实现）。
+
+#### 例子5: 自建docker网络 
+假设你有两个独立项目 A 与 B（各自目录不同），想让 A.web 访问 B.api：
+```bash
+docker network create shared-net
+```
+
+```yml
+# 在 A 的 docker-compose.yml 中
+networks:
+  shared:
+    external: true
+# 在 A 的 service 里指定 networks: [shared]
+# 同理在 B 的 docker-compose.yml 中也设置同样的 external shared
+# 启动 A、B（可以分别用 -p 指定项目名）
+```
+
+```bash
+docker-compose -f A/docker-compose.yml -p project-a up -d
+docker-compose -f B/docker-compose.yml -p project-b up -d
+# 现在 A.web 可以通过 http://B_service_name:port 访问 B 的服务（如果 B 的服务在 shared-net 上并有别名或 service 名）
+```
+
+#### 常见问题
+
+- **以为 ports: 会让其它容器通过 localhost 直接访问另一个容器** —— 错！ports 是宿主映射；容器间仍需走网络名（service 名）或在同一网络。
+
+- **误用 container_name 导致命名冲突**（尤其在多 project 环境）。
+
+- **忘记 external 的网络要先 docker network create**，否则 Compose 会报错或创建失败。
+
+- **以为不同 network 的容器能自动互通** —— 不会，必须有共同 network 或 publish host port / connect network。
+
+- **docker-compose down 不带 --remove-orphans 时可能留下 orphan**（和你之前遇到的场景有关）。
+
+
+### Dockerfile `EXPOSE` & compose.yml `ports`
 
 这是 Docker 学习中最容易混淆的概念之一。它们目的不同，作用范围不同，且**`EXPOSE` 本身不足以让外部访问容器服务！**
 
