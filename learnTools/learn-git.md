@@ -806,13 +806,11 @@ gk	\gitk --all --branches
 ```bash
 git remote -v
 
-git remote remove origin
+git remote remove origin # origin也有可能是别的，注意区分
 
 git remote add origin https://github.com/waaall/gd32-template.git
 
 git push -u origin main
-
-
 ```
 
 ## branch
