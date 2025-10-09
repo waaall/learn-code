@@ -1026,6 +1026,10 @@ docker rm my_container
 
 # 删除镜像
 docker rmi my_image
+
+# 删除不使用的系统资源缓存
+docker system prune
+# docker system df # 会发现有很多缓存
 ```
 
 ## 打包指令
