@@ -514,6 +514,180 @@ langchain + llama.cpp 或者简单版 llama_index + ollama
 5. （可选）可以把模型回答 + 检索块一起作为新知识回写、评价、优化
 
 
+
+## RAG 内存占用
+
+Gemma3:27b其他大模型在 4090 上显存从 19GB 涨到 31GB**，而你只问了一个小问题——是许多用户在使用 Ollama / llama.cpp / vLLM 时都会遇到的典型“显存膨胀”问题。
+
+
+- Ollama 官网显示 gemma3:27b 模型“理论显存需求”为 19GB；
+    
+- 实际运行中，显存占用飙升到 31GB；
+    
+- 你只做了一个简单 RAG 问答（甚至没索引很多数据）；
+    
+- GPU 使用率 77%，CPU 23%，显存被“吃满”；
+    
+- 推理速度变慢，但没明显计算负载。
+
+这个现象本质上是**推理时动态显存分配 + KV Cache + embedding/索引缓存 + Ollama 多进程模型封装**共同作用的结果。
+
+
+###  1 模型本体加载（Static Model Weights）
+
+- “19GB” 只是模型**权重文件加载后的理论占用**。
+    
+- Ollama / llama.cpp 通常使用 **4-bit 或 8-bit 量化权重**；
+    
+- 例如 gemma3:27b 的 GGUF 文件（量化） ≈ 19GB；
+    
+- 但加载后会进行解码、转储到 GPU TensorCore-friendly 格式；
+    
+- 实际需要额外的 buffer、参数对齐等；
+    
+- 所以实际 GPU 内存占用通常是 **文件大小 × 1.2 ~ 1.6 倍**。
+
+> 这一步就可能从 19GB → 23~25GB。
+
+---
+
+###  2 KV Cache（推理缓存）
+
+- 每次你向大模型提问时，模型会保存上下文（key-value 缓存）；
+    
+- 这是为了“流式生成”时不重复计算；
+    
+- KV Cache 是 per-token × per-layer 的矩阵；
+    
+- 对于 27B 模型，这个缓存非常大，尤其当：
+    
+    - prompt 较长（> 2k tokens）；
+        
+    - 或生成输出较多（> 512 tokens）；
+        
+    - 或 context_length 设置较大（例如 8k、16k）。
+
+计算近似公式：
+```
+显存占用 ≈ 模型参数 + (层数 × 隐层维度 × 2 × token数 × 精度)
+```
+
+> 举例：
+
+- > gemma3:27b：32 层 × 4096 hidden × 2（KV）× 2048 tokens × 2B ≈ 6~8GB
+    
+- > 所以显存直接飙升到 **25GB + 8GB ≈ 33GB**
+---
+
+### 3 Embedding + RAG 组件占用
+
+如果你在做 RAG（即使只是简单问答）：
+
+- llama-index 会加载 **embedding 模型**（通常 300MB~1GB）；
+    
+- 启动时会分配 GPU buffer；
+    
+- 向量数据库（如 Chroma/Faiss）也可能分配 GPU 空间（尤其使用 faiss-gpu）。
+
+这些加起来又是 **1~2GB**。
+
+---
+### 4 Ollama 的多层封装与 GPU 复制
+
+Ollama 的架构是：
+
+> API Server → Model Runtime → llama.cpp backend → Metal/CUDA 调度器
+
+
+在 CUDA 环境下，它会：
+
+- 启动一个主 GPU buffer；
+    
+- 启动一个 CPU fallback buffer；
+    
+- 在多请求或流式请求时会**复制上下文到新 buffer**；
+    
+- 从而导致额外的 **~3GB 显存 buffer 临时开销**。
+
+|**占用来源**|**说明**|**估算显存**|
+|---|---|---|
+|模型权重|量化后加载入 GPU tensor 格式|19–23 GB|
+|KV Cache|历史上下文 + 输出缓存|6–8 GB|
+|Embedding 模型|向量索引/检索时驻留|1–2 GB|
+|Ollama Buffer|CUDA 临时缓冲|2–3 GB|
+|**总计**||**≈30–32 GB** ✅|
+
+---
+
+### 5 优化与控制策略
+
+
+> 不要显存溢出到内存，否则速度断崖式下降。
+
+  llama.cpp / Ollama / vLLM 一旦显存不足，就会将部分 KV cache / Tensor 迁移到主机内存（PCIe传输瓶颈约为 12GB/s，相比GPU的800GB/s带宽慢了70倍）。
+  
+####  5.1 控制上下文长度
+
+
+在 RAG 场景中：
+
+- 设置合理的 context_window；
+    
+- 通常 2k ~ 4k 足够；
+    
+- llama.cpp 参数 --ctx-size 4096；
+    
+- 或 Ollama prompt 限制长度。
+
+> 显存随上下文线性增长，4k token 比 8k 节省一半显存。
+
+#### 5.2 降低 KV Cache 精度
+
+在 llama.cpp 中使用：
+```
+--kv-type f16
+```
+
+或在 Ollama 模型构建时开启 KV quantization（自动识别支持）。
+
+#### 5.3 启动时锁定显存上限
+
+Ollama 不支持直接设上限，但 llama.cpp 支持：
+```
+--gpu-layers 80
+```
+
+（只让前 80 层在 GPU，其余在 CPU）。
+
+#### 5.4 Embedding 独立到 CPU
+
+RAG 场景中，embedding 计算不必占用 GPU：
+```
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+embed_model = HuggingFaceEmbedding(model_name="sentence-transformers/all-MiniLM-L6-v2", device="cpu")
+```
+
+#### 5.5 避免多线程或多会话共享 GPU 模型
+
+Ollama 默认支持多会话复用；
+
+如果同时多个请求上下文 buffer 叠加，显存翻倍。
+
+---
+
+### 6 总结
+
+|**方面**|**说明**|**建议**|
+|---|---|---|
+|现象|gemma3:27b 19GB → 31GB|正常现象|
+|主因|KV cache、embedding、buffer|可控|
+|风险|显存溢出到 CPU 降速70倍|必须避免|
+|解决|控 ctx_len、CPU embedding、KV半精度|✅|
+|RAG推荐|如果经常有长上下文，建议换 Qwen2 14B / Yi 1.5 9B|更平衡|
+
+---
+
+
 ## function call & [MCP](https://modelcontextprotocol.io/introduction)
 
 MCP其实就是各家function call函数的统一接口标准，但截至25年还没兴起，最终也可能会兴起新的标准，但标准肯定是趋势，技术细节还是先从function call学起。
@@ -776,8 +950,97 @@ docker compose up -d
 ### [tensorflow-docker-gpu](https://hub.docker.com/r/tensorflow/tensorflow/tags)
 
 
+# 量化
 
 
+## QAT()
+
+
+
+### gemma3 - qat
+
+- Gemma 3 系列有 270M / 1B / 4B / 12B / 27B 等规模（常见讨论以 1B/4B/12B/27B 为主）。
+    
+- Gemma 3 在训练/发布时采用的默认数值格式是 bfloat16（BF16）/16 位类浮点用于训练与大多数高精度推理路径。
+    
+- **把权重量化到 4 位（int4 / q4）**在磁盘和权重内存上可以带来 非常显著的缩减（例如 12B 的权重从 ~24GB（BF16）降到 ~6.6GB（int4）——官方数据示例），且如果用 Quantization-Aware Training (QAT) 或高质量 PTQ（如 AWQ / GPTQ）技巧，质量（下游任务/生成质量）往往能接近 16/32 位。但这并不意味着“4 位能无损表示任意数值”，而是工程上用分组缩放/偏置与运行时反量化把表示误差降到可接受水平。
+    
+#### 默认精度BF16（不是 FP32）
+
+- 大规模 Transformer 在训练时更常用 bfloat16（BF16）：原因是 BF16 保留了 8 位指数（同 FP32），因此能维持训练数值稳定（避免梯度下溢/上溢问题），同时把显存和算力需求降到接近 FP16 的量级。这是 Gemma 3 选择 BF16 的主要原因。训练完成后通常权重以 BF16 存储/导出用于高精度推理路径。
+    
+---
+
+#### 4 位能表示的数非常少——为什么工程上仍然可行
+
+直觉上 4 位只能表示 16 个不同整数，似乎不可能表示复杂的浮点权重；实际可行的理由在于量化设计与运行时补偿：
+
+1. 非均匀/分组量化 + 缩放（scale）与偏置（zero-point）
+    
+    - 现代 int4 量化不是把整个矩阵直接映射到 16 个值，而是把权重矩阵按行或按“组”（group）切分（例如 64、128、256 个权重为一组），为每一组存一个缩放因子（scale）和偏移（zero-point）——也就是每组都用自己的线性映射把 16 个量化代码映射回一段浮点区间。
+        
+    - 结果：每组能表达连续区间的 16 个离散采样点，每组加一个浮点 scale（通常 BF16/FP16 存储），这极大提升表示能力。具体参数：每 16/32/64 个权重额外需要 1 个或多个缩放值；缩放值的元数据占用相对权重体积很小，但使得“4 位”实际能表达数值范围变得细致许多。
+    
+2. 分布非均匀性与“outlier-aware”策略
+    
+    - 权重/激活通常不是均匀分布：多数权重集中在较小数值区间，而少量“outlier”权重很大。现代量化（GPTQ/AWQ/一些 QAT 实现）会把 outlier 单独存为高精度（或用特殊编码），其余大规模权重用低位宽量化。这样既保留了关键大权重，也把绝大多数权重压缩为低位表示。
+        
+    
+3. 反量化（dequantize）与低精度计算
+    
+    - 许多推理实现会在执行矩阵乘法前把量化权重按块反量化回 FP16/BF16（即时生成），或直接用 INT8/INT4 跟算子做低精度矩阵运算（如果后端支持），并把结果 accumulation 做在更高精度（比如 FP16 accumulate）。因此尽管磁盘/存储是 4 位，实际乘加过程可以在更高精度中完成，从而降低数值误差。
+    
+4. Quantization-Aware Training (QAT)
+    
+    - QAT 的核心是：在训练（或微调）阶段就模拟量化误差（把权重/激活“虚拟量化”）并让反向传播看到量化噪声，从而网络权重学会对量化误差不敏感。这样得到的量化模型在 4 位下通常比简单的后训练量化（PTQ）质量更好。Google 为 Gemma 发布的 QAT 版本就是用这类思路来获得“接近 BF16 的质量”。
+    
+  
+总结这部分：4 位本身确实只能表示 16 个代码点，但通过“分组 + per-group scale + outlier handling + QAT +运行时反量化/混合精度累加”，工程上可以把 4 位量化的误差降到小到可接受的水平 —— 因此并非“理论上不可能”，而是靠许多工程技巧和数学近似补偿。
+
+---
+
+#### 4 位量化会带来的误差从哪里来？
+
+把权重 w 从浮点映射为量化代码 q \in \{0,\dots,15\} 的典型流程（每组）是：
+
+q = \mathrm{round}\!\left(\frac{w - z}{s}\right),\qquad \hat w = s \cdot q + z
+
+其中 s 是 scale（刻度），z 是 zero-point（偏移）。量化误差 \varepsilon = \hat w - w 来自两个来源：
+
+1. 离散化误差（quantization noise）：w 被映射到离散的 16 个点上，误差上界与组内动态范围 R 和 量化步长 s 相关，典型误差量级 ~s/2。
+    
+2. 缩放估计误差：如果组的 scale 估计不佳（比如受 outlier 拉大），大量权重会被映射到少数值点，误差变大。因此需要合适的分组大小与 outlier 策略。
+    
+
+在矩阵乘加 y = W x 中，权重误差会通过线性叠加影响输出；但是在大型网络中，这些误差往往像“噪声”一样叠加，而模型经常对这种小幅随机噪声具有一定鲁棒性（尤其当 QAT 在训练时就见到类似噪声时）。此外，激活量化、归一化层（LayerNorm）与残差结构都会影响误差的传播与放大。
+
+---
+#### QAT vs PTQ vs GPTQ/AWQ：优缺点速览
+
+- QAT（Quantization Aware Training）：在训练阶段就模拟量化，质量最好、对 4 位友好，但需要训练/微调资源。Gemma 官方发布了 QAT 版本以保证 int4 下质量。
+    
+- PTQ（Post-Training Quantization）：训练后直接量化，速度快但质量依赖于策略（校准集、分组大小）；简单 PTQ 在 int4 常有较大退化。
+    
+- GPTQ / AWQ / 其他高阶 PTQ：这些是更 advanced 的 PTQ 技术（通过逐层误差最小化、二阶信息或权重残差补偿等）把 PTQ 的质量拉近 QAT，社区常用来把大型模型量化到 4 位并保持质量。AWQ/GPTQ 在社区/工具链里很流行并能得出接近 QAT 的结果。
+    
+---
+
+#### 为什么量化不总是“更省显存/更快”
+
+- 权重占用 vs 运行时临时张量：量化显著降低权重静态大小，但很多实现会在运行时反量化（dequantize）出 FP16/BF16 副本进行计算，或在某些层/路径上保留双份（量化+反量化），这会产生临时内存峰值。与之并行的还有 activation/KV-cache（尤其在长上下文时）对显存的线性占用。社区报告表明在某些平台/版本下 QAT 模型在实际加载/推理时占用比非量化版本还多（实现/分配器与碎片化有关）。
+    
+- 算子支持：如果后端（如 cuBLAS / CUTLASS / Triton 算子）直接支持实用化的低精度 GEMM（int4→FP16 accumulation），则可以在不做大规模反量化的情况下直接得到速度/内存收益。否则需要额外内存与时间做格式转换。
+    
+- KV cache：对对话/长上下文任务，KV cache 往往比权重占用更重要。量化不会显著影响 KV cache（除非实现把 KV 也量化），因此在这类任务中收益有限。
+    
+
+---
+#### qat-q4实际质量损失有多大？
+
+- Gemma 官方/社区实测：Google 的 Gemma 3 QAT 版本和社区用 AWQ/GPTQ 量化的结果显示：在很多 NLP 基准（生成质量、指令跟随、常识推断）上QAT 的 4 位表现接近 BF16/FP16 基线——多数日常任务（对话、摘要、问答）差别很小。但在精细微妙的评分（例如极端长文本一致性、数学推理很深的题目、或需要极高数值精度的概率估计）上仍可能看到退化。
+    
+- 结论：4 位若用 QAT（或高级 PTQ），在工程上通常“够用”且物理上带来巨大的部署优势；但如果你做 very-high-precision scientific computing 或某些对权重敏感的少数任务，还是倾向保留更高精度（FP16/BF16）。
+    
 
 # 问题
 
