@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(md-notes-refine)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
