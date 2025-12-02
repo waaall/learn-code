@@ -764,352 +764,6 @@ gk	\gitk --all --branches
 
 * [Commit message 和 Change log 编写指南](https://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
 
-## Git Submodule
-
-### 1. 背景：为什么需要 Submodule
-
-当一个仓库需要依赖另一个仓库的代码时，常见做法有三种：
-
-1. 直接复制代码进来（缺点：难同步、难追踪来源）
-    
-2. 单体仓库（monorepo）（缺点：治理成本、权限和发布粒度）
-    
-3. Submodule：父仓库把依赖仓库作为“子仓库引用”挂载进来，并且固定到某个提交（优点：依赖可追溯、可锁定版本、父子仓库保持独立）
-    
-Submodule 的核心思想是：
-
-父仓库并不真正“包含”子仓库的历史，它只记录子仓库的 URL、路径，以及子仓库当前指向的提交 SHA。
-
----
-
-### 2. Submodule 到底记录了什么
-
-Submodule 在父仓库侧主要涉及三类信息：
-
-
-
-
-它存放在父仓库根目录，记录子模块的路径与远程 URL，例：
-
-```
-[submodule "libs/foo"]
-  path = libs/foo
-  url = git@github.com:org/foo.git
-```
-
-要点：
-
-- .gitmodules 会提交到父仓库，因此它是团队一致性的来源
-    
-- path 是子模块在父仓库工作区里的挂载目录
-    
-- url 是子模块远程地址（可 https、ssh、相对路径）
-    
-#### 2.2 父仓库的索引(index)里有一个"gitlink"
-
-父仓库并不把子仓库文件归档进自己对象库，而是在父仓库的 tree/index 里存一个特殊条目：
-
-- 模式（mode）：160000
-    
-- 内容：子模块仓库的提交 SHA
-    
-可以用下面命令看到这种条目：
-
-```
-git ls-tree HEAD libs/foo
-```
-
-典型输出会类似：
-
-```
-160000 commit a1b2c3d4e5f6...    libs/foo
-```
-
-这表示：父仓库当前提交指向的子模块 libs/foo 应该处在 a1b2c3... 这个提交上。
-
-
-
-
-当你在本地初始化 submodule 后，Git 会把子模块信息写入父仓库的 .git/config，用于本地操作（例如 URL 覆盖、分支跟踪等）。
-
----
-
-### 3. “结构原理”：子模块的 Git 数据存在哪里
-
-很多人以为子模块目录里会有一个 .git 目录，实际上从较新的 Git 版本开始，子模块工作区里的 .git 通常是一个文件，内容指向真正的 git 数据目录，例如：
-
-libs/foo/.git 可能是：
-
-```
-gitdir: ../../.git/modules/libs/foo
-```
-
-而真正的 git metadata 在父仓库这里：
-
-```
-.git/modules/libs/foo/
-```
-
-理解这一点很重要：
-
-- 子模块并不是一个“独立的顶层仓库目录结构”，它的 git 数据被集中管理在父仓库 .git/modules/... 下
-    
-- 因此复制子模块工作区目录并不能完整复制其 git 元数据，正确做法仍然是通过 git 获取
-    
----
-
-### 4. Submodule 怎么设置（添加、固定、提交）
-
-#### 4.1 添加子模块
-
-```bash
-git submodule add git@github.com:org/foo.git libs/foo
-```
-
-这一步会做三件事：
-
-1. 在工作区创建目录 libs/foo 并拉取子仓库
-    
-2. 生成或更新 .gitmodules
-    
-3. 在父仓库 index 里增加一个 gitlink（160000 + 子模块当前 HEAD SHA）
-    
-然后你需要提交父仓库的变更：
-
-```
-git add .gitmodules libs/foo
-git commit -m "Add submodule foo at libs/foo"
-```
-
-注意：提交后父仓库只锁定了 foo 的某个提交 SHA，并不锁定“分支名”。
-
----
-
-### 5. Submodule 怎么“安装”（克隆后初始化与拉取）
-
-Submodule 常见的“安装”指：克隆父仓库后，把子模块也初始化并拉取到正确版本。
-
-#### 5.1 一条命令递归拉取（推荐）
-
-```bash
-git clone --recurse-submodules <parent-repo-url>
-```
-
-它相当于：克隆父仓库后，自动对所有子模块执行 init + update，并递归处理嵌套子模块。
-
-#### 5.2 已经克隆了父仓库，补拉子模块
-
-```bash
-git submodule update --init --recursive
-```
-
-说明：
-
-- --init：根据 .gitmodules 初始化本地配置
-    
-- --recursive：如果子模块里还有子模块，继续拉取
-    
-#### 5.3 只更新到父仓库指定的提交（默认行为）
-
-Submodule 默认是“按父仓库锁定的 SHA”检出，因此子模块会处在 detached HEAD 状态，这是正常的。
-
----
-
-### 6. 日常使用：更新、切分支、回写
-
-#### 6.1 父仓库如何升级子模块版本
-
-假设你想把子模块升级到它仓库的最新提交：
-
-```bash
-cd libs/foo
-git fetch
-git checkout main
-git pull
-```
-
-然后回到父仓库，父仓库会检测到子模块指针变化：
-
-```bash
-cd ../..
-git status
-# 会显示 libs/foo 有 “new commits”
-git add libs/foo
-git commit -m "Bump foo submodule"
-```
-
-关键点：
-
-父仓库真正提交的是“子模块指针 SHA 的变化”。
-
-#### 6.2 在子模块里开发并把改动推到子模块远程
-
-子模块是独立仓库，可以在其内正常 commit/push：
-
-```bash
-cd libs/foo
-git checkout -b feature/x
-# 修改代码
-git add .
-git commit -m "Implement X"
-git push -u origin feature/x
-```
-
-然后回父仓库更新指针并提交父仓库：
-
-```bash
-cd ../..
-git add libs/foo
-git commit -m "Update foo submodule to include feature/x"
-```
-
-#### 6.3 detached HEAD 的正确处理方式
-
-当你 git submodule update 后，子模块通常 detached HEAD。如果你要在子模块上开发，请显式切到分支：
-
-```bash
-cd libs/foo
-git checkout main   # 或新建分支
-```
-
----
-
-### 7. 进阶：跟踪子模块分支与一键更新
-
-#### 7.1 配置子模块跟踪某个分支（可选）
-
-可以写入 .gitmodules 的 branch 字段（需要团队共识）：
-
-```bash
-[submodule "libs/foo"]
-  path = libs/foo
-  url = git@github.com:org/foo.git
-  branch = main
-```
-
-然后在父仓库执行：
-
-```bash
-git submodule sync --recursive
-```
-
-更新到该分支的最新提交（而不是父仓库锁定的 SHA）：
-
-```bash
-git submodule update --remote --recursive
-```
-
-注意：这会把子模块推进到远程分支最新提交，随后仍需要在父仓库提交新的指针 SHA 才能对团队生效。
-
----
-
-### 8. 常见坑与排错指南
-
-#### 8.1 忘记提交 
-
-
-症状：别人拉仓库后子模块信息不全。
-
-修复：确保 .gitmodules 与子模块路径一起被 git add 并提交。
-
-#### 8.2 子模块目录不为空导致 add/checkout 失败
-
-处理：清理目录或用正确命令初始化，不要手动拷贝文件混入子模块目录。
-
-#### 8.3 URL 改了但别人拉不到
-
-改 .gitmodules 后需要：
-
-```bash
-git submodule sync --recursive
-git submodule update --init --recursive
-```
-
-#### 8.4 CI 环境忘了拉子模块
-
-在 CI 脚本里加：
-
-```bash
-git submodule update --init --recursive
-```
-
-或 clone 时用 --recurse-submodules。
-
-#### 8.5 子模块提交丢失（远端做了 force push、GC 或权限问题）
-
-父仓库锁定的 SHA 在远端找不到会导致 update 失败。
-
-这是 Submodule 最大的治理风险之一：被引用的提交必须长期可用。建议：
-
-- 子模块仓库禁止强推主分支
-    
-- 重要版本打 tag
-    
-- 做好权限与镜像策略
-    
-#### 8.6 安全提示：不信任的 submodule URL
-
-如果父仓库来自不可信来源，submodule URL 可能指向恶意仓库，递归拉取会下载其内容。实践上应：
-
-- 审核 .gitmodules 的 URL
-    
-- 在自动化环境中限制网络访问或使用 allowlist
-    
----
-
-### 9. 如何正确移除 Submodule（常见误操作高发）
-
-假设要移除 libs/foo：
-
-```bash
-git submodule deinit -f -- libs/foo
-git rm -f libs/foo
-rm -rf .git/modules/libs/foo
-```
-
-然后提交：
-
-```bash
-git commit -m "Remove submodule foo"
-```
-
-同时检查 .gitmodules 中对应条目是否已移除（git rm 通常会处理，但仍建议确认）。
-
----
-
-### 10. 内部实现机制总结（一句话抓住本质）
-
-Submodule 的实现由三部分协作完成：
-
-1. .gitmodules：声明“子模块是什么（URL、path）”，并被版本控制
-    
-2. gitlink（mode 160000）：父仓库 tree/index 记录“子模块当前锁定到哪个提交 SHA”
-    
-3. .git/modules/<path>：父仓库集中存放子模块的 git 元数据，子模块工作区 .git 用 gitdir 指针指向这里
-    
-因此 Submodule 的本质是：
-
-父仓库把子仓库当作一个特殊类型的条目来管理，只追踪其提交指针，而不内嵌其历史与文件。
-
----
-
-### 11. 最佳实践建议（团队落地）
-
-- 把子模块当作依赖版本来管理：更新子模块指针必须走评审
-    
-- 关键版本在子模块仓库打 tag，避免引用不可达提交
-    
-- 统一使用 git clone --recurse-submodules 或在文档/CI 中强制 git submodule update --init --recursive
-    
-- 尽量避免在子模块默认 detached HEAD 状态下开发，开发前切分支
-    
-- 子模块 URL 变更后，要求所有人执行 git submodule sync --recursive
-    
-- 如果依赖仓库需要频繁改动且强耦合，评估 git subtree 或 monorepo 是否更合适
-    
----
-
-如果你愿意，我也可以按你公司的场景补齐两块内容：一份“团队规范版”操作手册（含 CI、权限、tag 策略、review 流程），以及一个“从零到一”的示例仓库目录结构与演练脚本。
 
 ## 常用流程
 
@@ -1175,6 +829,8 @@ git checkout HEAD -- file.txt  # 从最新提交恢复文件
 ```
 
 ### commit & push
+
+
 ```bash
 git commit -m "更新信息简要写"
 
@@ -1281,6 +937,312 @@ git push origin --delete test
 # 清理本地的远程分支引用
 git remote prune origin
 ```
+
+
+## Git Submodule
+
+
+### 1. Submodule 原因
+
+当一个仓库需要依赖另一个仓库的代码时，常见做法有三种：
+
+1. 直接复制代码进来（缺点：难同步、难追踪来源）
+    
+2. 单体仓库（monorepo）（缺点：治理成本、权限和发布粒度）
+    
+3. Submodule：父仓库把依赖仓库作为“子仓库引用”挂载进来，并且固定到某个提交（优点：依赖可追溯、可锁定版本、父子仓库保持独立）
+    
+Submodule 的核心思想是：
+
+父仓库并不真正“包含”子仓库的历史，它只记录子仓库的 URL、路径，以及子仓库当前指向的提交 SHA。
+
+---
+
+### 2. Submodule 信息
+
+Submodule 在父仓库侧主要涉及三类信息：
+
+
+它存放在父仓库根目录，记录子模块的路径与远程 URL，例：
+
+```
+[submodule "libs/foo"]
+  path = libs/foo
+  url = git@github.com:org/foo.git
+```
+
+要点：
+
+- .gitmodules 会提交到父仓库，因此它是团队一致性的来源
+    
+- path 是子模块在父仓库工作区里的挂载目录
+    
+- url 是子模块远程地址（可 https、ssh、相对路径）
+    
+#### 2.1 父仓库的索引(index)里有一个"gitlink"
+
+父仓库并不把子仓库文件归档进自己对象库，而是在父仓库的 tree/index 里存一个特殊条目：
+
+- 模式（mode）：160000
+- 内容：子模块仓库的提交 SHA
+
+可以用下面命令看到这种条目：
+```bash
+git ls-tree HEAD libs/foo
+```
+
+典型输出会类似：
+```
+160000 commit a1b2c3d4e5f6...    libs/foo
+```
+
+这表示：父仓库当前提交指向的子模块 libs/foo 应该处在 a1b2c3... 这个提交上。
+
+
+当你在本地初始化 submodule 后，Git 会把子模块信息写入父仓库的 .git/config，用于本地操作（例如 URL 覆盖、分支跟踪等）。
+
+---
+
+### 3. 子模块的 Git 数据在哪
+
+很多人以为子模块目录里会有一个 .git 目录，实际上从较新的 Git 版本开始，子模块工作区里的 .git 通常是一个文件，内容指向真正的 git 数据目录，例如：
+
+libs/foo/.git 可能是：
+
+```
+gitdir: ../../.git/modules/libs/foo
+```
+
+而真正的 git metadata 在父仓库这里：
+
+```
+.git/modules/libs/foo/
+```
+
+理解这一点很重要：
+
+- 子模块并不是一个“独立的顶层仓库目录结构”，它的 git 数据被集中管理在父仓库 .git/modules/... 下
+    
+- 因此复制子模块工作区目录并不能完整复制其 git 元数据，正确做法仍然是通过 git 获取
+    
+---
+
+### 4. Submodule 设置
+
+#### 4.1 添加子模块
+
+```bash
+git submodule add git@github.com:org/foo.git libs/foo
+```
+
+这一步会做三件事：
+
+1. 在工作区创建目录 libs/foo 并拉取子仓库
+    
+2. 生成或更新 .gitmodules
+    
+3. 在父仓库 index 里增加一个 gitlink（160000 + 子模块当前 HEAD SHA）
+    
+然后你需要提交父仓库的变更：
+
+```bash
+git add .gitmodules libs/foo
+git commit -m "Add submodule foo at libs/foo"
+```
+
+注意：提交后父仓库只锁定了 foo 的某个提交 SHA，并不锁定“分支名”。
+
+---
+
+### 5. Submodule 安装
+
+Submodule 常见的“安装”指：克隆父仓库后，把子模块也初始化并拉取到正确版本。
+
+#### 5.1 一条命令递归拉取
+
+```bash
+git clone --recurse-submodules <parent-repo-url>
+```
+
+它相当于：克隆父仓库后，自动对所有子模块执行 init + update，并递归处理嵌套子模块。
+
+#### 5.2 已经克隆了父仓库，补拉子模块
+
+```bash
+git submodule update --init --recursive
+```
+
+说明：
+
+- --init：根据 .gitmodules 初始化本地配置
+    
+- --recursive：如果子模块里还有子模块，继续拉取
+    
+#### 5.3 只更新到父仓库指定的提交
+
+Submodule 默认是“按父仓库锁定的 SHA”检出，因此子模块会处在 detached HEAD 状态，这是正常的。
+
+---
+
+### 6. 日常使用指令
+
+#### 6.1 父仓库如何升级子模块版本
+
+假设你想把子模块升级到它仓库的最新提交：
+
+```bash
+cd libs/foo
+git fetch
+git checkout main
+git pull
+```
+
+然后回到父仓库，父仓库会检测到子模块指针变化：
+
+```bash
+cd ../..
+git status
+# 会显示 libs/foo 有 “new commits”
+git add libs/foo
+git commit -m "Bump foo submodule"
+```
+
+关键点：
+
+父仓库真正提交的是“子模块指针 SHA 的变化”。
+
+#### 6.2 在子模块里开发并把改动推到子模块远程
+
+子模块是独立仓库，可以在其内正常 commit/push：
+
+```bash
+cd libs/foo
+git checkout -b feature/x
+# 修改代码
+git add .
+git commit -m "Implement X"
+git push -u origin feature/x
+```
+
+然后回父仓库更新指针并提交父仓库：
+
+```bash
+cd ../..
+git add libs/foo
+git commit -m "Update foo submodule to include feature/x"
+```
+
+#### 6.3 detached HEAD 的正确处理方式
+
+当你 git submodule update 后，子模块通常 detached HEAD。如果你要在子模块上开发，请显式切到分支：
+
+```bash
+cd libs/foo
+git checkout main   # 或新建分支
+```
+
+---
+
+#### 6.4 进阶： 跟踪子模块分支与一键更新
+
+可以写入 .gitmodules 的 branch 字段（需要团队共识）：
+
+```bash
+[submodule "libs/foo"]
+  path = libs/foo
+  url = git@github.com:org/foo.git
+  branch = main
+```
+
+然后在父仓库执行：
+
+```bash
+git submodule sync --recursive
+```
+
+更新到该分支的最新提交（而不是父仓库锁定的 SHA）：
+
+```bash
+git submodule update --remote --recursive
+```
+
+注意：这会把子模块推进到远程分支最新提交，随后仍需要在父仓库提交新的指针 SHA 才能对团队生效。
+
+---
+### 7. 如何正确移除 Submodule
+
+假设要移除 libs/foo：
+
+```bash
+git submodule deinit -f -- libs/foo
+git rm -f libs/foo
+rm -rf .git/modules/libs/foo
+```
+
+然后提交：
+
+```bash
+git commit -m "Remove submodule foo"
+```
+
+同时检查 .gitmodules 中对应条目是否已移除（git rm 通常会处理，但仍建议确认）。
+
+### 8. 常见坑与排错指南
+
+#### 8.1 忘记提交 
+
+
+症状：别人拉仓库后子模块信息不全。
+
+修复：确保 .gitmodules 与子模块路径一起被 git add 并提交。
+
+#### 8.2 子模块目录不为空导致 add/checkout 失败
+
+处理：清理目录或用正确命令初始化，不要手动拷贝文件混入子模块目录。
+
+#### 8.3 URL 改了但别人拉不到
+
+改 .gitmodules 后需要：
+
+```bash
+git submodule sync --recursive
+git submodule update --init --recursive
+```
+
+#### 8.4 CI 环境忘了拉子模块
+
+在 CI 脚本里加：
+
+```bash
+git submodule update --init --recursive
+```
+
+或 clone 时用 --recurse-submodules。
+
+#### 8.5 子模块提交丢失（远端做了 force push、GC 或权限问题）
+
+父仓库锁定的 SHA 在远端找不到会导致 update 失败。
+
+这是 Submodule 最大的治理风险之一：被引用的提交必须长期可用。建议：
+
+- 子模块仓库禁止强推主分支
+    
+- 重要版本打 tag
+    
+- 做好权限与镜像策略
+    
+#### 8.6 安全提示：不信任的 submodule URL
+
+如果父仓库来自不可信来源，submodule URL 可能指向恶意仓库，递归拉取会下载其内容。实践上应：
+
+- 审核 .gitmodules 的 URL
+    
+- 在自动化环境中限制网络访问或使用 allowlist
+    
+---
+
+
+---
 
 ## 问题
 
