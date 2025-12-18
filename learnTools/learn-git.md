@@ -779,6 +779,14 @@ git remote add origin https://github.com/waaall/gd32-template.git
 git push -u origin main
 ```
 
+#### 多个 remote
+
+```bash
+git remote set-url --add --push origin https://github.com/waaall/A**.git
+git remote set-url --add --push origin https://github.com/balabala/A**.git
+```
+
+
 ### branch
 ```bash
 git branch -a
@@ -841,6 +849,34 @@ git push --force-with-lease origin BareMetal
 
 ### fetch & merge (pull)
 ```bash
+
+```
+
+
+#### 忘记pull修改了同一文件
+```bash
+# 把当前工作区和暂存区的改动打包成一个存档
+git stash push -m "你的修改"
+
+# 查看存档
+git stash list
+
+# 还原并从列表里移除：
+git stash pop stash@{0}
+
+# 或者：还原但保留备份：
+git stash apply stash@{0}
+# 如果确认无用再删除
+git stash drop stash@{0}
+
+```
+
+### cherry-pick
+
+```bash
+# 将某个commit的改动应用到该分支
+git cherry-pick the-commit-id
+
 
 ```
 
