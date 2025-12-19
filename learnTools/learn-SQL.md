@@ -1,10 +1,188 @@
-# learn SQL
 
-### 参考
+
+
+## 参考
 
 * [公开课1](https://www.bilibili.com/video/BV1ta411C7xq)
 * [公开课2](https://classroom.udacity.com/courses/ud198)
 * [一个不错的网站](https://www.postgresqltutorial.com/postgresql-string-functions/)
+
+
+## 数据库简介
+---
+
+### 一、 关系型数据库 (Relational Databases / RDBMS)
+
+这是最传统、应用最广泛的类型。数据存储在表格中，通过行和列组织，通常使用 SQL（结构化查询语言）进行操作，严格遵循 ACID（原子性、一致性、隔离性、持久性）原则。
+
+#### 1. MySQL
+
+- **地位：** 全球最流行的开源数据库，LAMP/LEMP 栈的核心组件。
+    
+- **特点：**
+    
+    - **生态丰富：** 社区庞大，文档和第三方工具极多。
+        
+    - **简单易用：** 上手门槛低，安装配置相对简单。
+        
+    - **插件式存储引擎：** 支持 InnoDB（支持事务，默认）、MyISAM（不支持事务，读性能高）等多种引擎。
+        
+    - **主从复制：** 成熟的复制技术，易于构建高可用架构。
+        
+
+#### 2. PostgreSQL (Postgres)
+
+- **地位：** 被誉为“世界上最先进的开源关系型数据库”，学术派代表。
+    
+- **特点：**
+    
+    - **功能极其强大：** 支持复杂的 SQL 查询、存储过程、触发器。
+        
+    - **数据类型丰富：** 原生支持 JSON/JSONB、XML，甚至拥有强大的 GIS（地理信息系统）插件 PostGIS。
+        
+    - **并发控制：** 采用 MVCC（多版本并发控制），在高并发读写下表现优异。
+        
+    - **严格合规：** 对 SQL 标准的实现非常严格。
+        
+
+#### 3. SQLite
+
+- **地位：** 世界上部署量最大的数据库（因其嵌入在所有手机和浏览器中）。
+    
+- **特点：**
+    
+    - **嵌入式：** 不是客户端/服务器架构，而是直接集成在应用程序中。
+        
+    - **零配置：** 无需安装和管理，就是一个文件。
+        
+    - **轻量级：** 占用资源极少。
+        
+
+---
+
+### 二、 非关系型数据库 (NoSQL)
+
+NoSQL 并不是指“没有 SQL”，而是 "Not Only SQL"。它们为了解决大规模数据集合多重数据种类带来的挑战而生，通常牺牲一部分一致性来换取高性能和高扩展性（CAP 定理）。
+
+#### 1. 键值存储 (Key-Value)
+
+- **代表：Redis**
+    
+    - **特点：** 纯内存运行（支持持久化到磁盘），速度极快（微秒级）。支持多种数据结构（String, List, Set, Hash 等）。
+        
+    - **场景：** 缓存（Cache）、会话管理（Session）、排行榜、实时计数器。
+        
+
+#### 2. 文档型 (Document-Oriented)
+
+- **代表：MongoDB**
+    
+    - **特点：** Schema-free（无固定模式），数据以 BSON（类似 JSON）格式存储。支持复杂的嵌套结构，开发迭代快。
+        
+    - **场景：** 内容管理系统、用户配置、日志数据、需要快速迭代的初创项目。
+        
+
+#### 3. 搜索引擎 (Search Engine)
+
+- **代表：Elasticsearch**
+    
+    - **特点：** 基于 Lucene，提供分布式全文搜索。擅长倒排索引，查询速度极快，支持复杂的聚合分析。
+        
+    - **场景：** 站内搜索、日志分析（ELK Stack）、数据可视化后台。
+        
+
+#### 4. 宽列存储 (Wide Column)
+
+- **代表：Apache Cassandra / HBase**
+    
+    - **特点：** 分布式设计，无单点故障，写入性能极高，线性扩展能力强（加机器就能提升性能）。
+        
+    - **场景：** 海量数据写入（如物联网传感器数据）、历史订单查询、社交网络消息。
+        
+
+#### 5. 时序数据库 (Time-Series)
+
+- **代表：InfluxDB / Prometheus**
+    
+    - **特点：** 专门针对带时间戳的数据优化，压缩率极高，写入快。
+        
+    - **场景：** 监控系统、DevOps 指标、IoT 设备数据。
+        
+
+---
+
+### 三、 常用开源数据库详细对照表
+
+为了方便你选择，我整理了以下核心维度的对比：
+
+|**维度**|**MySQL**|**PostgreSQL**|**MongoDB**|**Redis**|**Elasticsearch**|
+|---|---|---|---|---|---|
+|**主要分类**|关系型 (RDBMS)|关系型 (RDBMS)|文档型 (NoSQL)|键值型 (NoSQL)|搜索引擎|
+|**数据模型**|表格 (行/列)|表格 + 对象 + JSON|BSON 文档 (JSON)|键值对|JSON 文档 (索引)|
+|**查询语言**|SQL|SQL (非常标准)|MQL (专有查询)|专有命令|RESTful API / DSL|
+|**事务支持**|支持 (ACID)|强支持 (ACID)|支持 (多文档事务)|弱 (支持原子操作)|不支持传统事务|
+|**扩展性**|垂直扩展为主 (读写分离)|垂直扩展为主|水平扩展 (分片)|主从/集群|水平扩展 (分片)|
+|**写入性能**|中等|中高|高|极高 (内存)|中 (需建立索引)|
+|**查询性能**|简单查询极快|复杂查询极快|极快 (无关联时)|极快 (KV查找)|极快 (全文搜索)|
+|**典型应用**|电商、CMS、金融|复杂SaaS、GIS、数仓|游戏、日志、用户画像|缓存、队列、计数|搜索、日志分析|
+
+---
+
+### 四、 重点对比：MySQL vs PostgreSQL
+
+这是开发者最常纠结的选择，这里做更深入的拆解：
+
+1. **复杂查询能力：**
+    
+    - **PostgreSQL 胜出**。Postgres 在处理复杂的 JOIN（连接）、子查询和大数据量分析时，优化器通常比 MySQL 更智能。
+        
+2. **JSON 支持：**
+    
+    - **PostgreSQL 胜出**。虽然 MySQL 5.7+ 也支持 JSON，但 Postgres 的 `JSONB` 格式处理效率更高，索引更完善，实际上可以当半个 MongoDB 用。
+        
+3. **流行度与招人：**
+    
+    - **MySQL 胜出**。MySQL 的市场占有率依然最高，容易找到熟悉的运维人员（DBA）。
+        
+4. **架构倾向：**
+    
+    - **MySQL** 倾向于将逻辑放在代码层（简单数据库，复杂代码）。
+        
+    - **PostgreSQL** 倾向于将逻辑放在数据库层（利用强大的数据库功能简化代码）。
+        
+
+---
+
+### 五、 如何选择？（决策指南）
+
+> **核心原则：** 没有最好的数据库，只有最适合场景的数据库。
+
+1. **如果你的数据结构固定，且涉及钱、交易、订单：**
+    
+    - 首选 **MySQL** 或 **PostgreSQL**。
+        
+    - 如果业务简单求稳，选 MySQL。
+        
+    - 如果数据关系复杂、需要地理位置功能或想要更严谨的数据约束，选 PostgreSQL。
+        
+2. **如果你需要极高的读写速度，或者需要减轻数据库压力：**
+    
+    - 必须搭配 **Redis** 作为缓存层。
+        
+3. **如果你的数据格式经常变（如初创产品），或者数据量巨大且非结构化：**
+    
+    - 选择 **MongoDB**。
+        
+4. **如果你需要强大的搜索功能（如模糊搜索、分词搜索）：**
+    
+    - 将数据同步到 **Elasticsearch** 中进行搜索。
+        
+5. **如果是物联网（IoT）或服务器监控数据：**
+    
+    - 选择 **InfluxDB** 或 **Prometheus**。
+        
+
+## 部署
 
 ### mac安装环境
 
@@ -141,7 +319,7 @@ pg_ctl start      [-D DATADIR] [-l FILENAME] [-W] [-t SECS] [-s]
 
 * [psycopg2文档](https://www.psycopg.org/docs/)
 
-### 理论需要
+## 理论
 
 1. 数据库和表格什么区别与联系？
 
@@ -579,22 +757,22 @@ GROUP BY la;
 ![sql-evaluate-order](learn-SQL.assets/sql-logical-evaluate-order.png)
 
 
-# [clickhouse](https://clickhouse.com/docs/zh/install/macOS)
+## [clickhouse](https://clickhouse.com/docs/zh/install/macOS)
 
 安装：不要用curl脚本安装，ubuntu就用apt，mac就用brew！
 
 
-## 通信方式
+### 通信方式
 - http
 - tcp
 - 
 
-## client 和 server
+### client 和 server
 `clickhouse-client` 和 `clickhouse-server` 是 ClickHouse 的核心组件，两者分工明确但又紧密协作。以下是它们的详细关系和对比：
 
 ---
 
-### **1. 核心职责**
+#### **1. 核心职责**
 
 |组件|角色|类比说明|
 |---|---|---|
@@ -603,7 +781,7 @@ GROUP BY la;
 
 ---
 
-### **2. 协同工作原理**
+#### **2. 协同工作原理**
 
 - **服务端** (`clickhouse-server`)：
     - 常驻后台进程，监听端口（默认 `9000` 用于客户端通信，`8123` 用于 HTTP 接口）。
@@ -614,7 +792,7 @@ GROUP BY la;
 
 ---
 
-### **3. 关键区别**
+#### **3. 关键区别**
 
 |特性|`clickhouse-server`|`clickhouse-client`|
 |---|---|---|
@@ -625,9 +803,9 @@ GROUP BY la;
 
 ---
 
-### **4. 实际使用场景**
+#### **4. 实际使用场景**
 
-#### **服务端 (`clickhouse-server`)**
+##### **服务端 (`clickhouse-server`)**
 
 - 必须启动后才能接受查询：
     
@@ -643,7 +821,7 @@ sudo systemctl status clickhouse-server
 sudo systemctl restart clickhouse-server
 ```
 
-#### **客户端 (`clickhouse-client`)**
+##### **客户端 (`clickhouse-client`)**
 
 - 基本连接（默认无密码）：
 ```bash
@@ -662,7 +840,7 @@ clickhouse-client -q "INSERT INTO db.table FORMAT CSV" < data.csv
 ```
 
 
-## 初始化配置
+### 初始化配置
 ```bash
 sudo systemctl stop clickhouse-server
 
@@ -688,10 +866,10 @@ sudo vim /etc/clickhouse-server/users.xml
 
 
 
-## 错误
+### 错误
 
 
-### 启动错误
+#### 启动错误
 
 错误信息：
 ```bash
@@ -734,7 +912,7 @@ Jul 29 16:11:39 zhengxu-work systemd[1]: Failed to start clickhouse-server.servi
 ```
 
 
-#### 解决方案
+##### 解决方案
 三个步骤。
 
 1. 权限
@@ -884,7 +1062,7 @@ sudo ls -l /var/run/clickhouse-server/clickhouse-server.pid
 sudo cat /etc/clickhouse-server/config.xml | grep pid_path
 ```
 
-### 监听端口失败
+#### 监听端口失败
 端口连接不上，可能是没有配置。
 ```bash
 sudo vim /etc/clickhouse-server/config.xml
@@ -896,7 +1074,7 @@ sudo vim /etc/clickhouse-server/config.xml
 ```
 
 
-### 用户名密码错误
+#### 用户名密码错误
 ```bash
 # 配置默认用户名密码
 sudo rm /etc/clickhouse-server/users.d/default-password.xml
