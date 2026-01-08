@@ -934,15 +934,30 @@ reboot
 sudo vim /etc/docker/daemon.json
 # 然后添加如下内容
 {
-    "registry-mirrors": [
-	    "https://docker.1ms.run",
-	    "https://docker.m.daocloud.io",
-	    "https://docker.xuanyuan.me"
-    ] 
+  "registry-mirrors": [
+    "https://docker.1ms.run",
+    "https://docker.m.daocloud.io",
+    "https://docker.xuanyuan.me"
+  ] 
 }
 # 然后重启该服务
 sudo systemctl daemon-reload
 sudo systemctl restart docker
+```
+
+#### ghcr.io
+
+- **ghcr.io** = GitHub Container Registry (GitHub 的容器镜像仓库)
+- **docker.io** = Docker Hub (Docker 官方镜像仓库)
+
+Docker 的 `registry-mirrors` 配置是**专门为 Docker Hub (docker.io)**；`ghcr.io` 用 `ghcr.nju.edu.cn`。
+ 
+```bash
+# 比如 open-webui, 国内就用
+docker pull ghcr.nju.edu.cn/open-webui/open-webui:main
+
+# 比如 llama.cpp , 国内就用
+docker pull ghcr.nju.edu.cn/ggml-org/llama.cpp:full-cuda
 ```
 
 ## 配置
