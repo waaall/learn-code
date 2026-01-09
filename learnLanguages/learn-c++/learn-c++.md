@@ -2044,7 +2044,76 @@ make程序，使用makefile来声明源代码之间的关系等，然后把它�
 
 函数递归、类的自引用，是怎么样的逻辑？
 
+## C++ 内存回收问题
 
+C++ 传统意义上确实“没有语言级的 GC（垃圾回收器）”。也就是说，C++ 不像 Java / C# 那样由运行时自动扫描对象图并回收不可达对象。C++ 更偏向“确定性资源管理”：对象生命周期通常由作用域、所有权和析构函数决定。
+
+### 为什么会泄漏
+
+C++ 允许你手动管理内存（new/delete, malloc/free）。如果出现这些情况就会泄漏：
+- 分配了内存但忘记释放（缺 delete/free）
+- 异常/提前返回导致释放路径没走到
+- 多个出口路径复杂，释放逻辑遗漏
+- 释放错误（重复释放、释放后继续用）导致更严重问题
+- 共享所有权/环引用（比如 shared_ptr 环）导致对象一直不被销毁
+### 为什么不一定会泄漏
+
+现代 C++ 的主流写法是尽量避免“裸 new/delete”，用 RAII 把资源绑定到对象析构上，离开作用域就自动释放：
+
+- `std::unique_ptr<T>`：独占所有权，最常用
+- `std::shared_ptr<T>`：共享所有权（要警惕环）
+- std::vector/std::string/std::map 等容器：内部自动管理内存
+- 文件句柄、锁、socket 等也同理：用对象封装，析构自动关闭
+
+只要把“资源释放”交给对象析构，异常/多返回路径也不会漏，这也是 C++ 不靠 GC 也能写得很稳的核心原因。
+
+### 实战建议（避免泄漏的准则）
+
+1. **默认不用裸** **new/delete**，优先 make_unique / make_shared
+2. **所有权要清晰**：谁创建、谁负责销毁，用类型表达出来（unique/shared/borrow）
+3. **共享所有权少用**：能 unique_ptr 就别 shared_ptr
+4. **防环引用**：shared_ptr 形成环时，用 std::weak_ptr 断开环
+5. **用工具检测**：
+    - Linux 常用 AddressSanitizer/LeakSanitizer（编译器 sanitizers）
+    - 也常用 Valgrind（较慢但直观）
+  
+### 其他语言的内存回收
+
+|**语言**|**默认内存管理方式**|**会不会有“内存泄漏”**|
+|---|---|---|
+|Rust|所有权与借用规则，编译期保证何时释放，不需要 GC|仍可能“逻辑泄漏”（例如把对象放进全局容器一直不移除、引用计数环等），但不太像 C++ 那种忘记 free|
+|Go|运行时跟踪式垃圾回收（GC）|仍可能“保活泄漏”（对象被引用链/缓存持有导致不回收），但不会因为忘记 free 泄漏|
+|Python（CPython）|引用计数为主，外加循环垃圾回收（处理环）|可能因为引用环 + finalizer 等复杂情况或缓存导致长期占用；也常见“资源泄漏”（文件/句柄没关）|
+|Swift|ARC（自动引用计数），编译器插入 retain/release|会：强引用环会导致对象永不释放，需要 weak/unowned 断环（这是 ARC 的典型坑）|
+|Java|JVM 跟踪式 GC|仍可能“保活泄漏”（静态集合、缓存、监听器没移除等），但不是忘记 free|
+
+
+Go / Java 是典型“跟踪式 GC”；Python 是“引用计数 + 循环回收”；Swift 是 ARC；Rust 不是 GC，而是通过所有权让释放在编译期可推导并在运行时确定发生。
+
+---
+
+### 为什么 C++ 不做成语言自带 GC？
+
+
+核心不是“做不到”，而是设计目标不同：
+
+1. **确定性析构（RAII）是 C++ 的核心能力**
+    C++ 依赖析构函数在离开作用域时立刻释放资源（内存、锁、文件句柄、socket、事务等）。跟踪式 GC 的回收时机通常不确定，会破坏“何时释放资源”的可预测性，这对实时系统、底层库、资源管理很关键。
+    
+2. **零额外开销与可控性**
+    C++ 强调“你不用的东西不该为它付代价”。强制引入 GC 意味着运行时、写屏障、栈扫描/精确元数据等成本与约束，会让一大类场景（嵌入式、内核/驱动、游戏引擎某些实时段）不愿接受。
+    
+3. **与 C 兼容、指针与布局太自由**
+    C++ 有指针算术、类型擦除、placement new、自定义分配器、对象内存布局控制等特性。做“精确 GC”需要非常强的类型与指针约束；做“保守 GC”又可能误判导致回收不及时。标准层面很难给出一个“一刀切且不伤害既有代码”的方案。
+    
+4. **生态已经用 RAII + 智能指针解决了大多数问题**
+    现代 C++ 更鼓励用 unique_ptr/shared_ptr、容器和值语义，把释放绑定到生命周期上，从源头降低“忘记释放”的概率。
+
+---
+
+### 新的 C++ 标准没有 GC
+
+没有。相反，C++23 把标准库里那套“为 GC 预留的支持接口”移除了（例如 std::pointer_safety、declare_reachable 等），理由是长期未实现、属于清理未落地特性。
 
 
 ## c++标准库(STL)
@@ -2144,8 +2213,6 @@ int main()
 2.  指针能指向函数而迭代器不行，迭代器只能指向容器。这就说明了迭代器和指针其实是完全不一样的概念来的。指针是一种特殊的变量,它专门用来存放另一变量的地址，而迭代器只是参考了指针的特性进行设计的一种STL接口。
 
 ### c++容器共有的函数
-
-
 
 #### 1.序列容器(Sequence containers)：
 ![Sequence-containers](learn-c++.assets/Sequence-containers.png)
@@ -2842,528 +2909,6 @@ int main(int argc, char** argv) {
 - [drogon-网络服务器（基于boost）](https://github.com/drogonframework/drogon)
 
 
-## C++面试题
-
-* 动态规划
-
-* 贪心算法
-
-* 搜索与回溯
-
-* 分治思想
-
-他们都是啥？有什么区别与联系？
-
-
-### 两数之和
-
-* 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target的那两个整数，并返回它们的数组下标。你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。你可以按任意顺序返回答案。
-
-示例 ：
-```shell
-(1)
-输入：nums = [2,7,11,15], target = 9
-输出：[0,1]
-解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
-
-(2)
-输入：nums = [3,2,4], target = 6
-输出：[1,2]
-```
-
-* 解答：
-很明显暴力的解法是两层for循环查找，时间复杂度是O(n^2)。
-
-建议大家做这道题目之前，先做一下这两道
-
-242. 有效的字母异位词
-349. 两个数组的交集
-242. 有效的字母异位词 这道题目是用数组作为哈希表来解决哈希问题，349. 两个数组的交集这道题目是通过set作为哈希表来解决哈希问题。
-
-本题呢，则要使用map，那么来看一下使用数组和set来做哈希法的局限。
-
-数组的大小是受限制的，而且如果元素很少，而哈希值太大会造成内存空间的浪费。
-set是一个集合，里面放的元素只能是一个key，而两数之和这道题目，不仅要判断y是否存在而且还要记录y的下表位置，因为要返回x 和 y的下表。所以set 也不能用。
-此时就要选择另一种数据结构：map ，map是一种key value的存储结构，可以用key保存数值，用value在保存数值所在的下表。
-
-C++中map，有三种类型： 如图
-
-std::unordered_map 底层实现为哈希表，std::map 和std::multimap 的底层实现是红黑树。
-
-同理，std::map 和std::multimap 的key也是有序的（这个问题也经常作为面试题，考察对语言容器底层的理解）。 更多哈希表的理论知识请看关于哈希表，你该了解这些！。
-
-**这道题目中并不需要key有序，选择std::unordered_map 效率更高！**
-
-C++代码：
-```c
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        std::unordered_map <int,int> map;
-        for(int i = 0; i < nums.size(); i++) {
-            auto iter = map.find(target - nums[i]);
-            if(iter != map.end()) {
-                return {iter->second, i};
-            }
-            map.insert(pair<int, int>(nums[i], i));
-        }
-        return {};
-    }
-};
-```
-依然不懂这个答案。为何可以直接初始化一个Hash表就可以找vector，它怎么对应的？
-
-
-
-### 回文数
-
-* 给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
-
-```shell
-例如，121 是回文，而 123 不是。
- 
-示例 1：
-
-输入：x = 121
-输出：true
-示例 2：
-
-输入：x = -121
-输出：false
-解释：从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。
-示例 3：
-
-输入：x = 10
-输出：false
-解释：从右向左读, 为 01 。因此它不是一个回文数。
-```
-
-进阶：你能不将整数转为字符串来解决这个问题吗？
-
-* 解答：
-```c
-bool isPalindrome(int x) {
-    if(x<0) return false;
-    if(x==0) return true;
-    
-    //如果不将其转化为unsigned，则1234567899这个数倒过来会溢出。
-    unsigned int y = 0;
-    int mid = x; 
-    while(mid != 0){
-        int d = mid%10;
-        y = y*10 + d;
-        mid = mid/10;
-    }
-    cout << y << endl;
-    return y==x;
-}
-
-int main(int argc, char const *argv[])
-{
-    int x = 1234567899;
-    cout << isPalindrome(x);
-
-    return 0;
-}
-```
-### 罗马数字转整数
-
-```c
-class Solution {
-private:
-    unordered_map<char, int> symbolValues = {
-        {'I', 1},
-        {'V', 5},
-        {'X', 10},
-        {'L', 50},
-        {'C', 100},
-        {'D', 500},
-        {'M', 1000},
-    };
-
-public:
-    int romanToInt(string s) {
-        int ans = 0;
-        int n = s.length();
-        for (int i = 0; i < n; ++i) {
-            int value = symbolValues[s[i]];
-            if (i < n - 1 && value < symbolValues[s[i + 1]]) {
-                ans -= value;
-            } else {
-                ans += value;
-            }
-        }
-        return ans;
-    }
-};
-```
-
-### 字符串相加
-
-给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和并同样以字符串形式返回。你不能使用任何內建的用于处理大整数的库（比如 BigInteger）， 也不能直接将输入的字符串转换为整数形式。
-
-
-示例 1：
-
-输入：num1 = "11", num2 = "123"
-输出："134"
-示例 2：
-
-输入：num1 = "456", num2 = "77"
-输出："533"
-示例 3：
-
-输入：num1 = "0", num2 = "0"
-输出："0"
-
-* 解答思路：
-（1）如果不把字符串转为整数，则需要用“ASCII”码来做文章。0-9的ASCII码是挨着的，所以他们与'0'的差，在二进制上就是真正的该数字，比如'5'-'0'，得到4的二进制数。
-（2）另一方面，加法运算的逻辑就是CPU加法器了类似，用额外一位来存放进位信息。
-（3）可以用几次强制类型转换，让ASCII码和int类型来回转换，不要弄错其转换的对应关系就好（转换时，int的二进制=ASCII码的二进制），下面答案中是隐式的转换。
-
-```c
-class Solution {
-public:
-    string addStrings(string num1, string num2) {
-        string ans = "";
-        int i = num1.length() -1, j = num2.length() -1, add = 0;
-        while (i>=0||j>=0||add!=0){
-            int x = i>=0 ? num1[i]-'0' : 0;
-            int y = j>=0 ? num2[j]-'0' : 0;
-            int result = x+y+add;
-            ans.push_back('0' + result%10);
-            add=result/10;
-            --j;
-            --i;
-        }
-        reverse(ans.begin(), ans.end());
-        return ans;
-    }
-};
-```
-
-
-### 括号匹配问题
-
-给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。有效字符串需满足：左括号必须用相同类型的右括号闭合。左括号必须以正确的顺序闭合。
-
-
-
-* 解答：
-```c
-class Solution {
-public:
-    bool isValid(string s) {
-        int n = s.size();
-        if (n % 2 == 1) {
-            return false;
-        }
-
-        unordered_map<char, char> pairs = {
-            {')', '('},
-            {']', '['},
-            {'}', '{'}
-        };
-        stack<char> stk;
-        for (char ch: s) {
-            if (pairs.count(ch)) {
-                if (stk.empty() || stk.top() != pairs[ch]) {
-                    return false;
-                }
-                stk.pop();
-            }
-            else {
-                stk.push(ch);
-            }
-        }
-        return stk.empty();
-    }
-};
-```
-
-### 最大相同前缀
-
-```c
-class Solution {
-public:
-    string longestCommonPrefix(vector<string>& strs) {
-        string ans = "";
-        for(int i =0; i<strs[0].length();i++){
-            char c = strs[0][i];
-            for (string s : strs){
-                if (s[i] != c)
-                    return ans;
-            }
-            ans += c;
-        }
-        return ans;
-    }
-};
-```
-
-### 至少是其他两倍大数
-给你一个整数数组 nums，其中总是存在唯一的一个最大整数。请你找出数组中的最大元素并检查它是否 至少是数组中每个其他数字的两倍 。如果是，则返回 最大元素的下标 ，否则返回 -1 。
-
-示例 1：
-
-输入：nums = [3,6,1,0]
-输出：1
-解释：6 是最大的整数，对于数组中的其他整数，6 至少是数组中其他元素的两倍。6 的下标是 1 ，所以返回 1 。
-示例 2：
-
-输入：nums = [1,2,3,4]
-输出：-1
-解释：4 没有超过 3 的两倍大，所以返回 -1 。
-示例 3：
-
-输入：nums = [1]
-输出：0
-解释：因为不存在其他数字，所以认为现有数字 1 至少是其他数字的两倍。
-
-```c
-class Solution {
-public:
-    int dominantIndex(vector<int>& nums) {
-        int m1 = -1, m2 = -1;
-        int index = -1;
-        for (int i = 0; i < nums.size(); i++) {
-            if (nums[i] > m1) {
-                m2 = m1;
-                m1 = nums[i];
-                index = i;
-            } else if (nums[i] > m2) {
-                m2 = nums[i];
-            }
-        }
-        return m1 >= m2 * 2 ? index : -1;
-    }
-};
-```
-
-
-### 最大子数组和
-给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。子数组 是数组中的一个连续部分。
- 
-示例 1：
-
-输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
-输出：6
-解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
-示例 2：
-
-输入：nums = [1]
-输出：1
-示例 3：
-
-输入：nums = [5,4,-1,7,8]
-输出：23
-
-* 解答：
-
-```c
-class Solution {
-public:
-    int maxSubArray(vector<int>& nums) {
-        int ans = nums[0],temp=nums[0];
-        
-        for (int i =1;i<=nums.size()-1;i++){
-            if (temp+nums[i] <= nums[i])
-                temp = nums[i];
-            else 
-                temp += nums[i];
-            if(ans < temp)
-                ans = temp;
-        }
-        return ans;
-    }
-};
-```
-
-
-### 删除有序数组中的重复项
-
-我用的特别笨的办法，还是失败了。因为尝试用“删除”函数。而没有想到，删除函数是一个时间复杂度很高的函数(因为每次删除都需要重排，o(n)的时间复杂度)。
-
-而这种情况下，直接覆盖(赋值)会好的多！（还有下面一个问题《移除指定元素》也是类似的思路）
-
-```c
-class Solution {
-public:
-    int removeDuplicates(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 0) {
-            return 0;
-        }
-        int fast = 1, slow = 1;
-        while (fast < n) {
-            if (nums[fast] != nums[fast - 1]) {
-                nums[slow] = nums[fast];
-                ++slow;
-            }
-            ++fast;
-        }
-        return slow;
-    }
-};
-```
-
-* [一个问题](https://stackoverflow.com/questions/3673684/peeking-the-next-element-in-stl-container)
-
-### 移除指定元素
-给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度。
-不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并 原地 修改输入数组。
-元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
- 
-说明:
-为什么返回数值是整数，但输出的答案是数组呢?
-请注意，输入数组是以「引用」方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
-
-```c
-#include <string.h>
-#include <vector>
-#include <map>
-#include <stack>
-#include <unordered_map>
-#include <iostream>
-using namespace std;
-
-int removeElement(vector<int>& nums, int val) {
-    int j=0;
-    for (int i=0; i<nums.size();++i){
-        if (nums[i]!=val){
-            nums[j]=nums[i];
-            j++;
-        }
-    }
-    return j;
-}
-
-int main(int argc, char const *argv[])
-{
-    vector<int> s = {0,1,2,2,3,0,4,2};
-    int val = 2;
-    removeElement(s,val);
-    for (int i = 0; i < 4; ++i)
-    {
-        cout << endl << s[i];
-    }
-
-    return 0;
-}
-```
-### 删除字符串中的所有相邻重复项
-给出由小写字母组成的字符串 S，重复项删除操作会选择两个相邻且相同的字母，并删除它们。在 S 上反复执行重复项删除操作，直到无法继续删除。在完成所有重复项删除操作后返回最终的字符串。答案保证唯一。
-
-示例：
-输入："abbaca"
-输出："ca"
-解释：
-例如，在 "abbaca" 中，我们可以删除 "bb" 由于两字母相邻且相同，这是此时唯一可以执行删除操作的重复项。之后我们得到字符串 "aaca"，其中又只有 "aa" 可以执行重复项删除操作，所以最后的字符串为 "ca"。
-
-* 解答：
-
-```c
-
-```
-
-### 合并两个有序链表
-
-```shell
-示例1: 
-输入：l1 = [1,2,4], l2 = [1,3,4]
-输出：[1,1,2,3,4,4]
-
-示例2：
-输入：l1 = [], l2 = []
-输出：[]
-
-示例3：
-输入：l1 = [], l2 = [0]
-输出：[0]
-```
-
-* 解答：
-设置两个指针，互。。。
-
-```c
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
-class Solution {
-public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        ListNode* preHead = new ListNode(-1);
-
-        ListNode* prev = preHead;
-        while (l1 != nullptr && l2 != nullptr) {
-            if (l1->val < l2->val) {
-                prev->next = l1;
-                l1 = l1->next;
-            } else {
-                prev->next = l2;
-                l2 = l2->next;
-            }
-            prev = prev->next;
-        }
-
-        // 合并后 l1 和 l2 最多只有一个还未被合并完，我们直接将链表末尾指向未合并完的链表即可
-        prev->next = l1 == nullptr ? l2 : l1;
-
-        return preHead->next;
-    }
-};
-```
-
-### 爬楼梯
-假设你正在[爬楼梯](https://leetcode-cn.com/problems/climbing-stairs)。需要 n 阶你才能到达楼顶。
-
-每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
-
-
-示例 1：
-
-输入：n = 2
-输出：2
-解释：有两种方法可以爬到楼顶。
-1. 1 阶 + 1 阶
-2. 2 阶
-示例 2：
-
-输入：n = 3
-输出：3
-解释：有三种方法可以爬到楼顶。
-1. 1 阶 + 1 阶 + 1 阶
-2. 1 阶 + 2 阶
-3. 2 阶 + 1 阶
-
-* 解答
-
-```c
-class Solution {
-public:
-    int climbStairs(int n) {
-        int p = 0, q = 0, r = 1;
-        for (int i = 1; i <= n; ++i) {
-            p = q; 
-            q = r; 
-            r = p + q;
-        }
-        return r;
-    }
-};
-```
-
-#### 动态规划
-[动态规划-知乎](https://www.zhihu.com/question/23995189/answer/613096905)
-
-
-
-
 ## 第三方库
 
 
@@ -3400,6 +2945,8 @@ Boost 可以作为 **工具箱**，选用其中最需要的部分，而不是�
 
 
 ### Qt库
+
+具体见 《[learn-Qt](https://github.com/waaall/EmbeddedTech/blob/main/GUI-Qt/learn-Qt.md)》
 
 ### Eigen 库
 
@@ -3662,7 +3209,6 @@ eig.eigenvectors();               // vec
 > i++ 与 ++i 的主要区别有两个：
 > **1、 i++ 返回原来的值，++i 返回加1后的值。**
 > **2、 i++ 不能作为左值，而++i 可以。**
-
 
 
 那么为什么『i++ 不能作为左值，而++i 可以』？
