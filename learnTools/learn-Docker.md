@@ -938,7 +938,7 @@ sudo vim /etc/docker/daemon.json
     "https://docker.1ms.run",
     "https://docker.m.daocloud.io",
     "https://docker.xuanyuan.me"
-  ] 
+  ]
 }
 # 然后重启该服务
 sudo systemctl daemon-reload

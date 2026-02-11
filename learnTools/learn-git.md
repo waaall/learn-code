@@ -871,7 +871,7 @@ git stash drop stash@{0}
 
 ```
 
-### cherry-pick
+### cherry-pick (某个commit应用到某分支)
 
 ```bash
 # 将某个commit的改动应用到该分支

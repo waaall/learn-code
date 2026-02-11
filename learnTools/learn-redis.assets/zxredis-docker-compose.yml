@@ -1,0 +1,11 @@
+services:
+  redis:
+    image: redis:8.2.1
+    container_name: zxredis
+    ports:
+      - "6679:6379"
+    volumes:
+      - d:/zx-docs/zx-redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - d:/zx-docs/zx-redis/data:/data
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: always

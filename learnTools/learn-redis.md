@@ -55,11 +55,11 @@ Redis（Remote Dictionary Server）是开源的内存键值数据库，常被用
        data = redis.get(f"product:{product_id}")
        if data is not None:
            return deserialize(data)
-
+   
        data = db.query("SELECT * FROM products WHERE id = ?", product_id)
        if data is None:
            return None
-
+   
        redis.setex(f"product:{product_id}", 3600, serialize(data))
        return data
    ```
@@ -199,10 +199,7 @@ xread block 0 streams events $
 
 ## 搭建一个 redis 单机服务器
 
-```bash
-docker pull redis:8.2.1
-```
-
+### redis 配置
 ```conf
 ################################
 # 基础配置
@@ -253,4 +250,28 @@ slowlog-log-slower-than 50
 
 # 最多保留多少条慢查询日志
 slowlog-max-len 1024
+```
+
+### docker 配置
+
+
+```bash
+docker pull redis:8.4.1
+```
+
+
+docker compose
+
+```xml
+services:
+  redis:
+    image: redis:8.2.1
+    container_name: zxredis
+    ports:
+      - "6679:6379"
+    volumes:
+      - d:/zx-docs/zx-redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+      - d:/zx-docs/zx-redis/data:/data
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    restart: always
 ```
