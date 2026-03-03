@@ -1801,3 +1801,10 @@ GitLab Runner 是执行 CI/CD 任务的代理程序。
    ```
 
 > **提示**：GitLab 免费版支持完整的 CI/CD 功能，可通过 `http://localhost:8080` 测试本地部署。详细文档见 [GitLab CI/CD Docs](https://docs.gitlab.com/ci/)。
+
+
+# apple container
+
+- [apple container](https://github.com/apple/container)
+
+`container` is supported on macOS 26, since it takes advantage of new features and enhancements to virtualization and networking in this release. We do not support older versions of macOS and the `container` maintainers typically will not address issues that cannot be reproduced on the macOS 26.
