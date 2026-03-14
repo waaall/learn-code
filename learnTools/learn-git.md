@@ -899,7 +899,7 @@ git cherry-pick the-commit-id
 | * 586e30a remove cmsis_os & fix all bugs & move SysTick_Handler from systick.c to gd32f4xx_it.c
 | * 898efff fix Core codes and makefile
 | * c0276fb add FreeRTOS sources
-|/  
+|/
 * 962e657 add a bash script to convert to utf8
 ```
 #### 什么是Pull Request？
@@ -983,11 +983,11 @@ git remote prune origin
 当一个仓库需要依赖另一个仓库的代码时，常见做法有三种：
 
 1. 直接复制代码进来（缺点：难同步、难追踪来源）
-    
+
 2. 单体仓库（monorepo）（缺点：治理成本、权限和发布粒度）
-    
+
 3. Submodule：父仓库把依赖仓库作为“子仓库引用”挂载进来，并且固定到某个提交（优点：依赖可追溯、可锁定版本、父子仓库保持独立）
-    
+
 Submodule 的核心思想是：
 
 父仓库并不真正“包含”子仓库的历史，它只记录子仓库的 URL、路径，以及子仓库当前指向的提交 SHA。
@@ -1010,11 +1010,11 @@ Submodule 在父仓库侧主要涉及三类信息：
 要点：
 
 - .gitmodules 会提交到父仓库，因此它是团队一致性的来源
-    
+
 - path 是子模块在父仓库工作区里的挂载目录
-    
+
 - url 是子模块远程地址（可 https、ssh、相对路径）
-    
+
 #### 2.1 父仓库的索引(index)里有一个"gitlink"
 
 父仓库并不把子仓库文件归档进自己对象库，而是在父仓库的 tree/index 里存一个特殊条目：
@@ -1058,9 +1058,9 @@ gitdir: ../../.git/modules/libs/foo
 理解这一点很重要：
 
 - 子模块并不是一个“独立的顶层仓库目录结构”，它的 git 数据被集中管理在父仓库 .git/modules/... 下
-    
+
 - 因此复制子模块工作区目录并不能完整复制其 git 元数据，正确做法仍然是通过 git 获取
-    
+
 ---
 
 ### 4. Submodule 设置
@@ -1074,11 +1074,11 @@ git submodule add git@github.com:org/foo.git libs/foo
 这一步会做三件事：
 
 1. 在工作区创建目录 libs/foo 并拉取子仓库
-    
+
 2. 生成或更新 .gitmodules
-    
+
 3. 在父仓库 index 里增加一个 gitlink（160000 + 子模块当前 HEAD SHA）
-    
+
 然后你需要提交父仓库的变更：
 
 ```bash
@@ -1111,9 +1111,9 @@ git submodule update --init --recursive
 说明：
 
 - --init：根据 .gitmodules 初始化本地配置
-    
+
 - --recursive：如果子模块里还有子模块，继续拉取
-    
+
 #### 5.3 只更新到父仓库指定的提交
 
 Submodule 默认是“按父仓库锁定的 SHA”检出，因此子模块会处在 detached HEAD 状态，这是正常的。
@@ -1262,19 +1262,19 @@ git submodule update --init --recursive
 这是 Submodule 最大的治理风险之一：被引用的提交必须长期可用。建议：
 
 - 子模块仓库禁止强推主分支
-    
+
 - 重要版本打 tag
-    
+
 - 做好权限与镜像策略
-    
+
 #### 8.6 安全提示：不信任的 submodule URL
 
 如果父仓库来自不可信来源，submodule URL 可能指向恶意仓库，递归拉取会下载其内容。实践上应：
 
 - 审核 .gitmodules 的 URL
-    
+
 - 在自动化环境中限制网络访问或使用 allowlist
-    
+
 ---
 
 
@@ -1282,52 +1282,82 @@ git submodule update --init --recursive
 
 ## 问题
 
-### crlf 和 lf
+### wsl git 换行符冲突问题
 
-Windows 和 Linux/Mac 的换行符不一样。Windows 使用 CRLF(\r\n),而 Linux/Mac 使用 LF(\n)。
+windows下默认换行符是crlf (也就是`\n\r`); 而其他系统都是lf (也就是`\n`)；git 仓库要保持lf的换行符，但是worktree在windows下会是crlf。所以git这个config在windows 版本安装时的默认设置就是自动转换。
 
-Git 在 Windows 版本中提供了 autoCRLF 功能。Git 仓库默认使用 LF,当在 Windows 系统上时,文件使用 CRLF,提交时 Git 会自动转换为 LF。
+Windows 不用 crlf 就好了! 但是不能关git的autocrlf，否则
 
-在windows版就出了一个功能叫autoCRLF。意思就是你的get仓库默认都是LF的，然后每次你windows系统上的你那些文件都是CRLF的，你提交的get它有换成LF
-
-但是不知道怎么登掉我的windows之前设置过设置了一个什么东西，反正就是瞎了，导致他提交CRLF。
-
-这时候就非常麻烦了，就是之前的文件都是CRF的，然后我的Mac上文件是L F的，就乱七八糟他那边改了之后又重新生成又是C的，然后就乱七八糟。
-
-1. 设置好global autocrlf
-
-mac/Linux用input或者不设置；Windows用auto
+#### git 换行符设置
 ```bash
-# windows
-git ignore
+git config --get core.autocrlf
+
+# wsl 设置成 input， 具体原因见下
+git config --global core.autocrlf true
+git config --global core.eol lf
 ```
 
-2. 添加.gitattributes
-```text
-# 默认使用 LF
-* text eol=lf
+#### git 文件换行符切换
+```bash
+# 现有工作区的crlf切换
+git rm --cached -r .
+git reset --hard
 
-# 对于 Windows 批处理或脚本允许 CRLF
+# git 仓库被污染后，设置上.gitattributes `* text=auto eol=lf` 然后
+git add --renormalize .
+git status
+git commit -m "Normalize line endings"
+```
+
+#### 参数解释
+1. **true**（常见于 Windows）
+    - **checkout 时**：Git 会把仓库里的 **LF** → 转成 **CRLF**。
+    - **commit 时**：Git 会把本地的 **CRLF** → 转回 **LF** 保存到仓库。
+        这样仓库里统一是 LF，本地 Windows 看的是 CRLF，编辑器保存不出问题。
+
+2. **false**
+    - Git 不做任何换行符转换。
+    - 仓库里是什么，checkout 时就是什么。
+        如果仓库里混了 CRLF/LF，就可能越传越乱。
+
+3. **input**（推荐 WSL/Linux 开发者用）
+    - **checkout 时**：保持仓库里的样子（一般是 LF，不会转换）。
+    - **commit 时**：如果本地文件是 CRLF，会自动转成 LF 保存到仓库。
+        相当于 **只在写入仓库时纠正为 LF**，但不会强制你本地看到 CRLF。
+
+这时候wsl下的默认是false，这样就不行，如果设置成input (wsl下)就没有报错了。但是wsl下如果修改提交代码，就会有warning，如果只是在windows下看，那就wsl设置成input就ok：
+
+```bash
+......
+warning: in the working copy of 'tests/tester-logs/log-backup.txt', CRLF will be replaced by LF the next time Git touches it
+......
+```
+
+如果windows 设置为input，有些编辑器就会显示错误可能。
+
+#### 设置gitattributes
+```bash
+# 默认所有文本文件：按平台 checkout，仓库中始终存 LF
+* text=auto
+
+# 脚本类文件强制 LF（Linux/WSL 需要）
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Windows 脚本强制 CRLF
 *.bat text eol=crlf
 *.cmd text eol=crlf
-```
 
-3. 重置git仓库
-```bash
-git add —- renormalize .
-git add .
-```
+# 源码类统一 LF
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
 
-4. 提交修改
-```bash
-git commit -m "change crlf to lf"
-```
-
-5. 本地文件修改
-
-就是当你及时给他都提交了的时候，他本地的文件有的没有更改，这时候你就得：
-
-```bash
-git rm —cached .
-git reset --hard HEAD
+# 二进制文件不要被当成文本处理
+*.png binary
+*.jpg binary
+*.exe binary
+*.dll binary
 ```
