@@ -13,6 +13,32 @@
 *   **`std::shared_ptr`**: 用于共享 `AlgBase` 实例的所有权。
 *   **`std::make_shared`**: 用于在一次分配中高效地创建实例。
 
+#### 常见类型与语义
+
+*   **`std::unique_ptr`**: 独占所有权（exclusive ownership）。对象只能有一个拥有者，支持移动（move）但不支持拷贝（copy）。它开销低、语义清晰，是现代 C++ 中动态分配对象的默认首选。
+*   **`std::shared_ptr`**: 共享所有权（shared ownership）。通过引用计数（reference counting）管理对象生命周期，适合多个对象或模块需要共同持有同一资源的场景。
+*   **`std::weak_ptr`**: 弱引用（weak reference）。不拥有对象，不增加引用计数，通常用于观察由 `std::shared_ptr` 管理的对象，或打破循环引用（cyclic reference）。
+
+#### 从 C++11 到 C++20 的演进
+
+智能指针在 C++11 到 C++20 之间逐步补齐了使用方式：
+
+*   **C++11**: 标准化了 `std::unique_ptr`、`std::shared_ptr`、`std::weak_ptr`，并提供 `std::make_shared`。
+*   **C++14**: 增加 `std::make_unique`，使 `unique_ptr` 的创建方式更自然、更安全。
+*   **C++17**: 智能指针本体新增不多，但围绕 `std::weak_ptr`、`std::enable_shared_from_this` 的工程实践更加成熟，特别常见于回调、异步任务和对象生命周期管理。
+*   **C++20**: 补充了 `std::make_shared<T[]>`、`std::make_shared_for_overwrite`，并标准化了 `std::atomic<std::shared_ptr<T>>` 的用法，使其在数组、性能优化和并发场景中更实用。
+
+#### 创建方式的现代风格
+
+现代 C++ 通常不推荐直接写裸 `new`，而是优先使用工厂函数：
+
+```cpp
+// 独占所有权，C++14 起推荐
+auto p1 = std::make_unique<Algorithm>(instance_id);
+
+// 共享所有权，C++11 起推荐
+auto p2 = std::make_shared<Algorithm>(instance_id);
+
 **示例 (`alg_manager.cpp`):**
 
 ```cpp
@@ -31,7 +57,7 @@ instances_.emplace(instance_id, algorithm);
 int AlgBase::Execute(const AlgoIn& in, AlgoOut& out, bool is_new_instance) {
     // 函数返回时自动释放锁
     std::lock_guard<std::mutex> lock(mutex_);
-    
+
     // ... 临界区 ...
     return rc;
 }
@@ -74,7 +100,7 @@ class Algorithm final : public AlgBase {
 public:
     explicit Algorithm(std::string instance_id);
     ~Algorithm() override = default;
-    
+
     // ...
     int DoInit(const AlgoIn& in, AlgoOut& out) override;
 };
