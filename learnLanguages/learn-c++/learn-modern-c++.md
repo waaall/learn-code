@@ -2,6 +2,11 @@
 
 本笔记记录了对现代 C++ 代码库的分析与学习，旨在通过实际案例理解现代 C++ 特性的应用。
 
+
+## Template & Concepts
+
+见 [cpp_templates_and_concepts](cpp_templates_and_concepts.md)
+
 ## Example 1: 算法管理系统分析
 
 本章分析了在 `example1` 项目（算法管理系统）中观察到的现代 C++ 使用模式。该代码展示了如何用 C 兼容接口封装 C++ 逻辑，同时利用现代 C++ 特性来提高安全性和可维护性。
