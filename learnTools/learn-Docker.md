@@ -1058,6 +1058,13 @@ docker save -o /home/rcny-mlp-v1.0.0.tar rcny-mlp:v1.0.0
 docker load -i /yourpath/to/rcny-mlp-v1.0.0.tar
 ```
 
+## 健康检查
+
+```bash
+docker exec -it whisper-asr sh -lc 'command -v curl || command -v wget || command -v python'
+docker exec -it whisper-asr sh -lc 'curl -s -o /dev/null -w "http_code=%{http_code}\n" http://localhost:8000/health'
+docker inspect --format '{{.Config.Healthcheck.StartPeriod}}' whisper-asr
+```
 
 # 问题
 
