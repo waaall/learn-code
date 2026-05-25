@@ -782,8 +782,16 @@ git push -u origin main
 #### 多个 remote
 
 ```bash
+# 设置两个push
 git remote set-url --add --push origin https://github.com/waaall/A**.git
 git remote set-url --add --push origin https://github.com/balabala/A**.git
+
+# 重设
+git config --unset-all remote.origin.url
+git config --unset-all remote.origin.pushurl
+git config --add remote.origin.url https://github.com/waaall/A**.git
+git config --add remote.origin.pushurl https://github.com/waaall/A**.git
+git config --add remote.origin.pushurl http://192.168.50.11:3000/A**.git
 ```
 
 

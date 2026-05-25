@@ -271,3 +271,51 @@ conan作为包管理器。
 conan audit provider auth conancenter --token=<token>
 conan audit scan .
 ```
+
+
+代码安全主要分为两个方面：
+- 运行时程序无法获取源代码。
+- 运行时程序无法进行移植。
+
+
+# 闭源工具
+
+- [OpenText-Fortify](https://www.opentext.com/products/static-application-security-testing)
+
+官方页面写的是支持 **44+ languages**、**350+ frameworks**、**1,524+ vulnerability categories**，还能检测 **200+ secret types**。还支持 **IaC scanning**，覆盖 Docker、Kubernetes、serverless。强调它能和 GitHub、GitLab、Jenkins、Azure DevOps、VS Code、Eclipse 等集成。
+
+
+# 源代码安全
+
+## 一、编译
+
+### 1.1 python源代码编译
+
+#### [cython](https://github.com/cython/cython)
+- [cython_and_nuitka](https://www.reddit.com/r/learnpython/comments/1g4dwez/cython_and_nuitka_for_noobs/?tl=zh-hans)
+- [我的cython-docker实战](https://github.com/waaall/just-some-code/tree/main/System_scripts/cython-docker)
+
+### 1.2 java编译
+
+#### [GraalVM Native Image](https://github.com/oracle/graal)
+实战见《代码安全.assets》- 《/GraalVM简单实现.md》。
+
+
+## 二、混淆
+
+### java混淆-[proguard](https://github.com/Guardsquare/proguard)
+
+
+# 禁止移植
+
+## 离线服务器
+
+### 手动激活
+1. 在需要激活的离线计算机上，软件会生成一个唯一的“**机器指纹**”（由CPU序列号、硬盘序列号、网卡MAC地址、主板信息等硬件标识符通过算法计算得出）。
+2. 用户需要将这个机器指纹（通常是一长串字符）通过**其他能联网的设备**（如手机、另一台电脑）发送给软件公司的支持人员或上传到其官网。
+3. 软件公司服务器根据这个指纹生成一个对应的、唯一的“**离线激活文件**”或“激活码”。
+4. 用户将这个文件或代码拷贝回离线电脑，软件通过本地算法进行验证。
+
+
+
+## 在线服务器
