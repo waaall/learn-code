@@ -4,7 +4,7 @@
 
 > 现代浏览器内核利用操作系统实现的socket等几乎全部API，实现了非常复杂的功能，以至于，它就像一个操作系统，但它是建立在操作系统的API之上的另一层非常全面的高层抽象。使用`HTML`、`CSS`、`JavaScript`这“三种语言”(除了`Javascript`都不算是个语言)，在任意操作系统和平台上，都能实现几乎一个APP的全部功能，这也是`Web-App`的由来。
 
-
+具体前端笔记见 [frontend-basic.md](../learnLanguages/learn-frontend/frontend-basic.md)
 
 ## 谈Web-App与Native-App
 
@@ -100,11 +100,11 @@ Qt的缺点：
 
 Electron优点：
 
-> 
+>
 
 Electron缺点：
 
-> 
+>
 
 [使用Electron开发的App](https://www.electronjs.org/apps)：VScode、WhatsApp、Atom、Slack......
 
@@ -146,7 +146,7 @@ npm config set electron_mirror "https://npm.taobao.org/mirrors/electron/"
 我们在使用 npm install 安装模块的模块的时候 ，一般会使用下面这几种命令形式：
 
 ```shell
-npm install moduleName # 安装模块到项目目录下` 
+npm install moduleName # 安装模块到项目目录下`
 npm install -g moduleName # -g 的意思是将模块安装到全局，具体安装到磁盘哪个位置，要看 npm config prefix 的位置。
 npm install -save moduleName # -save 的意思是将模块安装到项目目录下，并在package文件的dependencies节点写入依赖。
 npm install -save-dev moduleName # -save-dev 的意思是将模块安装到项目目录下，并在package文件的devDependencies节点写入依赖。
