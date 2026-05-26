@@ -85,6 +85,8 @@ Node.js 能运行起来，主要依赖以下两个核心组件：
 
 ## TypeScript 发展史和生态
 
+- [front-end-frameworks 2025](https://2025.stateofjs.com/en-US/libraries/front-end-frameworks/)
+
 TypeScript（简称 TS）从最初被调侃为"微软的一厢情愿"，到如今成为前端开发的"行业标准"，它的发展史可以说是一部教科书级别的开源逆袭史。
 
 ### 一、发展史
@@ -289,6 +291,8 @@ Next.js 与 Astro 之间巨大的性能和架构差异，本质上源于"打包�
 ### 二、Astro 的打包策略
 
 Astro 的底层打包器基于 **Vite** 和 **Rollup**。在打包阶段，Astro 引入了一套极其复杂的**"静态分析与代码剥离"**策略。
+
+- [front-end-frameworks 2025](https://2025.stateofjs.com/en-US/libraries/front-end-frameworks/)
 
 #### 1. 编译期（Build Time）的操作
 
