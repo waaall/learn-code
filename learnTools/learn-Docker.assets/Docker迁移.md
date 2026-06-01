@@ -2,29 +2,29 @@
 ### 查看信息
 
 ```bash
-df -hT                          
-Filesystem     Type      Size  Used Avail Use% Mounted on  
-tmpfs          tmpfs      13G  3.9M   13G   1% /run  
-/dev/sda2      ext4      439G  188G  229G  46% /  
-tmpfs          tmpfs      63G  8.0K   63G   1% /dev/shm  
+df -hT                        
+Filesystem     Type      Size  Used Avail Use% Mounted on
+tmpfs          tmpfs      13G  3.9M   13G   1% /run
+/dev/sda2      ext4      439G  188G  229G  46% /
+tmpfs          tmpfs      63G  8.0K   63G   1% /dev/shm
 /dev/sdb5      xfs       3.7T   89G  3.6T   3% /mnt/hdd
 
-sudo du -h --max-depth=1 -x /var 2>/dev/null | sort -hr  
-123G /var  
-122G /var/lib  
-708M /var/cache  
+sudo du -h --max-depth=1 -x /var 2>/dev/null | sort -hr
+123G /var
+122G /var/lib
+708M /var/cache
 ...
 
-# docker system prune  
+# docker system prune
 # docker system prune -a --volumes(不要用！)
 
-sudo du -h --max-depth=1 -x /var/lib 2>/dev/null | sort -hr  
-107G /var/lib  
-101G /var/lib/containerd  
-4.7G /var/lib/snapd  
-738M /var/lib/docker  
-326M /var/lib/apt  
-83M /var/lib/dpkg  
+sudo du -h --max-depth=1 -x /var/lib 2>/dev/null | sort -hr
+107G /var/lib
+101G /var/lib/containerd
+4.7G /var/lib/snapd
+738M /var/lib/docker
+326M /var/lib/apt
+83M /var/lib/dpkg
 ```
 
 ---
@@ -220,45 +220,97 @@ systemctl status docker --no-pager
 如果容器都起来了，说明迁移成功。
 
 ---
-#### **6. 写入**
+#### **6. 重启生效**
 
-**`/etc/fstab`**
+`/mnt/hdd/containerd /var/lib/containerd none bind 0 0` 写入 **`/etc/fstab`，保证重启后仍然生效** 。
 
-**，保证重启后仍然生效**
+但！！！这样很难保证启动顺序，当docker 先于挂载启动，就会导致 docker 找不到服务，从而导致docker全部服务失效。 推荐 [后续启动顺序](#后续启动顺序) 的方法。
 
-编辑：
-
-```bash
-sudo nano /etc/fstab
-```
-
-追加：
-```fstab
-/mnt/hdd/containerd /var/lib/containerd none bind 0 0
-```
-
-测试：
-```bash
-sudo mount -a
-```
-
-没有报错就行。
 
 ---
 
 #### **7. 确认没问题后再删除旧数据**
 
-建议你先保留 `.bak` 一两天。确认容器正常、重启也正常后：
+建议先保留 `.bak` 一两天。确认容器正常、重启也正常后：
 
 ```bash
 sudo rm -rf /var/lib/containerd.bak
 ```
 
-这一刀下去，SSD 才真正释放 101G。
-
 ---
 
-## 做之前保存当前容器清单
+## 后续启动顺序
+
+确认 `/mnt/hdd/containerd /var/lib/containerd` 不在 `/etc/fstab` 中。
+
+### 1. 增加启动限制服务
+
+```bash
+sudo vim /etc/systemd/system/var-lib-containerd.mount
+```
+
+然后写入
+
+```INI
+[Unit]
+Description=Bind mount containerd data from HDD
+Requires=mnt-hdd.mount
+After=mnt-hdd.mount
+Before=containerd.service docker.service
+
+[Mount]
+What=/mnt/hdd/containerd
+Where=/var/lib/containerd
+Type=none
+Options=bind
+
+[Install]
+WantedBy=local-fs.target
+```
+
+### 2. 限制 containerd service 启动顺序
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable var-lib-containerd.mount
+```
+
+写入：
+
+```bash
+sudo mkdir -p /etc/systemd/system/containerd.service.d
+
+sudo tee /etc/systemd/system/containerd.service.d/override.conf >/dev/null <<'EOF'
+[Unit]
+Requires=var-lib-containerd.mount
+After=var-lib-containerd.mount
+EOF
+```
+
+
+### 3. 检查加载设置是否成功
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart var-lib-containerd.mount
+systemctl status var-lib-containerd.mount --no-pager
+findmnt /var/lib/containerd
+```
+
+### 4. 重启测试
+
+```bash
+sudo reboot
+findmnt /var/lib/containerd
+df -hT /var/lib/containerd
+docker images
+docker ps -a
+```
+
+
+## 注意事项
+
+### 做之前保存当前容器清单
 
 防止出问题后恢复环境：
 
@@ -279,7 +331,7 @@ docker ps --format '{{.Names}} {{.Label "com.docker.compose.project.working_dir"
 
 ---
 
-## **关于性能**
+### **关于性能**
 
 可以搬，问题不大，但要知道代价：
 
@@ -294,7 +346,7 @@ docker ps --format '{{.Names}} {{.Label "com.docker.compose.project.working_dir"
 
 你的 HDD 是 xfs，作为 containerd/docker 存储没问题。只是机械盘随机读写慢，容器启动、构建镜像、npm install、apt install 这类操作会比 SSD 慢一点。
 
-  
+
 如果你有数据库容器，后续可以单独把数据库 volume 放 SSD，例如：
 
 ```bash
@@ -305,7 +357,7 @@ docker ps --format '{{.Names}} {{.Label "com.docker.compose.project.working_dir"
 
 ---
 
-## docker prune 建议
+### docker prune 建议
 
 不要用！
 ```bash
@@ -338,7 +390,7 @@ docker builder prune --filter "until=168h"
 
 ---
 
-## **总结**
+### **总结**
 
 ```text
 SSD /
