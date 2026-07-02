@@ -1307,6 +1307,7 @@ sudo systemctl restart docker  # Linux
 
 
 ## docker 外部连接
+
 有两种连接，一个是docker服务对外开放的端口（一般是tcp:2375或者tls:2376），另一个是docker容器运行时监听的端口。前者是让你可以外部使用docker，后者是让你外部访问某个docker容器的服务。
 这都需要系统防火墙开放对应的端口权限，linux和mac都有对应的指令，windows也有。
 ```powershell
@@ -1317,6 +1318,42 @@ New-NetFirewallRule -DisplayName 'Docker ML container' -Profile @('Domain', 'Pub
 上述指令等同于在控制面板-系统安全-防火墙-允许应用或功能通过防火墙-查看（名称、协议、端口号、私有/共有网络访问）
 
 这种是允许所有进入本机的 TCP 连接，只要它们的目标端口是 5003。” 无论背后是 Docker、Python 还是其他任何程序在监听，防火墙都会放行。而之所以python直接运行没有问题，是因为python程序的所有流量都被放行了（python安装或者第一次运行时会申请网络权限，一般就被允许了）
+
+## docker 清理
+
+### 通用
+
+```bash
+docker system prune
+docker buildx prune
+docker container prune
+docker image prune
+```
+
+### windows
+
+window 好像有问题，vdisk 不会自动缩小？需要手动缩小。
+
+```powershell
+# 进入 diskpart 工具
+diskpart
+
+select vdisk file="D:\Develop\DockerDesktopWSL\disk\docker_data.vhdx"
+DiskPart successfully selected the virtual disk file.
+
+DISKPART> detail vdisk
+Device type ID: 0 (Unknown)
+Vendor ID: {00000000-0000-0000-0000-000000000000} (Unknown)
+State: Added
+Virtual size: 1024 GB
+Physical size:  117 GB
+Filename: D:\Develop\DockerDesktopWSL\disk\docker_data.vhdx
+Is Child: No
+Parent Filename:
+Associated disk#: Not found.
+
+DISKPART> compact vdisk
+```
 
 ## Kubernetes & docker
 - [Docker Swarm 还是 K8？](https://www.reddit.com/r/devops/comments/t204vt/to_docker_swarm_or_to_k8/?tl=zh-hans)- K8
